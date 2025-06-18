@@ -63,14 +63,14 @@ API_KEY_URCOOPA=your_api_key
 API_KEY_JOUR=30
 
 # Base de données
-MYSQL_HOST=172.17.240.18
-MYSQL_DATABASE=exportodoo
-MYSQL_USER=root
+MYSQL_HOST=HOST_DRESS
+MYSQL_DATABASE=DATABASE
+MYSQL_USER=ROOT
 MYSQL_PASSWORD=your_password
 
 # CRON Planning
-CRONTAB_APP_FACTURES=30 14 * * *
-CRONTAB_APP_COMMANDES=0 16 * * *
+CRONTAB_APP_FACTURES=00 6,12,18 * * *
+CRONTAB_APP_COMMANDES=00 6,12,18 * * *
 DATE_JOUR=5
 ```
 
@@ -88,7 +88,7 @@ uvicorn main:app --host 0.0.0.0 --port 9898
 
 ## 📊 Flux de données
 
-### Synchronisation des factures (14h30 quotidien)
+### Synchronisation des factures (6h-12h-18h quotidien)
 
 ```mermaid
 sequenceDiagram
@@ -107,7 +107,7 @@ sequenceDiagram
     A-->>C: Succès
 ```
 
-### Envoi des commandes (16h00 quotidien)
+### Envoi des commandes (6h-12h-18h quotidien)
 
 ```mermaid
 sequenceDiagram
@@ -128,6 +128,7 @@ sequenceDiagram
 ## 🛠️ API Endpoints
 
 ### 🌐 Interface Web
+### Voir visuellement les factures récupérer
 
 | Route | Méthode | Description |
 |-------|---------|-------------|
@@ -162,6 +163,7 @@ curl "http://localhost:9898/Commandes_Gesica"
 📂 sicalait-urcoopa-api/
 ├── 📄 main.py                 # 🚀 Application principale
 ├── 📂 sql/
+│   └── 📄 connexion.py       # 🗃️ Modèles Connexion
 │   └── 📄 models.py          # 🗃️ Modèles CRUD
 ├── 📄 createOdoo.py          # 🔧 Création factures Odoo
 ├── 📄 createOdooGesica.py    # 🔧 Création commandes Gesica
@@ -189,8 +191,8 @@ L'application configure automatiquement les tâches CRON :
 
 **Configuration personnalisée :**
 ```env
-CRONTAB_APP_FACTURES=30 14 * * *  # Format cron standard
-CRONTAB_APP_COMMANDES=0 16 * * *   # Format cron standard
+CRONTAB_APP_FACTURES=00 6,12,18 * * *  # Format cron standard
+CRONTAB_APP_COMMANDES=00 6,12,18 * * *   # Format cron standard
 ```
 
 ## 🗄️ Base de données
@@ -238,22 +240,55 @@ erDiagram
 ### 🐳 Docker
 
 ```dockerfile
-FROM python:3.9-slim
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONUNBUFFERED=1
+ENV TZ=Indian/Reunion
+
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends \
+        curl \
+        tzdata \
+        python3 \
+        python3-pip \
+        nano \
+        gcc \
+        cron \
+        build-essential \
+        supervisor && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN ln -fs /usr/share/zoneinfo/Indian/Reunion /etc/localtime
 
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
 
-COPY . .
+ADD . /app/
+
+COPY main.py requirements.txt server.crt server.key ./
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+RUN rm /etc/localtime
+
+RUN ln -s /usr/share/zoneinfo/Indian/Reunion /etc/localtime
+
+COPY moncrontab /etc/cron.d/moncrontab
+RUN chmod 0644 /etc/cron.d/moncrontab && \
+    crontab /etc/cron.d/moncrontab && \
+    touch /var/log/cron.log
+
 EXPOSE 9898
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "9898"]
+CMD service cron start && \
+    uvicorn main:app --host 0.0.0.0 --port 9898
 ```
 
 ```bash
 # Build et run
-docker build -t sicalait-api .
-docker run -p 9898:9898 sicalait-api
+docker build -t urcoopa-api .
+docker run -p 9898:9898 urcoopa-api
 ```
 
 ### 🔄 Production
@@ -307,7 +342,7 @@ curl http://localhost:9898/factureAdherentUrcoopa
 |----------|----------|
 | ❌ Connexion Odoo | Vérifier URL/credentials dans `.env` |
 | ❌ Erreur SOAP Urcoopa | Contrôler `API_KEY_URCOOPA` |
-| ❌ Base données MySQL | Vérifier connexion réseau `172.17.240.18:3306` |
+| ❌ Base données MySQL | Vérifier connexion réseau `HOST` |
 | ❌ CRON non exécuté | Redémarrer service cron : `service cron restart` |
 
 ### 📞 Debug mode
