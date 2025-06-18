@@ -10,14 +10,14 @@ class CRUD:
         self.connexion = recupere_connexion_db()
     
     # Méthode CREATE
-    async def create(self, datas: dict):
+    def create(self, datas: dict):
         
         cnx = self.connexion
         cursor = cnx.cursor()
         
         try:
             colonnes = [
-                "ID", "Numero_Facture", "Type_Facture", "Date_Facture", "Date_Echeance", 
+                "Numero_Facture", "Type_Facture", "Date_Facture", "Date_Echeance", 
                 "Societe_Facture", "Code_Client", "Nom_Client", "Type_Client", "Montant_HT", 
                 "Montant_TTC", "Numero_Ligne_Facture", "Code_Produit", "Libelle_Produit", 
                 "Prix_Unitaire", "Quantite_Facturee", "Unite_Facturee", "Numero_Silo", 
@@ -36,18 +36,25 @@ class CRUD:
             '''
 
             # Mettre les valeurs dans l'ordre des colonnes
-            valeurs = tuple(datas.get(colonne) for colonne in colonnes)
+            # Utiliser None pour les valeurs manquantes au lieu de None implicite
+            valeurs = tuple(datas.get(colonne, None) for colonne in colonnes)
 
             cursor.execute(insert_query, valeurs)
             cnx.commit()
-            cursor.close()
             
-            print('Insertion réussie')
+            print(f'✅ Insertion réussie - Facture {datas.get("Numero_Facture")} ligne {datas.get("Numero_Ligne_Facture")}')
             
         except mysql.connector.Error as err:
-            print('Erreur :', err)
+            print(f'❌ Erreur MySQL : {err}')
+            cnx.rollback()  # Annuler la transaction en cas d'erreur
+            
+        except Exception as e:
+            print(f'❌ Erreur générale : {e}')
+            cnx.rollback()
+            
         finally:
-            cursor.close()
+            if cursor:
+                cursor.close()
     
     # Méthode READ
     async def read(self, numero_facture : str ):
@@ -67,6 +74,23 @@ class CRUD:
         except mysql.connector.Error as err:
             print('Erreur :', err)
             
+    
+    #Méthode READ ALL
+    async def readAll(self,):
+        cnx = self.connexion
+        cursor = cnx.cursor(dictionary=True)  # pour récupérer un dict et comparer facilement
+        
+        #print(numero_facture)
+        try:
+            query = "SELECT * FROM exportgesica.CMD400"
+            cursor.execute(query,)
+            resultat = cursor.fetchall()
+            cursor.close()
+            
+            return resultat  # soit None soit un dict complet
+            
+        except mysql.connector.Error as err:
+            print('Erreur :', err)
     
     # Méthode UPDATE
     def update(self, datas: dict):
