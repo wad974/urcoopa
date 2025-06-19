@@ -812,8 +812,8 @@ def init_cron():
     cron_schedule2 = os.getenv('CRONTAB_APP_COMMANDES')
 
     # Initialisation du cron pour l'utilisateur root
-    #cron = CronTab(user='root')
-    cron = CronTab(user='jimmy')
+    cron = CronTab(user='root')
+    #cron = CronTab(user='jimmy')
     cron.remove_all()
     cron.write()
 

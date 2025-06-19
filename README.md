@@ -182,10 +182,10 @@ curl "http://localhost:9898/Commandes_Gesica"
 L'application configure automatiquement les tâches CRON :
 
 ```bash
-# 📥 Récupération factures - 14h30 quotidien
+# 📥 Récupération factures - 6h00 - 12h00 -18h00 quotidien
 30 14 * * * curl http://localhost:9898/factures/
 
-# 📤 Envoi commandes - 16h00 quotidien  
+# 📤 Envoi commandes - 6h00 - 12h00 -18h00 quotidien quotidien  
 0 16 * * * curl -X POST http://localhost:9898/envoyer-commande/
 ```
 
@@ -286,8 +286,10 @@ CMD service cron start && \
 ```
 
 ```bash
-# Build et run
+# Build push et run
 docker build -t urcoopa-api .
+docker tag urcoopa-api:0.1 {your_account}/urcoopa-api:latest
+docker push {your_account}/urcoopa-api:latest
 docker run -p 9898:9898 urcoopa-api
 ```
 
