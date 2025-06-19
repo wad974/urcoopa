@@ -159,7 +159,7 @@ async def createOdoo(rows: list, models, db, uid, password):
             "move_type": "in_invoice",
             "partner_id": partner_id,
             "invoice_partner_display_name": name_fournisseur,
-            "name": '/',
+            #"name": '/',
             "ref": ref_facture,
             "invoice_date": invoice_date,
             "invoice_date_due": invoice_date_due,
