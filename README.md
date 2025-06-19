@@ -183,10 +183,10 @@ L'application configure automatiquement les tâches CRON :
 
 ```bash
 # 📥 Récupération factures - 6h00 - 12h00 -18h00 quotidien
-30 14 * * * curl http://localhost:9898/factures/
+00 6,12,18 * * * curl http://localhost:9898/factures/
 
 # 📤 Envoi commandes - 6h00 - 12h00 -18h00 quotidien quotidien  
-0 16 * * * curl -X POST http://localhost:9898/envoyer-commande/
+00 6,12,18 * * * curl -X POST http://localhost:9898/envoyer-commande/
 ```
 
 **Configuration personnalisée :**
