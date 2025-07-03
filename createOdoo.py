@@ -32,7 +32,7 @@ async def createOdoo(rows: list, models, db, uid, password):
             print("❌ Fournisseur 'URCOOPA' non trouvé.")
             return
         # Id fournisseur 
-        print(f"✅ Ids fournisseur -> Odoo  : {ids_fournisseur}")
+        #print(f"✅ Ids fournisseur -> Odoo  : {ids_fournisseur}")
         partner_id = ids_fournisseur[0]
 
         name_fournisseur = models.execute_kw(
@@ -42,7 +42,7 @@ async def createOdoo(rows: list, models, db, uid, password):
             {'fields': ['name']}
         )[0]['name']
         # Id fournisseur 
-        print(f"✅ Name fournisseur -> Odoo : {name_fournisseur}")
+        #print(f"✅ Name fournisseur -> Odoo : {name_fournisseur}")
         
         
         # Infos communes à toute la facture
@@ -60,7 +60,7 @@ async def createOdoo(rows: list, models, db, uid, password):
         for row in rows:
             
             #code produit
-            print(f"🔍 [INFO] Recherche produit à {datetime.datetime.now().strftime('%H:%M:%S')} : {row.get('Code_Produit')}")
+            #print(f"🔍 [INFO] Recherche produit à {datetime.datetime.now().strftime('%H:%M:%S')} : {row.get('Code_Produit')}")
             code_produit = row.get('Code_Produit')
             
             #time.sleep(1)  # ralentis de 1000ms
@@ -74,7 +74,7 @@ async def createOdoo(rows: list, models, db, uid, password):
                 {'limit': 1}
             )
             #supplier_ids récupérer
-            print(f'✅ [SUCCESS] Supplier_ids récupérer dans Odoo : {supplier_ids}')
+            #print(f'✅ [SUCCESS] Supplier_ids récupérer dans Odoo : {supplier_ids}')
 
             if not supplier_ids:
                 print(f"❌ Produit {code_produit} non trouvé dans supplierinfo.")
@@ -90,7 +90,7 @@ async def createOdoo(rows: list, models, db, uid, password):
             )[0]
 
             #supplier _data récuperer
-            print(f'✅ [SUCCESS] Supplier_data récupéré -> Odoo : {supplier_data}')
+            #print(f'✅ [SUCCESS] Supplier_data récupéré -> Odoo : {supplier_data}')
 
             #product tmpl id recupéré uniquement
             product_tmpl = supplier_data.get('product_tmpl_id')
@@ -110,14 +110,14 @@ async def createOdoo(rows: list, models, db, uid, password):
                 {'limit': 1}
             )
             #supplier_ids récupérer
-            print(f'✅ Product_ids récupérer -> Odoo  : {product_ids}')
+            #print(f'✅ Product_ids récupérer -> Odoo  : {product_ids}')
 
             if not product_ids:
                 print(f"❌ Aucun produit trouvé pour le template {tmpl_id}")
                 continue
 
             product_id = product_ids[0]
-            print(f"✅ Produit trouvé pour {code_produit} ➔ ID {product_id} \n\n")
+            #print(f"✅ Produit trouvé pour {code_produit} ➔ ID {product_id} \n\n")
 
             #unité facture
             udm_code = row.get('Unite_Facturee')
@@ -141,7 +141,7 @@ async def createOdoo(rows: list, models, db, uid, password):
                     'fields' : ['name']
                 }
                 )[0]
-            print(f"✅ Unités de mesure récupéré -> {row.get('Unite_Facturee')} - {udm_id} : {udm.get('name')}")
+            #print(f"✅ Unités de mesure récupéré -> {row.get('Unite_Facturee')} - {udm_id} : {udm.get('name')}")
             
             invoice_lines.append([0, 0, {
                 'product_id': product_id,
@@ -159,7 +159,6 @@ async def createOdoo(rows: list, models, db, uid, password):
             "move_type": "in_invoice",
             "partner_id": partner_id,
             "invoice_partner_display_name": name_fournisseur,
-            #"name": '/',
             "ref": ref_facture,
             "invoice_date": invoice_date,
             "invoice_date_due": invoice_date_due,
@@ -168,7 +167,7 @@ async def createOdoo(rows: list, models, db, uid, password):
 
         # Debug JSON
         #import json
-        print(f"📦 Facture à envoyer à Odoo : {rows[0]['Numero_Facture']}")
+        print(f"📦 Facture creer pour Odoo : {rows[0]['Numero_Facture']}")
         #print(json.dumps(sendAccountMove, indent=2))
         
         # Envoi
@@ -187,8 +186,8 @@ async def createOdoo(rows: list, models, db, uid, password):
                 [move_id, {}]  # Un write vide peut déclencher les compute fields
             )
             
-            
-            print(f"✅📤 [SUCCESS] Facture Odoo créée avec ID {move_id} \n\n")
+            print(f"✅📤 [SUCCESS] Facture envoyer à Odoo : {rows[0]['Numero_Facture']}")
+            #print(f"✅📤 [SUCCESS] Facture Odoo créée avec ID {move_id} \n\n")
         except xmlrpc.client.Fault as e:
             #Retourne tous les erreur odoo
             #Erreur odoo si facture existe sera retrouné

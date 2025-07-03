@@ -69,3 +69,10 @@ body {
 .search-bar {
     max-width: 250px;
 }
+
+.ligneRow:hover
+{
+    cursor: pointer!important;
+    background-color: rgba(0,0,0, 0.5);
+}
+

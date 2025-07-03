@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Validation facture</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h4 class="card-title text-success text-center">📦 Facture à valider</h4>
+                        <hr>
+                        <div id="factureDetails" class="d-flex flex-wrap justify-content-between gap-3 px-2">
+                            <!-- Les détails de la facture seront injectés ici -->
+                        </div>
+                        <hr>
+                        <div class="text-center">
+                            <button class="btn btn-success mx-2" onclick="impression()">🖨️ Imprimer</button>
+                            <button id="boutonValiderFacture" class="btn btn-primary mx-2" onclick="validerFacture()">✅ Valider facture</button>
+                            <button class="btn btn-warning mx-2" onclick="envoyerOdoo()">🚀 Envoyer vers Odoo</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div id="close">
+        <div class="text-center m-5">
+        <button class="btn btn-primary mx-2" href="/">❌ Fermer</button>
+    </div>
+
+</body>
+
+</html>

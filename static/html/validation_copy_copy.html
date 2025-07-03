@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facture</title>
+    <style>
+        .invoice-container {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            font-family: "Segoe UI", sans-serif;
+            color: #333;
+            position: relative;
+            padding: 50px;
+        }
+
+        #close {
+            position: absolute;
+            top: 0;
+            right: -9rem;
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+
+        .company-info {
+            flex: 1;
+        }
+
+        .invoice-info {
+            text-align: right;
+            flex: 1;
+        }
+
+        .invoice-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .client-section {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            text-align: right;
+        }
+
+        .details-section {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+        }
+
+        .details-left,
+        .details-right {
+            flex: 1;
+        }
+
+        .details-right {
+            margin-left: 40px;
+        }
+
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+        }
+
+        .product-table th,
+        .product-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .product-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .totals-section {
+            margin: 30px 0;
+            text-align: right;
+        }
+
+        .totals-table {
+            margin-left: auto;
+            min-width: 300px;
+        }
+
+        .totals-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .total-final {
+            font-weight: bold;
+            font-size: 18px;
+            background-color: #f8f9fa;
+        }
+
+        .payment-info {
+            margin: 30px 0;
+            padding: 15px;
+            background-color: #e8f5e8;
+            border-radius: 8px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-outline-primary {
+            background: white;
+            color: #007bff;
+            border: 2px solid #007bff;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .text-muted {
+            color: #6c757d;
+        }
+
+        .fw-bold {
+            font-weight: bold;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-5 {
+            margin-top: 3rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1.5rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .mb-1 {
+            margin-bottom: 0.25rem;
+        }
+
+        .mb-0 {
+            margin-bottom: 0;
+        }
+
+        @media print {
+
+            html,
+            body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+            }
+
+            #validationPage{overflow: hidden;}
+
+            #factureAImprimer {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            .invoice-container,
+            .invoice-container * {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+
+            .invoice-container {
+                
+                width: 189mm;
+                max-height: 297mm;
+                padding: 0;
+                margin: 0;
+                box-sizing: border-box;
+            }
+
+            button,
+            footer {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="invoice-container" id="factureAImprimer">
+        <!-- En-tête -->
+        <div class="header-section">
+            <div class="company-info">
+                <h2 id="societeFacture" class="fw-bold"></h2>
+                <p>URCOOPA</p>
+            </div>
+            <div class="invoice-info">
+                <div class="invoice-title">FACTURE N°<strong id="numeroFacture"></strong></div>
+            </div>
+        </div>
+
+        <!-- Informations client -->
+        <div class="client-section">
+            <p class="mb-0"><strong id="nomClient"></strong></p>
+            <p id="codeClient" class="mb-0"></p>
+            <p id="typeClient" class="mb-0"></p>
+        </div>
+
+        <!-- Détails facture -->
+        <div class="details-section">
+            <div class="details-left">
+                <h5 class="mb-2 fw-bold">Détails facture :</h5>
+                <p><strong>Type :</strong> <span id="typeFacture">Facture</span></p>
+                <p><strong>Référence (bl):</strong> <span id="blLigne">Shop/0093</span></p>
+                <p><strong>Date :</strong> <span id="dateFacture"></span></p>
+            </div>
+            <div class="details-right">
+                <p><strong>Échéance :</strong> <span id="dateEcheance"></span></p>
+                <p><strong>Dépot :</strong> <span id="depotBL"></span></p>
+            </div>
+        </div>
+
+        <!-- Tableau des produits -->
+        <table class="product-table">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Quantité</th>
+                    <th>Prix unitaire</th>
+                    <th>Montant HT Ligne </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <span id="produit"></span><br>
+                        <small class="text-muted">Numéro BL : <span id="numeroBL"></span></small><br>
+                    </td>
+                    <td><span id="quantite"></span> <span id="uniteFacturee"></span></td>
+                    <td><span id="prixUnitaire"></span> $</td>
+                    <td><span id="montantLigneHT"></span> $</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Commentaires -->
+        <div class="mb-4">
+            <h5 class="mb-2 fw-bold">Commentaires :</h5>
+            <p id="commentaires">-</p>
+        </div>
+
+        <!-- Totaux -->
+        <div class="totals-section">
+            <table class="totals-table">
+                <tr>
+                    <td><strong>Montant hors taxes</strong></td>
+                    <td><span id="montantHT"></span> $</td>
+                </tr>
+                <tr>
+                    <td>Tax TVA %</td>
+                    <td><span id="tauxTVA"></span> $</td>
+                </tr>
+                <tr class="total-final">
+                    <td><strong>Total</strong></td>
+                    <td><span id="montantTTC"></span> $</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Informations de paiement 
+        <div class="payment-info">
+            <h5 class="mb-2 fw-bold">Informations de paiement :</h5>
+            <p><strong>Payé le :</strong> 17/03/2025</p>
+            <p><strong>Mode de paiement :</strong> Espèces</p>
+            <p><strong>Montant payé :</strong> $ 862,50</p>
+            <p><strong>Montant dû :</strong> $ 0,00</p>
+        </div>-->
+
+        <!-- Pied de page -->
+        <footer class="text-center mt-5">
+            <button onclick="window.print()" class="btn btn-outline-primary">🖨️ Imprimer</button>
+            <button id="boutonValiderFacture" onclick="validerFacture()" class="btn btn-success">✅ Valider</button>
+            <button onclick="envoyerOdoo()" class="btn btn-warning">🚀 Envoyer vers Odoo</button>
+            <a id="close" class="btn btn-primary" href="/">❌ Fermer</a>
+        </footer>
+    </div>
+</body>
+
+</html>

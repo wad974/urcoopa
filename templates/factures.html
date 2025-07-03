@@ -8,24 +8,25 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        
-        #corpsAdherent{
-            display: none ;
+        #corpsAdherent {
+            display: none;
         }
 
-        #corpsFactures{
-            display: table-row-group ;
+        #corpsFactures {
+            display: table-row-group;
         }
 
-        #resultat{
+        #resultat {
             display: none;
             position: fixed;
             background-color: rgba(0, 0, 0, 0.75);
-            top: 0; right: 0; left: 0; bottom: 0;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
             margin: auto;
             z-index: 1111;
         }
-
     </style>
 
 </head>
@@ -43,39 +44,43 @@
         <h2 class="mb-4 text-center">Factures adhérents URCOOPA - 30 jours</h2>
 
         <!-- Filtres Odoo -->
-<div class="d-flex justify-content-center flex-wrap gap-2 mb-3">
+        <div class="d-flex justify-content-center flex-wrap gap-2 mb-3">
 
-    <!-- Filtres Odoo -->
-    <div class="btn-group" role="group" aria-label="Filtrer présence dans Odoo">
-        <input type="radio" class="btn-check" name="odooFilter" id="filtreOdoo" value="ODOO" autocomplete="off" checked>
-        <label class="btn btn-outline-success" for="filtreOdoo">Inscrits Odoo</label>
+            <!-- Filtres Odoo -->
+            <div class="btn-group" role="group" aria-label="Filtrer présence dans Odoo">
+                <input type="radio" class="btn-check" name="odooFilter" id="filtreOdoo" value="ODOO" autocomplete="off"
+                    checked>
+                <label class="btn btn-outline-success" for="filtreOdoo">Inscrits Odoo</label>
 
-        <input type="radio" class="btn-check" name="odooFilter" id="filtreNonOdoo" value="NO_ODOO" autocomplete="off">
-        <label class="btn btn-outline-warning" for="filtreNonOdoo">Non inscrits Odoo</label>
-    </div>
-</div>
-
-
-<!-- Filtres type de document -->
-<div class="d-flex justify-content-center flex-wrap gap-2 mb-4">
-    <div class="btn-group" role="group" aria-label="Filtrer par type de document">
-        <input type="radio" class="btn-check" name="typeFacture" id="filtreTous" value="ALL" autocomplete="off" checked>
-        <label class="btn btn-outline-primary" for="filtreTous">Tous les documents</label>
-
-        <input type="radio" class="btn-check" name="typeFacture" id="filtreAvoir" value="A" autocomplete="off">
-        <label class="btn btn-outline-primary" for="filtreAvoir">Avoirs</label>
-    
-        <input type="radio" class="btn-check" name="typeFacture" id="filtreFacture" value="F" autocomplete="off">
-        <label class="btn btn-outline-primary" for="filtreFacture">Factures</label>
-
-    </div>
-</div>
+                <input type="radio" class="btn-check" name="odooFilter" id="filtreNonOdoo" value="NO_ODOO"
+                    autocomplete="off">
+                <label class="btn btn-outline-warning" for="filtreNonOdoo">Non inscrits Odoo</label>
+            </div>
+        </div>
 
 
-<!-- VALID-->
-<div id="resultat" class="mt-4"></div>
+        <!-- Filtres type de document -->
+        <div class="d-flex justify-content-center flex-wrap gap-2 mb-4">
+            <div class="btn-group" role="group" aria-label="Filtrer par type de document">
+                <input type="radio" class="btn-check" name="typeFacture" id="filtreTous" value="ALL" autocomplete="off"
+                    checked>
+                <label class="btn btn-outline-primary" for="filtreTous">Tous les documents</label>
 
-        
+                <input type="radio" class="btn-check" name="typeFacture" id="filtreAvoir" value="A" autocomplete="off">
+                <label class="btn btn-outline-primary" for="filtreAvoir">Avoirs</label>
+
+                <input type="radio" class="btn-check" name="typeFacture" id="filtreFacture" value="F"
+                    autocomplete="off">
+                <label class="btn btn-outline-primary" for="filtreFacture">Factures</label>
+
+            </div>
+        </div>
+
+
+        <!-- VALID-->
+        <div id="resultat" class="mt-4"></div>
+
+
         <!-- TABLEAU -->
         <div class="table-responsive">
             <table id="tableFactures" class="table table-striped table-bordered align-middle text-center">
@@ -83,7 +88,7 @@
                     <tr>
                         <th>Action</th>
                         <th>Code Client</th>
-                        
+
                         <!--
                         <th>Client</th>
                         <th>Date</th>
@@ -96,13 +101,10 @@
                         <th>Montant TTC €</th>
                     </tr>
                 </thead>
-                <tbody id="corpsFactures" >
+                <tbody id="corpsFactures">
                     {% for facture in factures %}
-                    <tr 
-                    data-type="{{ facture.Type_Facture }}" 
-                    data-ht="{{ facture.Montant_HT }}" 
-                    data-ttc="{{ facture.Montant_TTC }}"
-                    >
+                    <tr data-type="{{ facture.Type_Facture }}" data-ht="{{ facture.Montant_HT }}"
+                        data-ttc="{{ facture.Montant_TTC }}">
                         <td>
                             <button type="submit" class="btn btn-outline-primary btn-sm">Aucun</button>
                             <!--
@@ -114,20 +116,17 @@
                             </form>
                             -->
                         </td>
-                        
+
                         <td>{{ facture.Nom_Client }}<br><small>Code Client : {{ facture.Code_Client }}</small></td>
                         <td>{{ facture.Montant_HT }}</td>
                         <td>{{ facture.Montant_TTC }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
-                <tbody id="corpsAdherent" >
+                <tbody id="corpsAdherent">
                     {% for facture in adherent_null %}
-                    <tr 
-                    data-type="{{ facture.Type_Facture }}" 
-                    data-ht="{{ facture.Montant_HT }}" 
-                    data-ttc="{{ facture.Montant_TTC }}"
-                    >
+                    <tr data-type="{{ facture.Type_Facture }}" data-ht="{{ facture.Montant_HT }}"
+                        data-ttc="{{ facture.Montant_TTC }}">
                         <td>
                             <form class='form-valider'>
                                 <input type="hidden" name="numero_facture" value="{{ facture.Nom_Client }}">
@@ -137,9 +136,9 @@
                                 <button type="submit" class="btn btn-success btn-sm">Valider</button>
                             </form>
                         </td>
-                        
+
                         <td>{{ facture.Nom_Client }}<br><small>Code Client : {{ facture.Code_Client }}</small></td>
-                    <!--
+                        <!--
                         <td>{{ facture.Numero_Facture }}</td>
                         <td>{{ facture.Date_Facture }}</td>
                         <td>{{ facture.Date_Echeance }}</td>
@@ -167,7 +166,7 @@
             </table>
         </div>
 
-        
+
     </main>
 
     <!-- Footer -->
@@ -182,12 +181,12 @@
         const rows = document.querySelectorAll('#tableFactures tbody tr');
         const totalHTElement = document.getElementById('total-ht');
         const totalTTCElement = document.getElementById('total-ttc');
-    
+
         function updateTable() {
             const selected = document.querySelector('input[name="typeFacture"]:checked').value;
             let totalHT = 0;
             let totalTTC = 0;
-    
+
             rows.forEach(row => {
                 const type = row.dataset.type;
                 const odoo = row.dataset.odoo;
@@ -195,7 +194,7 @@
                 const ttc = parseFloat(row.dataset.ttc);
 
                 let visible = false;
-    
+
                 if (selected === "ALL") {
                     visible = true;
                 } else if (selected === "NO_ODOO") {
@@ -203,21 +202,21 @@
                 } else {
                     visible = type === selected && odoo !== "false";
                 }
-    
+
                 row.style.display = visible ? "" : "none";
-    
+
                 if (visible) {
                     totalHT += ht;
                     totalTTC += ttc;
                 }
             });
-    
+
             totalHTElement.textContent = `${totalHT.toFixed(2)} €`;
             totalTTCElement.textContent = `${totalTTC.toFixed(2)} €`;
         }
-    
+
         radios.forEach(radio => radio.addEventListener('change', updateTable));
-    
+
         // Initialisation
         updateTable();
 
@@ -228,15 +227,14 @@
 
         corpsAdherent.style.display = 'none';
 
-        radiosOdoo.forEach(radio => radio.addEventListener('change', ()=>{
+        radiosOdoo.forEach(radio => radio.addEventListener('change', () => {
             console.log(event.target.value)
-            if (event.target.value == 'NO_ODOO')
-            {
-                
+            if (event.target.value == 'NO_ODOO') {
+
                 corpsFactures.style.display = 'none'
                 corpsAdherent.style.display = 'table-row-group';
 
-            } else if ( event.target.value == 'ODOO' ) {
+            } else if (event.target.value == 'ODOO') {
                 corpsAdherent.style.display = 'none';
                 corpsFactures.style.display = 'table-row-group';
             }
@@ -246,24 +244,24 @@
         const boutonValide = document.querySelector('#boutonValide');
 
         document.querySelectorAll(".form-valider").forEach(form => {
-        form.addEventListener("submit", async (e) => {
-            e.preventDefault();
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
 
-            const formData = new FormData(form);
-            const response = await fetch("/valider-facture", {
-                method: "POST",
-                body: formData
+                const formData = new FormData(form);
+                const response = await fetch("/valider-facture", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const html = await response.text();
+                document.getElementById("resultat").style.display = 'block';
+                document.getElementById("resultat").innerHTML = html;
             });
-
-            const html = await response.text();
-            document.getElementById("resultat").style.display = 'block';
-            document.getElementById("resultat").innerHTML = html;
         });
-    });
 
     </script>
-    
-    
+
+
 
 </body>
 

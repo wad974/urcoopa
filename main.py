@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Form, HTTPException
+from fastapi import Body, FastAPI, Form, HTTPException, Query
+from typing import Annotated
 from xml.etree import ElementTree as ET
 #import server.zeep as zeep
 #from server.zeep import xsd
@@ -12,7 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import requests
 import base64
-from datetime import datetime , timedelta
+from datetime import datetime , timedelta, date
 import os
 from dotenv import load_dotenv
 from typing import Optional
@@ -30,6 +31,7 @@ from datetime import datetime
 from ConnectOdooFramework import createOdoo
 from createOdoo import createOdoo
 from createOdooGesica import createOdooGesica
+from sql.connexion import recupere_connexion_db
 
 
 # Chargement des variables d'environnement
@@ -38,7 +40,8 @@ load_dotenv()
 #Récupération des variables d'environnement
 WSDL_URL = os.getenv('MY_URCOOPA_URL')
 API_KEY_URCOOPA = os.getenv('API_KEY_URCOOPA')
-API_KEY_JOUR = os.getenv('API_KEY_JOUR')
+API_KEY_JOUR_FACTURES = os.getenv('API_KEY_JOUR_FACTURES')
+#API_KEY_DATE_REFERENCE = os.getenv('API_KEY_DATE_REFERENCE')
 
 # Vérification des variables requises
 if not all([WSDL_URL, API_KEY_URCOOPA]):
@@ -64,6 +67,15 @@ app.add_middleware(
 )
 
 # ---------------------
+# 0. 📦 Connexion à mysql
+# ---------------------
+print('📤[INFO] Début connexion MYSQL')
+
+connexion_base_de_donnees = recupere_connexion_db()
+
+print('🌐 connexion mysql => ', connexion_base_de_donnees)
+
+# ---------------------
 # 0. 📦 Connexion à la commande Odoo
 # ---------------------
 
@@ -72,54 +84,73 @@ from collections import defaultdict
 import xmlrpc.client
             
 # Paramètres
-url = 'https://sdpmajdb-odoo17-dev-staging-sicalait-20406522.dev.odoo.com/'
-db = 'sdpmajdb-odoo17-dev-staging-sicalait-20406522'
-username = 'info.sdpma@sicalait.fr'
-password = 'nathalia974'
+url = os.getenv('URL_ODOO')
+db = os.getenv('DB_ODOO')
+username = os.getenv('USERNAME_ODOO')
+password = os.getenv('PASSWORD_ODOO')
 
 # Authentification
 info = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/common')
-uid = info.authenticate(db, username, password, {})
 
+uid = info.authenticate(db, username, password, {})
+    
 if not uid:
-    print("❌ Échec de l'authentification.")
+    print('*'*50)
+    print("[ERREUR]❌ Échec de l'authentification.")
+    print('*'*50)
+    
+    
 
 print(f"✅ Authentification réussie. UID: {uid} - {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} \n\n")
 models = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/object')
 
-#connexion base de données
-print('🌐 init')
-connexion = mysql.connector.connect(
-    host = '172.17.240.18',#host,
-    port='3306',
-    database= 'exportodoo', #dbname 
-    user='root', #user
-    password='S1c@l@1t'
-)
-print('🌐 connexion', connexion)
+date_end = datetime.now() # on recupere la date maintenant (int)
+#date_start = date_end - timedelta(days=5) # on soustrait 2jours (int)
+date_start = date_end - timedelta(days=int(os.getenv('DATE_JOUR_FACTURES'))) # on soustrait 2jours (int)
+dateReferenceFacture = date_start.strftime('%Y-%m-%d')
+
 
 ######## HOME / RACINE
 @app.get('/', response_class=HTMLResponse)
 def home(request : Request):
     try: 
-        print('🌐 init')
+        print('🌐 init home')
         
-        # on recupere le cursor en dictionnaire
-        cursorRequete = connexion.cursor(dictionary=True)
+        crud = CRUD()
         
-        # on execute la requete sur la table sic urcoopa facture where champs adherent
-        requete = '''
-                SELECT * FROM sic_urcoopa_facture
-                WHERE Type_Client = 'ADHERENT'
-                ORDER BY Nom_Client ASC
+        factures = crud.readFiltreAdherent()
+        avoirs = crud.readFiltreAdherentAvoir()
+        #print(resultat)
+        
+        # si vide []
+        if len(factures) == 0:
+            return templates.TemplateResponse( 
+                                        'index.html', 
+                                        { 
+                                            'request' : request,
+                                            'tous_factures_adherent_regroupe' : '' ,
+                                            "total_ht": '0',
+                                            "total_ttc": '0',
+                                            #'adherent_null' : regroupe_non_adherent,
+                                            "year": datetime.now().year
+                                        })
+        
+        else: 
+            return templates.TemplateResponse( 
+                                        'index.html', 
+                                        { 
+                                            'request' : request,
+                                            'FACTURES' : factures ,
+                                            'AVOIRS' : avoirs ,
+                                            "total_ht": '0',
+                                            "total_ttc": '0',
+                                            #'adherent_null' : regroupe_non_adherent,
+                                            "year": datetime.now().year
+                                        })
+            
+        return resultat
         '''
-        cursorRequete.execute(requete,)
-        
-        # on recupere la requete
-        datas = cursorRequete.fetchall()
-        print('✅ récupération datas ok !')
-        
-        query  = '''
+        query  = 
                 SELECT
                 f.Numero_Facture,
                 f.Type_Facture,
@@ -159,28 +190,30 @@ def home(request : Request):
                 on f.Nom_Client = p.name
                 where Type_Client ='ADHERENT'
                 ORDER BY Nom_Client ASC
-        '''
+        
         cursorRequete.execute(query,)
         
         # on recupere la requete
         adherent_null = cursorRequete.fetchall()
         print('✅ récupération adherent_null ok !')
-        
+        '''
         #on ferme la connexion
         cursorRequete.close()
         connexion.close()
         
         # ✅ Calcul des totaux côté serveur
-        total_ht = sum(f["Montant_HT"] for f in datas)
-        total_ttc = sum(f["Montant_TTC"] for f in datas)
+        total_ht = sum(f["Montant_HT"] for f in adherent)
+        total_ttc = sum(f["Montant_TTC"] for f in adherent)
         
         #filtre somme client
-        df = pd.DataFrame(datas)
-        regroupe = df.groupby(['Code_Client', 'Nom_Client' ])[['Montant_HT', 'Montant_TTC']].sum().reset_index()
-        regroupé_dicts = regroupe.to_dict(orient='records')
+        print( json.dumps(adherent, indent=2) )
+        return
+        df = pd.DataFrame(adherent)
+        adherent_regroupe = df.groupby(['Numero_Facture', 'Code_Client', 'Nom_Client', 'Date_Facture', 'Date_Echeance' ])[['Montant_HT', 'Montant_TTC']].sum().reset_index()
+        adherent_regroupe_dicts = adherent_regroupe.to_dict(orient='records')
         
         #print(regroupé_dicts)
-        
+        '''
         # affiche uniquement les adherent_nul
         facture_adherent_null = []
         for row in adherent_null:
@@ -188,22 +221,23 @@ def home(request : Request):
             if row.get('id') == None:
                 facture_adherent_null.append(row)
         
+        #print(json.dumps(facture_adherent_null, indent=2))
         df = pd.DataFrame(facture_adherent_null)
         regroupe_non_adherent = df.groupby([ 'Numero_Facture', 'Code_Client', 'Nom_Client', 'Date_Facture', 'Date_Echeance' ])[['Montant_HT', 'Montant_TTC']].sum().reset_index()
         regroupe_non_adherent = regroupe_non_adherent.to_dict(orient='records')
         
         #print(regroupe_non_adherent)
         #return JSONResponse(content=regroupé_dicts)
-        
+        '''
         
         return templates.TemplateResponse( 
                                         'index.html', 
                                         { 
                                             'request' : request,
-                                            'factures' : regroupé_dicts ,
+                                            'tous_factures_adherent_regroupe' : adherent_regroupe_dicts ,
                                             "total_ht": total_ht,
                                             "total_ttc": total_ttc,
-                                            'adherent_null' : regroupe_non_adherent,
+                                            #'adherent_null' : regroupe_non_adherent,
                                             "year": datetime.now().year
                                         })
         
@@ -269,64 +303,170 @@ async def get_commandes_gesica():
         raise HTTPException(status_code=500, detail=str(e))
 '''
 
+### GET FACTURES ANCIEN API
+@app.get('/ancien_api_recupere_factures')
+async def get_Factures_Sicalait(xCleAPI=API_KEY_URCOOPA,nb_jours=API_KEY_JOUR_FACTURES):
+    
+    print("🌐 INIT : Démarrage du service get_factures...")
+    
+    link_wsdl = os.getenv('MY_URCOOPA_URL_ANCIEN')
+    client = zeep.Client(wsdl=link_wsdl)  # on crée le client
+    
+    response = client.service.Get_Factures_Sicalait(xCleAPI=xCleAPI, NbJours=nb_jours)
+    
+    #print(response) 
+    factures= json.loads(response)
+    
+    # boucles sur factures pour recuperer les datas json
+    crud = CRUD()
+    
+    #boucle 
+    for facture in factures:
+        #filtre adherent
+        #if facture.get('Type_Client') == 'ADHERENT':
+            # verification dans sql
+            numero_facture = facture.get('Numero_Facture')
+            numero_ligne_facture = facture.get('Numero_Ligne_Facture')
+            resultat = await crud.read_factures_ancien_api(numero_facture, numero_ligne_facture)
+            
+            # si vide on creer
+            if resultat == None:
+                await crud.create_facture_ancien_api(facture)
+                print(f'[SUCESS] FACTURE N°{numero_facture} AJOUTER')
+                
+            else:
+                print(f'[INFO] N°:{numero_facture} FACTURE DEJA EXISTANT')
+        #else:
+        #    print('❌[INFO] NON ADHERENT')
+    return JSONResponse(content='[SUCCESS] FACTURE AJOUTER BASE DE DONNEES', status_code=200)
+
 ### FACTURES
-@app.get("/factures/")
-async def get_factures(xCleAPI: str = API_KEY_URCOOPA, nb_jours: int = API_KEY_JOUR):
+@app.get("/Recupere_Factures/")
+async def get_factures(
+    xCleAPI: str = API_KEY_URCOOPA, 
+    nb_jours: int = API_KEY_JOUR_FACTURES, 
+    dateReference: date = dateReferenceFacture): # format YYYY-MM-DD
+    
     try:
         print("🌐 INIT : Démarrage du service get_factures...")
+        print('date : ', dateReference)
         
-        response = client.service.Get_Factures_Sicalait(xCleAPI=xCleAPI, NbJours=nb_jours)
+        response = client.service.Get_Factures(xCleAPI=xCleAPI, NbJours=nb_jours, DateReference=dateReference)
         
         if not response:
             raise HTTPException(status_code=404, detail="Aucune facture trouvée.")
         
+        #Debug: Print the type and content of response
+        #print(f"Response type: {type(response)}")
+        #print(f"Response content: {response}")
+        
         factures = json.loads(response)
+        #print(factures)
         
         # boucles sur factures pour recuperer les datas json
         crud = CRUD()
         
         Adherent = []
-        
-        
-        #on utilise un dictionnaire au lieu d'une liste[]
+        #on utilise un dictionnaire{} au lieu d'une liste[]
         numeros_facture_enregistrer = {}
         Urcoopa = []
+        facture_odoo = []
         
-        for row in factures:
-            numero_facture = row.get('Numero_Facture')
+        #on modifie les données pour uploader
+        for key, value in factures.items():
             
-            # si numeros facture est dans numeros facture enregistrer
-            if numero_facture in numeros_facture_enregistrer:
+            for row in value:
                 
-                numeros_facture_enregistrer[numero_facture].append(row)
+                #print('*'*50)
+                #print(json.dumps(row, indent=2))
+                #print('*'*50)
+                facture_odoo.append(row)
+
+                # on fais un boucle dans Détail
+                for article in row.get('Detail') :
+                    
+                    Urcoopa.append(
+                        {
+                            'Numero_Facture' : row.get('Numero_Facture'),
+                            'Type_Facture' : row.get('Type_Facture'),
+                            'Date_Facture' : row.get('Date_Facture'),
+                            'Date_Echeance' : row.get('Date_Echeance'),
+                            'Societe_Facture' : row.get('Societe_Facture'),
+                            'Code_Client' : row.get('Code_Client'),
+                            'Nom_Client' : row.get('Nom_Client'),
+                            'Type_Client': row.get('Type_Client'),
+                            'Montant_HT': row.get('Montant_HT'),
+                            'Montant_TTC': row.get('Montant_TTC'),
+                            "Numero_Ligne_Facture": article.get('Numero_Ligne_Facture'),
+                            "Code_Produit": article.get('Code_Produit'),
+                            "Libelle_Produit": article.get('Libelle_Produit'),
+                            "Prix_Unitaire": article.get('Prix_Unitaire'),
+                            "Quantite_Facturee": article.get('Quantite_Facturee'),
+                            "Unite_Facturee": article.get('Unite_Facturee'),
+                            "Numero_Silo": article.get('Numero_Silo'),
+                            "Montant_HT_Ligne": article.get('Montant_HT_Ligne'),
+                            "Taux_TVA": article.get('Taux_TVA'),
+                            "Depot_BL": article.get('Depot_BL'),
+                            "Numero_BL": article.get('Numero_BL'),
+                            "Numero_Ligne_BL": article.get('Numero_Ligne_BL'),
+                            "Numero_Commande_Client": article.get('Numero_Commande_Client'),
+                            "Date_Commande_Client": article.get('Date_Commande_Client'),
+                            "Commentaires": article.get('Commentaires'),
+                            "Date_Livraison": article.get('Date_Livraison'),
+                        }
+                    )
+        
+        #fin travaux des données pret a uploader sur SQL et ODOO
+        #on fais une boucle sur urcoopa[]
+        from collections import defaultdict
+
+        # Grouper les lignes par numéro de facture
+        factures_groupees = defaultdict(list)
+        for row in Urcoopa:
+            factures_groupees[row['Numero_Facture']].append(row)
+
+        # Traiter facture par facture
+        for numero_facture, lignes_a_traiter in factures_groupees.items():
+            print(f"[INFO] Traitement facture {numero_facture}")
             
+            ligne = int()
+            for ligne_premier in lignes_a_traiter:
+                ligne = ligne_premier['Numero_Ligne_Facture']
+            
+            # Verification numéro facture et ligne facture exist
+            resultat = await crud.read(numero_facture, ligne)
+            #print(resultat)
+            
+            if resultat == None :
+                # Facture n'existe pas, créer toutes les lignes
+                for row in lignes_a_traiter:
+                    crud.create(row)
+                    print(f'✅ Ligne {row.get("Numero_Ligne_Facture")} créée pour nouvelle facture {numero_facture}')
             else : 
-                numeros_facture_enregistrer[numero_facture] = [row]
-                
-        # Boucler sur chaque ligne de chaque facture = numero_facture = index
-        for numero_facture, lignes_factures in numeros_facture_enregistrer.items():
-            print(f'📄 Traitement facture {numero_facture} - {len(lignes_factures)} lignes')
-            
-            # Insérer chaque ligne individuellement
-            for ligne in lignes_factures:
-                try:
-                    resultat = await crud.read(numero_facture)
-                    #print(f'retour resultat read : {resultat}')
-                    
-                    if len(resultat) == 0:
-                        #result = crud.create(ligne)  # Passer UNE ligne à la fois
-                        print(f'✅ Ligne {ligne.get("Numero_Ligne_Facture")} insérée')
-                        
-                    else: 
-                        #result = crud.create(ligne)  # Passer UNE ligne à la fois
-                        print(f'✅ Ligne {ligne.get("Numero_Ligne_Facture")} insérée')
-                    
-                    #Urcoopa.append(ligne)    
-                except Exception as e:
-                    print(f'❌ Erreur insertion ligne {ligne.get("Numero_Ligne_Facture")} : {e}')
-            
-            print('*' * 50)
-            
+                print(f'ℹ️ Ligne {ligne} existe déjà dans la facture {numero_facture}')
+        
+        return facture_odoo
+    
+        # QUAND TOUS DATAS EST DANS SQL ON TRAITE DE SUITE POUR ODOO
+        # en creant un JSON
+        try :
+            print('✅ [SUCCESS] Fin ajout facture bdd')
+            print('📤[INFO] Début ajout facture Odoo')
+            for numero_facture, lignes in factures_groupees.items():
+                # On filtre : ne traiter que les lignes NON ADHERENT
+                lignes_filtrées = [row for row in lignes if row.get("Type_Client") != "ADHERENT"]
+
+                if lignes_filtrées:
+                            # Appel unique à createOdoo avec toutes les lignes de cette facture
+                            await createOdoo(lignes_filtrées,models, db, uid, password )
+                            
+        except Exception as e:
+            print(f'❌ Erreur insertion ligne : {e}')
+        
+        print('✅📤 [SUCCESS] IMPORT FACTURE URCOOPA EFFECTUE !')
+        return JSONResponse(content=facture_odoo, status_code=200 )
+    
+        return facture_odoo
         if numeros_facture_enregistrer:
             
             try:
@@ -343,9 +483,9 @@ async def get_factures(xCleAPI: str = API_KEY_URCOOPA, nb_jours: int = API_KEY_J
                 for numero_facture, lignes in numeros_facture_enregistrer.items():
                     # On filtre : ne traiter que les lignes NON ADHERENT
                     lignes_filtrées = [row for row in lignes if row.get("Type_Client") != "ADHERENT"]
-                    print('-'*50)
-                    print('-'*50)
-                    print(json.dumps(lignes_filtrées, indent=2))
+                    #print('-'*50)
+                    #print('-'*50)
+                    #print(json.dumps(lignes_filtrées, indent=2))
                     #for numero, articles in enumerate(lignes_filtrées):
                         
                         
@@ -371,17 +511,12 @@ async def get_factures(xCleAPI: str = API_KEY_URCOOPA, nb_jours: int = API_KEY_J
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-    
-    
 #PUSH FACTURES
 @app.post("/envoyer-commande/")
-#@app.post("/envoyer-commande/{commande_id}")
-
-#async def envoyer_commande(commande_id: int):
 async def post_commande():
 
     #try:
-    print('[INFO] 🌐 init commande')
+    print('[INFO] 🌐 init commande envoyer urcoopa')
     
     #filtre par date
     
@@ -446,29 +581,29 @@ async def post_commande():
                 [[commande['partner_id'][0]]],
                 {'fields': ['name']}
             )[0]
-            print('[SUCCESS] ✅ Partner Odoo récupéré : ', partner)
+            #print('[SUCCESS] ✅ Partner Odoo récupéré : ', partner)
             
             #recuperation info : login mail societe
-            print('COMMANDE : ', commande['user_id'])
+            #print('COMMANDE : ', commande['user_id'])
             info_user = models.execute_kw(
                 db, uid, password,
                 #'purchase.order.line', 'search_read',
-                'res.users', 'search_read',
+                'res.company', 'search_read',
                 [[[ 'id', '=', commande['user_id'][0] ]]],  # pas de filtre, on veut tout
                 {
                     #'limit': 10,
                     #'order': 'id asc' , # trie du plus grand ID au plus petit
-                    'fields' : ['name', 'email', 'phone', 'company_id']
+                    'fields' : ['name', 'email']
                 }
             )[0]
-            print('[SUCCESS] ✅ info_user Odoo récupéré : ', info_user)
+            #print('[SUCCESS] ✅ info_user Odoo récupéré : ', info_user)
             
             shipping = models.execute_kw(db, uid, password,
                 'res.partner', 'read', [[commande['partner_id'][0]]],
                 {'fields': ['name']}
             )[0]
             
-            print('[SUCCESS] ✅ shipping Odoo récupéré', shipping )
+            #print('[SUCCESS] ✅ shipping Odoo récupéré', shipping )
 
             # Récupérer les lignes de la commande
             products = models.execute_kw(
@@ -529,7 +664,7 @@ async def post_commande():
                     for row in supplierinfo_data:
                         if row['product_code']:
                             product_code = row['product_code']
-                            print('[INFO] Code supplierinfo_product_code récupéré :', product_code)
+                            #print('[INFO] Code supplierinfo_product_code récupéré :', product_code)
 
                 print('[INFO] Code fournisseur récupéré :', product_code)
                 
@@ -561,13 +696,13 @@ async def post_commande():
             if not commande['company_id']:
                 continue
             else:
-                print( '\n📤 [INFO] REQUETE SQL CODE COMPANY_ID ODOO : ', json.dumps( commande['company_id'][0], indent=2 ))
+                #print( '\n📤 [INFO] REQUETE SQL CODE COMPANY_ID ODOO : ', json.dumps( commande['company_id'][0], indent=2 ))
                 code = commande['company_id'][0] 
                 #print(json.dumps( commande, indent=2 ))          
                 
                 #requete sic_depot
                 print('🌐 init SQL')
-                
+                connexion = recupere_connexion_db()
                 # on recupere le cursor en dictionnaire
                 cursorRequete = connexion.cursor(dictionary=True)
                 
@@ -582,7 +717,7 @@ async def post_commande():
                 
                 # on recupere la requete
                 datas = cursorRequete.fetchall()
-                print('✅ récupération datas ok !', datas)
+                #print('✅ récupération datas ok !', datas)
                 #print(json.dumps(datas, indent=2))
                 
                 if len(datas) == 0 or datas[0].get('code_urcoopa') is None:
@@ -617,7 +752,7 @@ async def post_commande():
             # ---------------------
             
             from testEnvoiAPI import send_soap
-            
+            print(commande_json)
             send_soap(WSDL_URL, API_KEY_URCOOPA, commande_json)
             
             
@@ -762,16 +897,31 @@ async def getFactureAdherentUrcoopa( request : Request ):
     
 # POST BOUTONVALID
 
-@app.post("/valider-facture", response_class=HTMLResponse)
+@app.post("/valider-facture/{numero_facture}", response_class=HTMLResponse)
 async def valider_facture(
     request: Request,
-    numero_facture: str = Form(...),
-    code_client: str = Form(...),
-    montant_ht: float = Form(...)
+    numero_facture: int,
 ):
     
     #connexion sql
-    print(' 🌐 init')
+    print(' 🌐 init connexion sql valider-facture')
+    print('Numeros => ',numero_facture)
+    
+    crud = CRUD()
+    response = await crud.updateFacture(numero_facture)
+    
+    print('RESPONSE UPDATE -> ',response)
+    if response != None:
+        print('[ERREUR] => update')
+    # rediriger, stocker, ou afficher une page de confirmation
+    return templates.TemplateResponse("confirmation.html", 
+    {
+        "request": request,
+        "numero_facture": numero_facture,
+        "code_client": '0.00',
+        "montant_ht": '0.00'
+    })
+    
     #connexion base de données
     connexion = mysql.connector.connect(
             host = '172.17.240.18',#host,
@@ -812,13 +962,13 @@ def init_cron():
     cron_schedule2 = os.getenv('CRONTAB_APP_COMMANDES')
 
     # Initialisation du cron pour l'utilisateur root
-    cron = CronTab(user='root')
-    #cron = CronTab(user='jimmy')
+    #cron = CronTab(user='root')
+    cron = CronTab(user='jimmy')
     cron.remove_all()
     cron.write()
 
     # Définition de la commande
-    job = cron.new(command=f'curl http://0.0.0.0:9898/factures/?xCleAPI={API_KEY_URCOOPA}&nb_jours={API_KEY_JOUR}')
+    job = cron.new(command=f'curl http://0.0.0.0:9898/recupere_Factures/?xCleAPI={API_KEY_URCOOPA}&nb_jours={API_KEY_JOUR_FACTURES}&dateReference={dateReferenceFacture}')
     job2 = cron.new(command=f'curl -X POST http://0.0.0.0:9898/envoyer-commande/')
     job.setall(cron_schedule)
     job2.setall(cron_schedule2)

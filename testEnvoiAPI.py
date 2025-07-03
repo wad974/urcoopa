@@ -13,14 +13,15 @@ def send_soap(WSDL_URL, API_KEY_URCOOPA, commande_data):
     
     # Récupération des variables d'environnement
     #WSDL_URL = 'https://www.urcoopa.fr/ws_sicalait/WS_Sicalait.awws?wsdl'
-    print('URL: ', WSDL_URL)
+    #print('URL: ', WSDL_URL)
     #API_KEY_URCOOPA = 'f1f3b6d5-113e-4cd1-943d-0f07d28000df'
-    print('KEY: ', API_KEY_URCOOPA)
+    #print('KEY: ', API_KEY_URCOOPA)
 
     # Configuration Zeep optimisée
     parametre = Settings(strict=False, xml_huge_tree=False)
 
     try:
+        print('='*50)
         client = zeep.Client(wsdl=WSDL_URL, settings=parametre)
         print('Client créé avec succès')
     except Exception as e:
@@ -63,7 +64,7 @@ def send_soap(WSDL_URL, API_KEY_URCOOPA, commande_data):
     }
     '''
     
-    print('[INFO] Commande structure:', json.dumps(commande_data, indent=2))
+    #print('[INFO] Commande structure:', json.dumps(commande_data, indent=2))
 
     def envoyer_commande_soap(client, api_key, commande_data, debug=False):
         """
@@ -83,11 +84,13 @@ def send_soap(WSDL_URL, API_KEY_URCOOPA, commande_data):
             commande_json_str = json.dumps(commande_data, ensure_ascii=False, separators=(',', ':'))
             
             if debug:
-                print(f'[DEBUG] JSON envoyé: {commande_json_str}')
+                #print(f'[DEBUG] JSON envoyé: {commande_json_str}')
+                print('[DEBUG] JSON envoyé')
             
             # Envoi avec raw_response pour capturer les erreurs métier
             with client.settings(raw_response=True):
-                response = client.service.Push_Commandes_Sicalait(
+                #response = client.service.Push_Commandes_Sicalait(
+                response = client.service.Push_Commandes(
                     xCleAPI=api_key,
                     jCommande=commande_json_str
                 )
@@ -127,7 +130,8 @@ def send_soap(WSDL_URL, API_KEY_URCOOPA, commande_data):
             root = ET.fromstring(xml_content)
             
             # Recherche du résultat dans la réponse SOAP
-            result_element = root.find('.//{http://schemas.xmlsoap.org/soap/envelope/}Body/Push_Commandes_SicalaitResult')
+            #result_element = root.find('.//{http://schemas.xmlsoap.org/soap/envelope/}Body/Push_Commandes_SicalaitResult')
+            result_element = root.find('.//{http://schemas.xmlsoap.org/soap/envelope/}Body/Push_CommandesResult')
             
             if result_element is not None:
                 result_text = result_element.text or ""

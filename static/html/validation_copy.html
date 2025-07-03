@@ -1,0 +1,111 @@
+<style>
+.invoice-container {
+    max-width: 1000px;
+    margin: auto;
+    background: white;
+    font-family: "Segoe UI", sans-serif;
+    color: #333;
+    position: relative;
+}
+
+#close{
+    position: absolute;
+    top: 0;
+    right: -9rem;
+}
+
+@media print {
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+
+    #factureAImprimer {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .invoice-container, 
+    .invoice-container * {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    .invoice-container {
+        width: 210mm; /* A4 width */
+        max-height: 297mm; /* A4 height */
+        padding: 20mm;
+        box-sizing: border-box;
+    }
+
+    button, footer {
+        display: none !important;
+    }
+}
+</style>
+
+
+
+<div class="invoice-container p-4" id="factureAImprimer">
+    <header class="text-center mb-4">
+        <h2 class="text-uppercase">Facture</h2>
+        <p class="text-muted">Numéro : <strong id="numeroFacture"></strong></p>
+    </header>
+
+    <hr>
+
+    <section class="d-flex justify-content-between mb-4">
+        <div>
+            <h5 class="mb-1">Société :</h5>
+            <p id="societeFacture" class="mb-0"></p>
+        </div>
+        <div>
+            <h5 class="mb-1">Client :</h5>
+            <p class="mb-0"><strong id="nomClient"></strong></p>
+            <p id="codeClient" class="mb-0"></p>
+            <p id="typeClient" class="mb-0"></p>
+        </div>
+    </section>
+
+    <hr>
+
+    <section class="mb-4">
+        <h5 class="mb-2 fw-bold">Détails facture :</h5>
+        <div class="row">
+            <div class="col-sm-6">
+                <p><strong>Date facture :</strong> <span id="dateFacture"></span></p>
+                <p><strong>Échéance :</strong> <span id="dateEcheance"></span></p>
+                <p><strong>Type :</strong> <span id="typeFacture"></span></p>
+            </div>
+            <div class="col-sm-6">
+                <p><strong>Montant HT :</strong> <span id="montantHT"></span> €</p>
+                <p><strong>Montant TTC :</strong> <span id="montantTTC"></span> €</p>
+                <p><strong>TVA :</strong> <span id="tauxTVA"></span> %</p>
+            </div>
+        </div>
+    </section>
+
+    <hr>
+
+    <section class="mb-4">
+        <h5 class="mb-2 fw-bold">Détails produit :</h5>
+        <p><strong>Produit :</strong> <span id="produit"></span></p>
+        <p><strong>Prix unitaire :</strong> <span id="prixUnitaire"></span> €</p>
+        <p><strong>Quantité :</strong> <span id="quantite"></span></p>
+        <p><strong>Montant ligne HT :</strong> <span id="montantLigneHT"></span> €</p>
+        <p><strong>Dépôt BL :</strong> <span id="depotBL"></span></p>
+        <p><strong>BL / Ligne :</strong> <span id="blLigne"></span></p>
+        <p><strong>Commentaires :</strong> <span id="commentaires"></span></p>
+    </section>
+
+    
+
+    <footer class="text-center mt-5">
+        <button onclick="window.print()" class="btn btn-outline-primary">🖨️ Imprimer</button>
+        <button id="boutonValiderFacture" onclick="validerFacture()" class="btn btn-success mx-2">✅ Valider</button>
+        <button onclick="envoyerOdoo()" class="btn btn-warning">🚀 Envoyer vers Odoo</button>
+        <a id="close" class="btn btn-primary mx-2" href="/">❌ Fermer</a>
+    </footer>
+</div>

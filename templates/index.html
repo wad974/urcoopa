@@ -10,77 +10,47 @@
 </head>
 
 <style>
-    body {
-        font-family: Arial, sans-serif;
+    #validationPage {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.8);
+        overflow: auto;
     }
+    #myInput {
+    background-image: url('/css/searchicon.png'); /* Add a search icon to input */
+    background-position: 10px 12px; /* Position the search icon */
+    background-repeat: no-repeat; /* Do not repeat the icon image */
+    width: 350px; /* Full-width */
+    font-size: 16px; /* Increase font-size */
+    padding: 12px 20px 12px 40px; /* Add some padding */
+    border: 1px solid #ddd; /* Add a grey border */
+    margin-bottom: 12px; /* Add some space below the input */
+    }
+    #myTable {
+  border-collapse: collapse; /* Collapse borders */
+  width: 100%; /* Full-width */
+  border: 1px solid #ddd; /* Add a grey border */
+  font-size: 18px; /* Increase font-size */
+}
 
-    .topbar {
-        background-color: #f8f9fa;
-        padding: 0.75rem 1rem;
-        border-bottom: 1px solid #dee2e6;
-    }
+#myTable th, #myTable td {
+  text-align: left; /* Left-align text */
+  padding: 12px; /* Add padding */
+}
 
-    .topbar .nav-link {
-        color: #000;
-        margin-right: 1rem;
-        font-weight: 500;
-        font-size: 0.95rem;
-    }
+#myTable tr {
+  /* Add a bottom border to all table rows */
+    border-bottom: 1px solid #ddd;
+}
 
-    .topbar .nav-link:hover{
-        color: #0d6efd;
-    }
-
-    .status-draft {
-        background-color: #00bcd4;
-        color: white;
-        padding: 4px 10px;
-        border-radius: 12px;
-        font-size: 0.85rem;
-    }
-
-    .status-posted {
-        background-color: #28a745;
-        color: white;
-        padding: 4px 10px;
-        border-radius: 12px;
-        font-size: 0.85rem;
-    }
-
-    .status-unpaid {
-        background-color: #e83e8c;
-        color: white;
-        padding: 4px 10px;
-        border-radius: 12px;
-        font-size: 0.85rem;
-    }
-
-    .overdue {
-        color: red;
-        font-weight: bold;
-    }
-
-    .upcoming {
-        color: #17a2b8;
-    }
-
-    .reference-link {
-        color: #0d6efd;
-        text-decoration: none;
-    }
-
-    .reference-link:hover {
-        text-decoration: underline;
-    }
-
-    .btn-small {
-        padding: 2px 10px;
-        font-size: 0.9rem;
-    }
-
-    .search-bar {
-        max-width: 250px;
-    }
+#myTable tr.header, #myTable tr:hover {
+  /* Add a grey background color to the table header and on hover */
+    background-color: #f1f1f1;
+}
 </style>
 
 <body>
@@ -89,108 +59,173 @@
     <nav class="topbar d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
             <i class="bi bi-x-diamond-fill me-2 text-primary"></i>
-            <a href="https://staging-erp.groupe-sicalait.fr/web#action=288&model=account.journal&view_type=kanban" class="nav-link d-inline link-underline-opacity-100-hover">
-                <span class="fw-bold me-4">Urcoopa</span>
+            <a href="https://staging-erp.groupe-sicalait.fr/web#action=288&model=account.journal&view_type=kanban"
+                class="nav-link d-inline link-underline-opacity-100-hover">
+                <span class="fw-bold me-4">Factures adhérents urcoopa</span>
             </a>
-            <a class="nav-link d-inline"
-                href="http://0.0.0.0:9898/">Tableau de bord</a>
-            <a class="nav-link d-inline link-underline-hover" href="#">Avoirs</a>
+            <a id="touslesfactures" class="nav-link d-inline" title="Affiche tous les factures" href="/">Tous les factures</a>
+            <a id="touslesavoirs" class="nav-link d-inline link-underline-hover" title="Affiche tous les Avoirs"
+                href="#">Tous les Avoirs</a>
+        </div>
+        <div>
+            <a type="button" class="btn btn-primary btn-sm"
+                    href="https://staging-erp.groupe-sicalait.fr/web#action=288&model=account.journal&view_type=kanban">Retour</a>
         </div>
     </nav>
 
     <div class="container-fluid mt-4">
+        <!--PAGE VALIDATION-->
+        <div id="validationPage"></div>
         <div class="d-flex justify-content-between mb-3">
             <div class="d-flex align-items-center gap-2">
-                <a type="button" class="btn btn-primary btn-sm" 
-                href="https://staging-erp.groupe-sicalait.fr/web#action=288&model=account.journal&view_type=kanban">Retour</a>
-                <h5 class="ms-3 mt-1">Factures adhérents fournisseurs urcoopa</h5>
+                
+                <!--<h5 class="ms-3 mt-1">Factures adhérents fournisseurs urcoopa</h5>-->
+                <a type="button" class="btn btn-warning btn-sm" id="aTraiter" href="/">Facture-à-traiter</a>
+                <a type="button" class="btn btn-success btn-sm" id="aValider" href="#">Facture-valider</a>
             </div>
             <div class="d-flex align-items-center gap-3">
-                <h5 class=" container-fluid ms-3 mt-1">Montant HT : {{ total_ht }} </h5>
-                <h5 class=" container-fluid ms-3 mt-1">Montant TTC : {{ total_ttc }} </h5>
-                <input type="text" class="form-control search-bar" placeholder="Rechercher...">
+                <h5 id="TTC" class=" container-fluid ms-3 mt-1"></h5>
+                <h5 id="HT" class=" container-fluid ms-3 mt-1"></h5>
+                <input type="text" id="myInput" onkeyup="myFunction()" class="container-fluid ms-3 form-control search-bar" placeholder="Rechercher...">
             </div>
         </div>
 
-        <table class="table table-bordered table-hover align-middle mt-4">
+        <table id="myTable" class="table table-bordered table-hover align-middle mt-4">
             <thead class="table-light">
-                <tr>
+                <!--<tr>
                     <th>Référence</th>
                     <th>Code Client</th>
+                    <th>Code_Produit</th>
+                    <th>Libelle_Produit</th>
                     <th>Date de facturation</th>
                     <th>Date d'échéance</th>
                     <th>Nom du client</th>
                     <th>Hors taxes</th>
                     <th>Total</th>
+                </tr>-->
+                <tr class="header">
+                    <th>Référence</th>
+                    <th>Code Client</th>
+                    <th>Date de facturation</th>
+                    <th>Date d'échéance</th>
+                    <th>Nom du client</th>
+                    <th>Total</th>
                 </tr>
             </thead>
-            <tbody id="TableauValeur" >
+            <tbody id="TableauValeur">
 
             </tbody>
         </table>
     </div>
-
-    <script src="{{ url_for( 'static', path='/js/script.js' ) }}"></script>
+    <script src="{{ url_for( 'static', path='/js/script.js' ) }}" ></script>
     <script>
+        //on recupere tous les données depuis python en convertissant en json pour JAVASCRIPT
+        let factures = {{ FACTURES | tojson | safe }};
+        //console.log('DANS FACTURES : ', factures);
 
-        let factures =  {{ adherent_null | tojson }};
+        // je recupere mes boutons
+        let bouton_facture = document.querySelector('#touslesfactures');
+        let bouton_avoirs = document.querySelector('#touslesavoirs');
+        let bouton_Factures_Valider = document.querySelector('#aValider');
+        let bouton_Factures_A_Traiter = document.querySelector('#aTraiter');
+
+        let etat_facture_valider = 0
+
+        // montant_ttc
+        let montant_total_ttc = {{ total_ttc }};
+        montant_total_ttc = Number.parseFloat(montant_total_ttc).toFixed(2);
+        //montant_ht
+        let montant_total_ht = {{ total_ht }};
+        montant_total_ht = Number.parseFloat(montant_total_ht).toFixed(2);
+        /****/
+        //document.querySelector('#TTC').innerHTML = 'Montant TTC : ' + montant_total_ttc;
+        //document.querySelector('#HT').innerHTML = 'Montant HT : ' + montant_total_ht;
+
+        //TABLEAU 
         const tbody = document.getElementById('TableauValeur');
+        if (factures) {
 
-        console.log('DANS FACTURES : ' , factures);
-        console.log('DANS TABLEAU TBODY : ' , tbody);
+            const facturesParNumero = {}; // clé = Numero_Facture
 
-        // boucle sur factures
-        factures.forEach(value => {
-            console.log('VALUE : ', value);
-            
-            // on creer une ligne
-            const row = document.createElement('tr');
+            factures.forEach(f => {
+                const numero = f.Numero_Facture;
+                if (!facturesParNumero[numero]) {
+                    facturesParNumero[numero] = [];
+                }
+                facturesParNumero[numero].push(f);
+            });
 
-            // on creer des  lignes 4
-            const cell0 = document.createElement('td');
-            const cellText0 = document.createTextNode(` ${value.Numero_Facture} `);
-            cell0.appendChild(cellText0);
-            row.appendChild(cell0);
+            // boucle sur factures
+            tableauAdherent(facturesParNumero, etat_facture_valider)
 
-            // on creer des  lignes 1 
-            const cell1 = document.createElement('td');
-            const cellText1 = document.createTextNode(` ${value.Code_Client} `);
-            cell1.appendChild(cellText1);
-            row.appendChild(cell1);
+            /*let bouton_row = document.querySelectorAll('.ligneRow')
+            //console.log(bouton_row)
+            if (bouton_row) {
+                bouton_row.forEach(row => {
+                    row.addEventListener('click', (event) => {
+                        const index = row.dataset.index;
+                        const facture = factures[index];
+                        console.log('FACTURE CLIQUÉE:', facture);
 
-            // on creer des  lignes 2
-            const cell2 = document.createElement('td');
-            const cellText2 = document.createTextNode(` ${value.Date_Facture} `);
-            cell2.appendChild(cellText2);
-            row.appendChild(cell2);
+                        loadPageValidation(facture);
+                    });
+                });
+            }*/
 
-            // on creer des  lignes 3
-            const cell21 = document.createElement('td');
-            const cellText21 = document.createTextNode(` ${value.Date_Echeance} `);
-            cell21.appendChild(cellText21);
-            row.appendChild(cell21);
+            // je vais ecouter lors des clics 
+            if (bouton_avoirs) {
+                bouton_avoirs.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    etat_facture_valider = 0
+                    loadPageFactureAvoir(facturesParNumero, etat_facture_valider); // Passer toutes les factures
+                });
+            }
 
-            // on creer des  lignes 4
-            const cell22 = document.createElement('td');
-            const cellText22 = document.createTextNode(` ${value.Nom_Client} `);
-            cell22.appendChild(cellText22);
-            row.appendChild(cell22);
+        }
 
-            // on creer des  lignes 5
-            const cell3 = document.createElement('td');
-            const cellText3 = document.createTextNode(` ${Number.parseFloat(value.Montant_HT).toFixed(2) } €`);
-            cell3.appendChild(cellText3);
-            row.appendChild(cell3);
-
-            // on creer des  lignes 6
-            const cell4 = document.createElement('td');
-            const cellText4 = document.createTextNode(` ${Number.parseFloat(value.Montant_TTC).toFixed(2) } €`);
-            cell4.appendChild(cellText4);
-            row.appendChild(cell4);
-
-            // add tableau
-            tbody.appendChild(row);
+        // traitement des information recuperer
+        bouton_Factures_Valider.addEventListener('click', function(event){
+            event.preventDefault();
+            event.stopPropagation();
+            console.log('ETAT 1')
+            etat_facture_valider = 1
+            loadPageFactureValider(factures, etat_facture_valider);
         });
+
+        
+        if (bouton_facture) {
+            bouton_facture.addEventListener('click', (event) => {
+                //alert('BOUTON FACTURES CLICKER')
+            });
+        }
+
+        // function recherche tableau
+        function myFunction() {
+        const input = document.getElementById("myInput");
+        const filter = input.value.toUpperCase();
+        const table = document.getElementById("myTable");
+        const tr = table.getElementsByTagName("tr");
+
+        for (let i = 1; i < tr.length; i++) { 
+            // i = 1 pour ignorer l'en-tête
+            const tds = tr[i].getElementsByTagName("td");
+            let rowMatches = false;
+
+            for (let j = 0; j < tds.length; j++) {
+                const td = tds[j];
+                if (td) {
+                    const txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        rowMatches = true;
+                        break;
+                    }
+                }
+            }
+
+            tr[i].style.display = rowMatches ? "" : "none";
+        }
+    }
 
     </script>
 
