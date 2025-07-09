@@ -181,8 +181,8 @@
             html,
             body {
                 height: 100%;
-                margin: 0;
-                padding: 0;
+                margin: 0 !important;
+                padding: 0 !important;
                 overflow: hidden;
             }
 
@@ -217,6 +217,7 @@
 </head>
 
 <body>
+    
     <div class="invoice-container" id="factureAImprimer">
         <!-- En-tête -->
         <div class="header-section">
@@ -309,9 +310,10 @@
         <!-- Pied de page -->
         <footer class="text-center mt-5">
             <button onclick="window.print()" class="btn btn-outline-primary">🖨️ Imprimer</button>
+            <button id="boutonEnvoyerOdoo" onclick="envoyerOdoo()" class="btn btn-warning">🚀 Envoyer vers Odoo</button>
             <button id="boutonValiderFacture" onclick="validerFacture()" class="btn btn-success">✅ Valider</button>
-            <button onclick="envoyerOdoo()" class="btn btn-warning">🚀 Envoyer vers Odoo</button>
-            <a id="close" class="btn btn-primary" href="/">❌ Fermer</a>
+            
+            <a id="close" class="btn btn-primary" href="#">❌ Fermer</a>
         </footer>
     </div>
 </body>

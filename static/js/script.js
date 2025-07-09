@@ -69,7 +69,7 @@ function tableTbody(numero , facture, index) {
     tbody.appendChild(row);
 }*/
 
-function tableTbody(lignes, index) {
+function tableTbody(lignes, index, etat) {
     const facture = lignes[0]; // la première ligne représente les infos globales
 
     const row = document.createElement('tr');
@@ -109,15 +109,16 @@ function tableTbody(lignes, index) {
     tbody.appendChild(row);
 
     // Événement au clic : envoyer toutes les lignes de la facture
+    console.log('ETAT BOUTON DANS TBODY', etat)
     row.addEventListener('click', () => {
-        loadPageValidation(lignes); // toutes les lignes de la facture
+        loadPageValidation(lignes, etat); // toutes les lignes de la facture
     });
 }
 
 /*FUNCTION TABLEAU BODY TOUS LES FACTURES*/
 function tableauAdherent(facturesParNumero, etat) {
     //console.log('VALUE : ', facturesParNumero);
-
+    let compteur = 0
     //boucle sur factures
     Object.entries(facturesParNumero).forEach(([numero,value], index) => {
 
@@ -131,17 +132,24 @@ function tableauAdherent(facturesParNumero, etat) {
             typeFacture = ligne.Type_Facture
         });
 
-        if (factureValider == etat && typeFacture == 'F') {
-            console.log(value)
-
-            tableTbody( value, index);
+        if (factureValider == etat && typeFacture == 'F' || factureValider == null) {
+            //console.log(value)
+            compteur++
+            tableTbody( value, index, etat);
         }
     })
+
+      // Affichage du total
+    document.getElementById('nombreFacture').textContent = `📦 ${compteur} factures trouvées`;
+
+    
 }
+
 
 /*FUNCTION TABLEAU AVOIR*/
 function tableauAdherentAvoirs(facturesParNumero, etat) {
     //boucle sur factures
+    let compteur = 0
     Object.entries(facturesParNumero).forEach(([numero,value], index) => {
 
         let factureValider = null
@@ -154,13 +162,139 @@ function tableauAdherentAvoirs(facturesParNumero, etat) {
             typeFacture = ligne.Type_Facture
         });
 
-        if (factureValider == etat && typeFacture == 'A') {
-            console.log(value)
-
-            tableTbody( value, index);
+        if (factureValider == etat && typeFacture == 'A' ) {
+            //console.log(value)
+            compteur++
+            tableTbody( value, index, etat);
+        } else if (typeFacture == 'A' && factureValider == null) {
+            //console.log(value)
+            compteur++
+            tableTbody( value, index, etat);
         }
 
     })
+
+     // Affichage du total
+    document.getElementById('nombreFacture').textContent = `📦 ${compteur} factures trouvées`;
+
+}
+
+function tableauAdherentFactureValider(facturesParNumero, etat) {
+    //console.log('VALUE : ', facturesParNumero);
+    let compteur = 0
+    //boucle sur factures
+    Object.entries(facturesParNumero).forEach(([numero,value], index) => {
+
+        let factureValider = null
+        let typeFacture = null
+
+        value.forEach((ligne) => {
+            //console.log(ligne.facture_valider)
+
+            factureValider = ligne.facture_valider
+            typeFacture = ligne.Type_Facture
+        });
+
+        if (factureValider == etat) {
+            //console.log(value)
+            compteur++
+            tableTbody( value, index, etat);
+        }
+    })
+
+     // Affichage du total
+    document.getElementById('nombreFacture').textContent = `📦 ${compteur} factures trouvées`;
+
+}
+
+//CLIENT NON ADHERENT
+function tableauClientNonAdherent(facturesParNumero, etat) {
+    //console.log('VALUE : ', facturesParNumero);
+    let compteur = 0
+
+    //boucle sur factures
+    Object.entries(facturesParNumero).forEach(([numero,value], index) => {
+
+        let typeClientAdherent = null
+        let idClientAdherent = null
+
+        value.forEach((ligne) => {
+            //console.log(ligne.facture_valider)
+            typeClientAdherent = ligne.Code_Client_ODOO
+            idClientAdherent = ligne.ID_Client_ODOO
+            //typeClientAdherent = ligne.facture_valider
+            //typeFacture = ligne.Type_Facture
+        });
+
+        if (typeClientAdherent.includes('NON ADHERENT')) {
+            compteur++; // on ajoute une facture traitée
+            tableTbody(value, index, etat);
+        }
+    })
+
+    // Affichage du total
+    document.getElementById('nombreFacture').textContent = `📦 ${compteur} factures trouvées`;
+
+}
+
+// CLIENT ADHERENT
+function tableauClientAdherent(facturesParNumero, etat) {
+    //console.log('VALUE : ', facturesParNumero);
+    let compteur = 0
+
+    //boucle sur factures
+    Object.entries(facturesParNumero).forEach(([numero,value], index) => {
+
+        let typeClientAdherent = null
+        let idClientAdherent = null
+
+        value.forEach((ligne) => {
+            //console.log(ligne.facture_valider)
+            typeClientAdherent = ligne.Code_Client_ODOO
+            idClientAdherent = ligne.ID_Client_ODOO
+            //typeClientAdherent = ligne.facture_valider
+            //typeFacture = ligne.Type_Facture
+        });
+
+        if (typeClientAdherent.includes('CLIENT')) {
+            compteur++; // on ajoute une facture traitée
+            tableTbody(value, index, etat);
+        }
+    })
+
+    // Affichage du total
+    document.getElementById('nombreFacture').textContent = `📦 ${compteur} factures trouvées`;
+
+}
+
+//INCONNU
+function tableauClientAdherentInconnu(facturesParNumero, etat) {
+    //console.log('VALUE : ', facturesParNumero);
+    let compteur = 0
+
+    //boucle sur factures
+    Object.entries(facturesParNumero).forEach(([numero,value], index) => {
+
+        let typeClientAdherent = null
+        let idClientAdherent = null
+
+        value.forEach((ligne) => {
+            //console.log(ligne.facture_valider)
+            typeClientAdherent = ligne.Code_Client_ODOO
+            idClientAdherent = ligne.ID_Client_ODOO
+            //typeClientAdherent = ligne.facture_valider
+            //typeFacture = ligne.Type_Facture
+        });
+
+        if (idClientAdherent == 0) {
+            compteur++; // on ajoute une facture traitée
+            tableTbody(value, index, etat);
+        }
+    })
+
+    // Affichage du total
+    document.getElementById('nombreFacture').textContent = `📦 ${compteur} factures trouvées`;
+
 }
 
 // impression
@@ -168,10 +302,6 @@ function impression() {
     window.print();
 }
 
-// function envoi odoo
-function envoyerOdoo(facture) {
-    alert("Facture envoyée vers Odoo !");
-}
 
 // Placeholder actions
 function validerFacture(numeroFacture) {
@@ -193,35 +323,48 @@ function validerFacture(numeroFacture) {
 
 }
 
-/*AJAX PAGE */
-function loadPageValidation(lignes) {
-    const xhttp = new XMLHttpRequest();
-    /*xhttp.onload = function () {
+// Placeholder actions
+function envoyerOdoo(facture) {
+    const confirmation = confirm("📝 Êtes-vous sûr de vouloir envoyer cette facture dans Odoo ?");
+
+    if (!confirmation) return;
+    showLoader(); // ⏳ Affiche le loader
+    // Étape 1 : charger la page de confirmation
+    const xhtml = new XMLHttpRequest();
+    xhtml.onload = function () {
         document.getElementById("validationPage").style.display = 'block';
         document.getElementById("validationPage").innerHTML = this.responseText;
-        // Remplissage des champs
-        document.getElementById("numeroFacture").textContent = facture.Numero_Facture;
-        document.getElementById("typeFacture").textContent = facture.Type_Facture;
-        document.getElementById("dateFacture").textContent = facture.Date_Facture;
-        document.getElementById("dateEcheance").textContent = facture.Date_Echeance;
-        document.getElementById("societeFacture").textContent = facture.Societe_Facture;
-        document.getElementById("codeClient").textContent = facture.Code_Client;
-        document.getElementById("nomClient").textContent = facture.Nom_Client;
-        document.getElementById("typeClient").textContent = facture.Type_Client;
-        document.getElementById("montantHT").textContent = facture.Montant_HT;
-        document.getElementById("montantTTC").textContent = facture.Montant_TTC;
-        document.getElementById("tauxTVA").textContent = facture.Taux_TVA;
-        document.getElementById("produit").textContent = `${facture.Code_Produit} - ${facture.Libelle_Produit}`;
-        document.getElementById("prixUnitaire").textContent = facture.Prix_Unitaire;
-        document.getElementById("quantite").textContent = `${facture.Quantite_Facturee} ${facture.Unite_Facturee}`;
-        document.getElementById("montantLigneHT").textContent = facture.Montant_HT_Ligne;
-        document.getElementById("depotBL").textContent = facture.Depot_BL;
-        document.getElementById("blLigne").textContent = `${facture.Numero_BL} / ${facture.Numero_Ligne_BL}`;
-        document.getElementById("commentaires").textContent = facture.Commentaires || "—";
 
-        //bouton index valider - recuperation index
-        document.getElementById("boutonValiderFacture").setAttribute('onclick', `validerFacture(${facture.Numero_Facture})`);
-    }*/
+        // Étape 2 : envoyer la facture vers le backend
+        const xdata = new XMLHttpRequest();
+        xdata.onload = function () {
+            
+            response = JSON.parse(this.responseText)
+            console.info(response)
+            if (this.status == 500){
+                document.getElementById("message").innerHTML = '🛑<strong> Erreur : </strong> '+response.message+' <a href="mailto:support.sdpma@sicalait.fr">📧 Contactez le support informatique</a>';
+            }else if (this.status == 200){
+                document.getElementById("message").innerHTML = '✅<strong>Succès !</strong> '+response.message;
+            }else if (this.status == 511)
+            {
+                document.getElementById("message").innerHTML = '🛑<strong> Erreur : </strong> '+response.message+' <a href="https://staging-erp.groupe-sicalait.fr/web#cids=19&menu_id=127&action=286&model=res.partner&view_type=form">ℹ️ Créer le client dans Odoo</a>';
+            }
+            
+            hideLoader(); // ✅ Cache le loader quand terminé
+            console.log("✅ Facture envoyée dans Odoo.");
+        };
+        xdata.open("POST", "/create_facture_adherent_odoo", true);
+        xdata.setRequestHeader('Content-Type', 'application/json');
+        xdata.send(JSON.stringify(facture));
+    };
+
+    xhtml.open("GET", "/static/html/adherent_odoo.html", true);
+    xhtml.send();
+}
+
+/*AJAX PAGE */
+function loadPageValidation(lignes, etat) {
+    const xhttp = new XMLHttpRequest();
     xhttp.onload = function () {
         //console.log('dans lignes' ,lignes)
         let facture = lignes[0];
@@ -251,13 +394,22 @@ function loadPageValidation(lignes) {
         // Boucle sur toutes les lignes de produit
         lignes.forEach(l => {
             const tr = document.createElement("tr");
+            if (l.Qte_Fact_Conv == null)
+            {
 
-            tr.innerHTML = `
+                tr.innerHTML = `
                 <td><span>${l.Code_Produit} - ${l.Libelle_Produit}</span><br> </td>
                 <td>${l.Quantite_Facturee} ${l.Unite_Facturee}</td>
                 <td>${parseFloat(l.Prix_Unitaire).toFixed(2)} €</td>
                 <td>${parseFloat(l.Montant_HT_Ligne).toFixed(2)} €</td>
             `;
+            } else {
+            tr.innerHTML = `
+                <td><span>${l.Code_Produit} - ${l.Libelle_Produit}</span><br> </td>
+                <td>${l.Qte_Fact_Conv} </td>
+                <td>${parseFloat(l.Prix_Unitaire).toFixed(2)} €</td>
+                <td>${parseFloat(l.Montant_HT_Ligne).toFixed(2)} €</td>
+            `;}
 
             tbody.appendChild(tr);
         });
@@ -270,8 +422,24 @@ function loadPageValidation(lignes) {
         document.getElementById("commentaires").textContent = facture.Commentaires || "—";
 
         // Activation bouton Valider avec la bonne facture
+        console.log('VOICI ETAT DE LA FACTURE DANS LOADPAGEVALIDATION', etat)
+        if (etat === 1) {
+            document.getElementById("boutonValiderFacture").style.display = 'none'
+            document.getElementById("boutonEnvoyerOdoo").style.display = 'none'
+            console.log('BOUTON VALIDATION NONE')
+        }
         document.getElementById("boutonValiderFacture")
             .setAttribute('onclick', `validerFacture(${facture.Numero_Facture})`);
+        // Activation bouton Valider avec la bonne facture
+        document.getElementById("boutonEnvoyerOdoo").onclick = () => {
+        envoyerOdoo(lignes);};
+
+        // fermeture close
+        document.getElementById('close').addEventListener('click', (event)=>{
+            event.preventDefault()
+            event.stopPropagation()
+            document.getElementById('validationPage').style.display = 'none';
+        });
     };
 
     //xhttp.open("GET", "/static/html/validation_copy.html", true);
@@ -281,15 +449,15 @@ function loadPageValidation(lignes) {
 
 
 // loadPageFactureValider
-function loadPageFactureValider(factures, etat_facture_valider, bouton_row) {
+function loadPageFactureValider(factures, etat_facture_valider) {
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function () {
         //TABLEAU 
         const tbody = document.getElementById('TableauValeur');
         tbody.innerHTML = this.responseText;
-        tableauAdherent(factures, etat_facture_valider)
+        tableauAdherentFactureValider(factures, etat_facture_valider)
         //document.getElementById("demo").innerHTML = this.responseText;
-        boutonRow(bouton_row)
+        //boutonRow(bouton_row)
     }
     xhttp.open("GET", "/static/html/tableauBody.html", true);
     xhttp.send();
@@ -324,4 +492,58 @@ function boutonRowBody(bouton_row, factures) {
             loadPageValidation(facture);
         });
     });
+}
+
+// loadPageFactureClientAdherent
+function loadPageFactureClientAdherent(factures, etat_facture_valider) {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function () {
+        //TABLEAU 
+        const tbody = document.getElementById('TableauValeur');
+        tbody.innerHTML = this.responseText;
+        tableauClientAdherent(factures, etat_facture_valider)
+        //document.getElementById("demo").innerHTML = this.responseText;
+        //boutonRow(bouton_row)
+    }
+    xhttp.open("GET", "/static/html/tableauBody.html", true);
+    xhttp.send();
+}
+
+// loadPageFactureClientNonAdherent
+function loadPageFactureClientNonAdherent(factures, etat_facture_valider) {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function () {
+        //TABLEAU 
+        const tbody = document.getElementById('TableauValeur');
+        tbody.innerHTML = this.responseText;
+        tableauClientNonAdherent(factures, etat_facture_valider)
+        //document.getElementById("demo").innerHTML = this.responseText;
+        //boutonRow(bouton_row)
+    }
+    xhttp.open("GET", "/static/html/tableauBody.html", true);
+    xhttp.send();
+}
+
+// loadPageFactureClientNonAdherent
+function loadPageFactureClientInconnu(factures, etat_facture_valider) {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function () {
+        //TABLEAU 
+        const tbody = document.getElementById('TableauValeur');
+        tbody.innerHTML = this.responseText;
+        tableauClientAdherentInconnu(factures, etat_facture_valider)
+        //document.getElementById("demo").innerHTML = this.responseText;
+        //boutonRow(bouton_row)
+    }
+    xhttp.open("GET", "/static/html/tableauBody.html", true);
+    xhttp.send();
+}
+
+// fucntion loader
+function showLoader() {
+    document.getElementById('loader').setAttribute('class', 'd-flex justify-content-center align-items-center chargement');
+}
+
+function hideLoader() {
+        document.getElementById('loader').setAttribute('class', 'hideloader');
 }

@@ -30,6 +30,7 @@ from datetime import datetime
 
 from ConnectOdooFramework import createOdoo
 from createOdoo import createOdoo
+from createAdherentOdoo import createAdherentOdoo
 from createOdooGesica import createOdooGesica
 from sql.connexion import recupere_connexion_db
 
@@ -73,7 +74,7 @@ print('📤[INFO] Début connexion MYSQL')
 
 connexion_base_de_donnees = recupere_connexion_db()
 
-print('🌐 connexion mysql => ', connexion_base_de_donnees)
+print('🌐 connexion mysql => ', connexion_base_de_donnees.is_connected)
 
 # ---------------------
 # 0. 📦 Connexion à la commande Odoo
@@ -120,7 +121,7 @@ def home(request : Request):
         
         factures = crud.readFiltreAdherent()
         avoirs = crud.readFiltreAdherentAvoir()
-        #print(resultat)
+        #print(factures)
         
         # si vide []
         if len(factures) == 0:
@@ -147,100 +148,6 @@ def home(request : Request):
                                             #'adherent_null' : regroupe_non_adherent,
                                             "year": datetime.now().year
                                         })
-            
-        return resultat
-        '''
-        query  = 
-                SELECT
-                f.Numero_Facture,
-                f.Type_Facture,
-                f.Date_Facture,
-                f.Date_Echeance,
-                f.Societe_Facture,
-                f.Code_Client,
-                f.Nom_Client,
-                f.Type_Client,
-                f.Montant_HT,
-                f.Montant_TTC,
-                f.Numero_Ligne_Facture,
-                f.Code_Produit,
-                f.Libelle_Produit,
-                f.Prix_Unitaire,
-                f.Quantite_Facturee,
-                f.Unite_Facturee,
-                f.Numero_Silo,
-                f.Montant_HT_Ligne,
-                f.Taux_TVA,
-                f.Depot_BL,
-                f.Numero_BL,
-                f.Numero_Ligne_BL,
-                f.Commentaires,
-                f.Numero_Commande_Client,
-                f.Date_Commande_Client,
-                f.Numero_Commande_ODOO,
-                f.Code_Produit_ODOO,
-                f.ID_Produit_ODOO,
-                f.Code_Client_ODOO,
-                f.ID_Client_ODOO,
-                f.Societe_Facture_ODOO,
-                f.ID_Facture_ODOO,
-                p.id
-                FROM exportodoo.sic_urcoopa_facture f
-                left join exportodoo.res_partner p
-                on f.Nom_Client = p.name
-                where Type_Client ='ADHERENT'
-                ORDER BY Nom_Client ASC
-        
-        cursorRequete.execute(query,)
-        
-        # on recupere la requete
-        adherent_null = cursorRequete.fetchall()
-        print('✅ récupération adherent_null ok !')
-        '''
-        #on ferme la connexion
-        cursorRequete.close()
-        connexion.close()
-        
-        # ✅ Calcul des totaux côté serveur
-        total_ht = sum(f["Montant_HT"] for f in adherent)
-        total_ttc = sum(f["Montant_TTC"] for f in adherent)
-        
-        #filtre somme client
-        print( json.dumps(adherent, indent=2) )
-        return
-        df = pd.DataFrame(adherent)
-        adherent_regroupe = df.groupby(['Numero_Facture', 'Code_Client', 'Nom_Client', 'Date_Facture', 'Date_Echeance' ])[['Montant_HT', 'Montant_TTC']].sum().reset_index()
-        adherent_regroupe_dicts = adherent_regroupe.to_dict(orient='records')
-        
-        #print(regroupé_dicts)
-        '''
-        # affiche uniquement les adherent_nul
-        facture_adherent_null = []
-        for row in adherent_null:
-            
-            if row.get('id') == None:
-                facture_adherent_null.append(row)
-        
-        #print(json.dumps(facture_adherent_null, indent=2))
-        df = pd.DataFrame(facture_adherent_null)
-        regroupe_non_adherent = df.groupby([ 'Numero_Facture', 'Code_Client', 'Nom_Client', 'Date_Facture', 'Date_Echeance' ])[['Montant_HT', 'Montant_TTC']].sum().reset_index()
-        regroupe_non_adherent = regroupe_non_adherent.to_dict(orient='records')
-        
-        #print(regroupe_non_adherent)
-        #return JSONResponse(content=regroupé_dicts)
-        '''
-        
-        return templates.TemplateResponse( 
-                                        'index.html', 
-                                        { 
-                                            'request' : request,
-                                            'tous_factures_adherent_regroupe' : adherent_regroupe_dicts ,
-                                            "total_ht": total_ht,
-                                            "total_ttc": total_ttc,
-                                            #'adherent_null' : regroupe_non_adherent,
-                                            "year": datetime.now().year
-                                        })
-        
         
     except mysql.connector.Error as erreur:
         print(f'Erreur lors de la connexion à la base de données : {erreur}')
@@ -432,40 +339,174 @@ async def get_factures(
             ligne = int()
             for ligne_premier in lignes_a_traiter:
                 ligne = ligne_premier['Numero_Ligne_Facture']
-            
-            # Verification numéro facture et ligne facture exist
-            resultat = await crud.read(numero_facture, ligne)
-            #print(resultat)
-            
+                
+            try :
+                # Verification numéro facture et ligne facture exist
+                resultat = await crud.read(numero_facture, ligne)
+                #print(resultat)
+            except:
+                print('ERREUR RESULTAT : ',resultat)
+                        
             if resultat == None :
                 # Facture n'existe pas, créer toutes les lignes
                 for row in lignes_a_traiter:
-                    crud.create(row)
+                    #print('dans ',resultat)
+                    #print('dans row ', row)
+                    
+                    cnx = recupere_connexion_db()
+                    cursor = cnx.cursor()
+                    
+                    nameChamps = '''
+                    SELECT distinct COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS 
+                    WHERE TABLE_NAME = 'sic_urcoopa_facture_ancien_api' and COLUMN_KEY<>'PRI';
+                    '''
+
+                    cursor.execute(nameChamps)
+                    dataName = cursor.fetchall()
+                    
+                    columnChamp = []
+                    for colonne in dataName:
+                        columnChamp.append(colonne[0])
+                    
+
+                    # Filtrer les données de 'row' pour ne garder que les colonnes existantes
+                    valeurs_filtrees = []
+                    colonnes_utilisees = []
+                    
+                    for colonne in columnChamp:
+                        if colonne in row:
+                            valeurs_filtrees.append(row[colonne])
+                            colonnes_utilisees.append(colonne)
+                        else:
+                            # Optionnel: ajouter une valeur par défaut (NULL)
+                            valeurs_filtrees.append(None)
+                            colonnes_utilisees.append(colonne)
+                    
+                    # Construire la requête d'insertion
+                    colonnes_str = ', '.join(colonnes_utilisees)
+                    placeholders = ', '.join(['%s'] * len(valeurs_filtrees))
+                    
+                    insert_query = f'''
+                        INSERT INTO exportodoo.sic_urcoopa_facture ({colonnes_str})
+                        VALUES ({placeholders})
+                    '''
+                    
+                    #print('Requête SQL:', insert_query)
+                    #print('Valeurs:', valeurs_filtrees)
+                    
+                    # Exécuter l'insertion
+                    cursor.execute(insert_query, tuple(valeurs_filtrees))
+                    cnx.commit()
+                    
+                    cursor.close()
+                    
+                    #resultat_create = await crud.create_facture_ancien_api(row)
+                    #print(f'[INFO] Message : {resultat_create}')
+                    #print(f'[INFO] Message ')
                     print(f'✅ Ligne {row.get("Numero_Ligne_Facture")} créée pour nouvelle facture {numero_facture}')
+                    
             else : 
                 print(f'ℹ️ Ligne {ligne} existe déjà dans la facture {numero_facture}')
-        
-        return facture_odoo
-    
+                
+        # PROCEDURE URCOOPA PREPA FACTURES
+        # LANCER PROCEDURE
+        try :
+            print('Procédure lancer MAJ SQL lancé!')
+            cnx = recupere_connexion_db()
+            cursor = cnx.cursor(dictionary=True)
+
+            # Appel de la procédure stockée
+            cursor.callproc("exportodoo.URCOOPA_PREPA_FACTURES")
+            #cursor.execute('{ CALL exportodoo.URCOOPA_PREPA_FACTURES() }')
+            
+            # Récupérer les résultats de la procédure
+            for result in cursor.stored_results():
+                data = result.fetchall()
+
+            cursor.close()
+            cnx.close()
+            print ('✅ Message mise à jour SQL: ', data[0])
+        except Exception as e: 
+            print('[ERREUR] PROCEDURE :', e)
         # QUAND TOUS DATAS EST DANS SQL ON TRAITE DE SUITE POUR ODOO
         # en creant un JSON
         try :
             print('✅ [SUCCESS] Fin ajout facture bdd')
             print('📤[INFO] Début ajout facture Odoo')
+            
+            # Construction JSONs
+            factures_json = []
+            
             for numero_facture, lignes in factures_groupees.items():
                 # On filtre : ne traiter que les lignes NON ADHERENT
                 lignes_filtrées = [row for row in lignes if row.get("Type_Client") != "ADHERENT"]
 
                 if lignes_filtrées:
-                            # Appel unique à createOdoo avec toutes les lignes de cette facture
-                            await createOdoo(lignes_filtrées,models, db, uid, password )
-                            
+                    # Appel unique à createOdoo avec toutes les lignes de cette facture
+                    await createOdoo(lignes_filtrées,models, db, uid, password )
+                    
+                    '''
+                    ligne0 = lignes_filtrées[0]
+
+                    invoice_lines = []
+                    for ligne in lignes_filtrées:
+                        product_id = ligne.get('Code_Produit_ODOO')
+                        qty = ligne.get('Quantite_Facturee', 0)
+                        price = ligne.get('Prix_Unitaire', 0)
+
+                        # Ajout ligne produit
+                        invoice_lines.append([0, 0, {
+                            'product_id': product_id,
+                            'quantity': qty,
+                            'price_unit': price
+                        }])
+
+                    # Construction du dictionnaire de facture
+                    facture = {
+                        "move_type": "in_invoice",
+                        "partner_id": ligne0.get('Code_Client'),
+                        "invoice_partner_display_name": ligne0.get('Nom_Client'),
+                        "ref": ligne0.get('Numero_Facture'),
+                        "invoice_date": ligne0.get('Date_Facture'),
+                        "invoice_date_due": ligne0.get('Date_Echeance'),
+                        "invoice_line_ids": invoice_lines
+                    }
+
+                    #factures_json.append(facture)    
+                        
+                    #import json
+                    print(f"📦 Facture creer pour Odoo : {ligne0['Numero_Facture']}")
+                    print(json.dumps(facture, indent=2))
+                    
+                    # Envoi
+                    try:
+                        
+                        move_id = models.execute_kw(
+                            db, uid, password,
+                            'account.move', 'create',
+                            [facture]
+                        )
+                        
+                        
+                        models.execute_kw(
+                            db, uid, password,
+                            'account.move', 'write',
+                            [move_id, {}]  # Un write vide peut déclencher les compute fields
+                        )
+                        
+                        print(f"✅📤 [SUCCESS] Facture envoyer à Odoo ")
+                        #print(f"✅📤 [SUCCESS] Facture Odoo créée avec ID {move_id} \n\n")
+                    except xmlrpc.client.Fault as e:
+                        #Retourne tous les erreur odoo
+                        #Erreur odoo si facture existe sera retrouné
+                        print(f"❌ Erreur Envoi XML-RPC Odoo : {e.faultString} \n\n")               
+                    '''
         except Exception as e:
             print(f'❌ Erreur insertion ligne : {e}')
         
         print('✅📤 [SUCCESS] IMPORT FACTURE URCOOPA EFFECTUE !')
         return JSONResponse(content=facture_odoo, status_code=200 )
-    
+        '''
         return facture_odoo
         if numeros_facture_enregistrer:
             
@@ -503,7 +544,7 @@ async def get_factures(
         print('✅📤 [SUCCESS] IMPORT FACTURE URCOOPA EFFECTUE !')
         return JSONResponse(content=Urcoopa, status_code=200 )       
         #return {"Messages": 'Récuperation factures urcoopa Ok !'}
-    
+        '''
     except json.JSONDecodeError:
         raise HTTPException(status_code=500, detail="Erreur de décodage JSON.")
     except zeep.exceptions.Fault as fault:
@@ -649,7 +690,6 @@ async def post_commande():
                 )
                 #print('-> supplierinfo_ids récupéré: ', supplierinfo_ids)
                 
-                
                 # Lire les infos product code à enlever si besoin
                 product_code = 'N/A'
                 if supplierinfo_ids:
@@ -665,10 +705,18 @@ async def post_commande():
                         if row['product_code']:
                             product_code = row['product_code']
                             #print('[INFO] Code supplierinfo_product_code récupéré :', product_code)
-
+                            
                 print('[INFO] Code fournisseur récupéré :', product_code)
                 
-                
+                udm = models.execute_kw(db, uid, password, 
+                'uom.uom', 
+                'read', 
+                [product_id],
+                {
+                    #'fields' : ['product_uom_id']
+                    'fields' : ['name']
+                }
+                )[0]
                 
                 # Extrait code interne si besoin ( code dans crochets)
                 code_interne = ligne['name'].split("]")[0].replace("[", "")
@@ -677,7 +725,10 @@ async def post_commande():
                     "Numero_ligne": i + 1,
                     "Code_Produit": product_code,
                     "Libelle_Produit": ligne['name'],
-                    "Poids_Commande": ligne['product_qty']
+                    "Quantite_Commandee": ligne['product_qty'],
+                    "Unite_Commande": "UN",
+                    #Quantite_Commandee
+                    #Unite_Commande (valeurs attendues : "UN", "KG" ou "TO")
                 })
             
             
@@ -895,8 +946,7 @@ async def getFactureAdherentUrcoopa( request : Request ):
         return {"Erreur connexion Base de données : {erreur}"}
     
     
-# POST BOUTONVALID
-
+# POST HOME SITE RACINE BOUTON VALID
 @app.post("/valider-facture/{numero_facture}", response_class=HTMLResponse)
 async def valider_facture(
     request: Request,
@@ -954,6 +1004,40 @@ async def valider_facture(
         "montant_ht": montant_ht
     })
 
+#POST HOME SITE RACINE VERS ODOO
+@app.post('/create_facture_adherent_odoo', response_class=JSONResponse)
+async def create_facture_adherent_odoo(request: Request):
+    facture_adherent = await request.json()  # <-- lit le JSON envoyé dans le body
+    #print("📦 JSON reçu :", json.dumps(facture_adherent, indent=2))
+    print("📦 JSON reçu ")
+    
+    #on groupe les lignes par numéros facture
+    facture_groupé = defaultdict(list)
+
+    for ligne in facture_adherent:
+        numero = ligne.get("Numero_Facture")
+        facture_groupé[numero].append(ligne)
+        
+    print('📤[INFO] Début ajout facture Odoo')
+    for numero_facture, lignes in facture_groupé.items():
+        # On filtre : ne traiter que les lignes NON ADHERENT
+        lignes_filtrées = [row for row in lignes]
+
+        if lignes_filtrées:
+                    # Appel unique à createOdoo avec toutes les lignes de cette facture
+                    return await createAdherentOdoo(lignes_filtrées,models, db, uid, password )
+
+                    if result :
+                        return result
+
+    # Affichage propre
+    #print("📦 JSON REGROUPE :", json.dumps(facture_groupé, indent=2, ensure_ascii=False))
+
+
+    # tu peux ensuite utiliser facture_adherent['Numero_Facture'], etc.
+    return JSONResponse(content={"message": "Facture adhérent créée dans Odoo"})
+
+
 from crontab import CronTab
 def init_cron():
     # Récupération de la planification via variable d'environnement
@@ -982,7 +1066,7 @@ def init_cron():
     os.system('service cron start')
     print("✅ Service CRON lancé avec succès.")
 
-init_cron()
+#init_cron()
 
 if __name__ == "__main__":
     

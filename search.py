@@ -33,33 +33,63 @@ if uid:
     # 1. on recherche les produits dans odoo qui match avec Code_Produit urcoopa
     models = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/object')
     
-    ids = models.execute_kw(
-        db, 
-        uid, 
-        password, 
-        'res.company', 
-        'search_read',
-        # on match tous les product_code qui sont égale Code_Produit
-        [], 
-        {'fields': ['id', 'name', 'email']}
-        )
-    products = models.execute_kw(
-                db, uid, password,
-                'purchase.order.line', 'search_read',
-                [],
-                {   'limit' : 20,
-                    #'fields': ['product_id', 'name', 'product_qty']
-                }
-            )
+    # 1. Rechercher le partenaire URCOOPA
+    partner = models.execute_kw(
+        db, uid, password,
+        'purchase.order.line', 'search_read',
+        #[[['name', '=', 'URCOOPA']]],
+        #[[['name', '=', 'LEPA ST JOSEPH']]],
+        [],
+        {
+            'limit' : 1000,
+            #'fields': ['id', 'name', 'product_uom']
+        }
+        #{'fields': ['id', 'name']}
+    )
     
+    '''
+    # 2. Trouver les produits liés à ce fournisseur
+    supplier_infos = models.execute_kw(
+        db, uid, password,
+        'product.supplierinfo', 'search_read',
+        [[['partner_id', '=', partner['id']]]],
+        {'fields': ['product_tmpl_id', 'product_code']}
+    )
+
+    # 3. Extraire les IDs de templates produits
+    #if info.get('product_tmpl_id')
+    product_ids = [info['product_tmpl_id'][0] for info in supplier_infos ]
+
+    # 4. Lire les produits
+    products = models.execute_kw(
+        db, uid, password,
+        'product.template', 'search_read',
+        [[['id', 'in', product_ids]]],
+        {
+            
+            'fields': ['name', 'weight', 'weight_uom_name', 'default_code']
+        }
+    )
+    # Map {product_tmpl_id: product_code}
+    code_map = {
+        info['product_tmpl_id'][0]: info['product_code']
+        for info in supplier_infos if info.get('product_code')
+    }
+
+    # Ajouter le product_code à chaque produit
+    for p in products:
+        tmpl_id = p['id']
+        p['product_code'] = code_map.get(tmpl_id)
+    '''
     
     #test que chaque produits match
     print('Res.Partner: \n\n\n')
-    print(json.dumps(products, indent=4, ensure_ascii=False))
+    #print(json.dumps(ids.get('id'), indent=4, ensure_ascii=False))
+    print(json.dumps(partner, indent=4, ensure_ascii=False))
 
     # Méthodes import json
     with open('res_partner.json', 'w', encoding='utf-8') as f:
-        json.dump(products, f, ensure_ascii=False, indent=4)
+        json.dump(partner, f, ensure_ascii=False, indent=4)
     
     #print('models read. RESULTAT: ', partner)
     print("Enregistrement effectué ")

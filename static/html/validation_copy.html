@@ -23,24 +23,42 @@
     }
 
     #factureAImprimer {
-        page-break-inside: avoid;
-        break-inside: avoid;
-    }
-
-    .invoice-container, 
-    .invoice-container * {
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
+        page-break-inside: auto; /* Changé de avoid à auto */
+        break-inside: auto;
     }
 
     .invoice-container {
-        width: 210mm; /* A4 width */
-        max-height: 297mm; /* A4 height */
+        page-break-inside: auto !important; /* Permettre la césure */
+        break-inside: auto !important;
+    }
+
+    .invoice-container {
+        width: 210mm;
+        max-height: none; /* Supprimé la limite de hauteur */
         padding: 20mm;
         box-sizing: border-box;
     }
 
-    button, footer {
+    /* Gérer spécifiquement le tableau */
+    table {
+        page-break-inside: auto;
+        break-inside: auto;
+    }
+
+    thead {
+        display: table-header-group; /* Répéter l'en-tête sur chaque page */
+    }
+
+    tfoot {
+        display: table-footer-group; /* Répéter le pied sur chaque page */
+    }
+
+    tbody tr {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    button, header, footer {
         display: none !important;
     }
 }

@@ -20,41 +20,91 @@
         background-color: rgba(0, 0, 0, 0.8);
         overflow: auto;
     }
+
     #myInput {
-    background-image: url('/css/searchicon.png'); /* Add a search icon to input */
-    background-position: 10px 12px; /* Position the search icon */
-    background-repeat: no-repeat; /* Do not repeat the icon image */
-    width: 350px; /* Full-width */
-    font-size: 16px; /* Increase font-size */
-    padding: 12px 20px 12px 40px; /* Add some padding */
-    border: 1px solid #ddd; /* Add a grey border */
-    margin-bottom: 12px; /* Add some space below the input */
+        background-image: url('static/css/searchicon.png');
+        /* Add a search icon to input */
+        background-position: 10px 12px;
+        /* Position the search icon */
+        background-repeat: no-repeat;
+        /* Do not repeat the icon image */
+        background-size: 25px;
+        width: 350px;
+        /* Full-width */
+        font-size: 16px;
+        /* Increase font-size */
+        padding: 12px 20px 12px 40px;
+        /* Add some padding */
+        border: 1px solid #ddd;
+        /* Add a grey border */
+        margin-bottom: 12px;
+        /* Add some space below the input */
     }
+
     #myTable {
-  border-collapse: collapse; /* Collapse borders */
-  width: 100%; /* Full-width */
-  border: 1px solid #ddd; /* Add a grey border */
-  font-size: 18px; /* Increase font-size */
-}
+        border-collapse: collapse;
+        /* Collapse borders */
+        width: 100%;
+        /* Full-width */
+        border: 1px solid #ddd;
+        /* Add a grey border */
+        font-size: 16px;
+        /* Increase font-size */
+    }
 
-#myTable th, #myTable td {
-  text-align: left; /* Left-align text */
-  padding: 12px; /* Add padding */
-}
+    #myTable th,
+    #myTable td {
+        text-align: left;
+        /* Left-align text */
+        padding: 12px;
+        /* Add padding */
+    }
 
-#myTable tr {
-  /* Add a bottom border to all table rows */
-    border-bottom: 1px solid #ddd;
-}
+    #myTable tr {
+        /* Add a bottom border to all table rows */
+        border-bottom: 1px solid #ddd;
+    }
 
-#myTable tr.header, #myTable tr:hover {
-  /* Add a grey background color to the table header and on hover */
-    background-color: #f1f1f1;
-}
+    #myTable tr.header,
+    #myTable tr:hover {
+        /* Add a grey background color to the table header and on hover */
+        background-color: #f1f1f1;
+    }
+
+    .btn {
+        padding: 0.5rem 0.75rem !important;
+        font-size: 0.875rem !important;
+    }
+
+    #loader {
+        backdrop-filter: blur(2px);
+    }
+
+    .chargement {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.8);
+        z-index: 9999;
+    }
+
+    .hideloader {
+        display: none !important;
+    }
 </style>
 
 <body>
-
+    <!-- Loader -->
+    <div id="loader" class="d-flex justify-content-center align-items-center hideloader">
+        <div class="text-center">
+            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                <span class="visually-hidden">Chargement...</span>
+            </div>
+            <p class="mt-3">Traitement en cours...</p>
+        </div>
+    </div>
     <!-- Top Navigation Bar -->
     <nav class="topbar d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
@@ -63,34 +113,61 @@
                 class="nav-link d-inline link-underline-opacity-100-hover">
                 <span class="fw-bold me-4">Factures adhérents urcoopa</span>
             </a>
-            <a id="touslesfactures" class="nav-link d-inline" title="Affiche tous les factures" href="/">Tous les factures</a>
+            <a id="touslesfactures" class="nav-link d-inline" title="Affiche tous les factures" href="/">Tous les
+                factures</a>
             <a id="touslesavoirs" class="nav-link d-inline link-underline-hover" title="Affiche tous les Avoirs"
                 href="#">Tous les Avoirs</a>
         </div>
         <div>
             <a type="button" class="btn btn-primary btn-sm"
-                    href="https://staging-erp.groupe-sicalait.fr/web#action=288&model=account.journal&view_type=kanban">Retour</a>
+                href="https://staging-erp.groupe-sicalait.fr/web#action=288&model=account.journal&view_type=kanban">Retour</a>
         </div>
     </nav>
+
+
 
     <div class="container-fluid mt-4">
         <!--PAGE VALIDATION-->
         <div id="validationPage"></div>
         <div class="d-flex justify-content-between mb-3">
-            <div class="d-flex align-items-center gap-2">
-                
-                <!--<h5 class="ms-3 mt-1">Factures adhérents fournisseurs urcoopa</h5>-->
-                <a type="button" class="btn btn-warning btn-sm" id="aTraiter" href="/">Facture-à-traiter</a>
-                <a type="button" class="btn btn-success btn-sm" id="aValider" href="#">Facture-valider</a>
+            <div class="d-flex align-items-center flex-wrap gap-2 my-3">
+                <button type="button" id="aTraiter" class="btn btn-outline-warning shadow-sm">
+                    🕒 À traiter
+                </button>
+
+                <button type="button" id="aValider" class="btn btn-outline-success shadow-sm">
+                    ✅ Déjà validées
+                </button>
+
+                <button type="button" id="clientAdherent" class="btn btn-outline-primary shadow-sm">
+                    👤 Client Adhérent
+                </button>
+
+                <button type="button" id="clientNonAdherent" class="btn btn-outline-secondary shadow-sm">
+                    👥 Non Adhérent
+                </button>
+
+                <button type="button" id="clientInconnu" class="btn btn-outline-danger shadow-sm">
+                    ❓ Client Inconnu
+                </button>
             </div>
             <div class="d-flex align-items-center gap-3">
                 <h5 id="TTC" class=" container-fluid ms-3 mt-1"></h5>
                 <h5 id="HT" class=" container-fluid ms-3 mt-1"></h5>
-                <input type="text" id="myInput" onkeyup="myFunction()" class="container-fluid ms-3 form-control search-bar" placeholder="Rechercher...">
+                <input type="text" id="myInput" onkeyup="myFunction()"
+                    class="container-fluid ms-3 form-control search-bar" placeholder="Rechercher...">
             </div>
         </div>
-
+        <!-- Titre principal avec icône -->
+        <h2 class="fw-bold text-dark mb-3">
+            📄 Factures Urcoopa – <span id="tableCaption" class="text-primary">Toutes les factures</span> 
+        </h2>
+        <h3>
+            Nombre de facture : <span id="nombreFacture"></span>
+        </h3>
         <table id="myTable" class="table table-bordered table-hover align-middle mt-4">
+            
+            
             <thead class="table-light">
                 <!--<tr>
                     <th>Référence</th>
@@ -117,7 +194,7 @@
             </tbody>
         </table>
     </div>
-    <script src="{{ url_for( 'static', path='/js/script.js' ) }}" ></script>
+    <script src="{{ url_for( 'static', path='/js/script.js' ) }}"></script>
     <script>
         //on recupere tous les données depuis python en convertissant en json pour JAVASCRIPT
         let factures = {{ FACTURES | tojson | safe }};
@@ -128,6 +205,9 @@
         let bouton_avoirs = document.querySelector('#touslesavoirs');
         let bouton_Factures_Valider = document.querySelector('#aValider');
         let bouton_Factures_A_Traiter = document.querySelector('#aTraiter');
+        let bouton_Factures_Client_Adherent = document.querySelector('#clientAdherent');
+        let bouton_Factures_Client_Non_Adherent = document.querySelector('#clientNonAdherent');
+        let bouton_Factures_Client_Inconnu = document.querySelector('#clientInconnu');
 
         let etat_facture_valider = 0
 
@@ -143,6 +223,7 @@
 
         //TABLEAU 
         const tbody = document.getElementById('TableauValeur');
+        const tcaption = document.getElementById('tableCaption');
         if (factures) {
 
             const facturesParNumero = {}; // clé = Numero_Facture
@@ -172,28 +253,100 @@
                 });
             }*/
 
+            // bouton facture a traiter
+            if (bouton_Factures_A_Traiter) {
+                bouton_Factures_A_Traiter.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    if(tcaption)
+                    {
+                        tcaption.innerHTML = 'A traiter'
+                    }
+                    etat_facture_valider = 0;
+                    tbody.innerHTML = '';
+                    tableauAdherent(facturesParNumero, etat_facture_valider);
+                });
+            }
+
             // je vais ecouter lors des clics 
             if (bouton_avoirs) {
                 bouton_avoirs.addEventListener('click', (event) => {
                     event.preventDefault();
                     event.stopPropagation();
+                    if(tcaption)
+                    {
+                        tcaption.innerHTML = 'Tous les avoirs'
+                    }
                     etat_facture_valider = 0
                     loadPageFactureAvoir(facturesParNumero, etat_facture_valider); // Passer toutes les factures
                 });
             }
 
+            // traitement des information recuperer
+            if (bouton_Factures_Valider) {
+                bouton_Factures_Valider.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    if(tcaption)
+                    {
+                        tcaption.innerHTML = 'Déjà validées'
+                    }
+                    //console.log('ETAT 1')
+                    etat_facture_valider = 1;
+                    loadPageFactureValider(facturesParNumero, etat_facture_valider);
+                });
+            }
+
+            // Traitement client adherent
+            if (bouton_Factures_Client_Adherent)
+            {
+                bouton_Factures_Client_Adherent.addEventListener('click', (event)=>{
+                    event.preventDefault();
+                    event.preventDefault();
+                    if(tcaption)
+                    {
+                        tcaption.innerHTML = 'Les clients adhérents'
+                    }
+                    etat_facture_valider = 0;
+                    loadPageFactureClientAdherent(facturesParNumero, etat_facture_valider)
+                });
+            }
+            
+            // Traitement bouton_Factures_Client_Non_Adherent 
+            if (bouton_Factures_Client_Non_Adherent)
+            {
+                bouton_Factures_Client_Non_Adherent.addEventListener('click', (event)=>{
+                    event.preventDefault();
+                    event.preventDefault();
+                    if(tcaption)
+                    {
+                        tcaption.innerHTML = 'Les clients non adhérents'
+                    }
+                    etat_facture_valider = 0;
+                    loadPageFactureClientNonAdherent(facturesParNumero, etat_facture_valider)
+                });
+            }
+
+            // Traitement bouton_Factures_Client_Inconnu
+            if (bouton_Factures_Client_Inconnu)
+            {
+                bouton_Factures_Client_Inconnu.addEventListener('click', (event)=>{
+                    event.preventDefault();
+                    event.preventDefault();
+                    if(tcaption)
+                    {
+                        tcaption.innerHTML = 'Les clients inconnu'
+                    }
+                    etat_facture_valider = 0;
+                    loadPageFactureClientInconnu(facturesParNumero, etat_facture_valider)
+                });
+            }
+
         }
 
-        // traitement des information recuperer
-        bouton_Factures_Valider.addEventListener('click', function(event){
-            event.preventDefault();
-            event.stopPropagation();
-            console.log('ETAT 1')
-            etat_facture_valider = 1
-            loadPageFactureValider(factures, etat_facture_valider);
-        });
 
-        
+
+
         if (bouton_facture) {
             bouton_facture.addEventListener('click', (event) => {
                 //alert('BOUTON FACTURES CLICKER')
@@ -202,30 +355,30 @@
 
         // function recherche tableau
         function myFunction() {
-        const input = document.getElementById("myInput");
-        const filter = input.value.toUpperCase();
-        const table = document.getElementById("myTable");
-        const tr = table.getElementsByTagName("tr");
+            const input = document.getElementById("myInput");
+            const filter = input.value.toUpperCase();
+            const table = document.getElementById("myTable");
+            const tr = table.getElementsByTagName("tr");
 
-        for (let i = 1; i < tr.length; i++) { 
-            // i = 1 pour ignorer l'en-tête
-            const tds = tr[i].getElementsByTagName("td");
-            let rowMatches = false;
+            for (let i = 1; i < tr.length; i++) {
+                // i = 1 pour ignorer l'en-tête
+                const tds = tr[i].getElementsByTagName("td");
+                let rowMatches = false;
 
-            for (let j = 0; j < tds.length; j++) {
-                const td = tds[j];
-                if (td) {
-                    const txtValue = td.textContent || td.innerText;
-                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                        rowMatches = true;
-                        break;
+                for (let j = 0; j < tds.length; j++) {
+                    const td = tds[j];
+                    if (td) {
+                        const txtValue = td.textContent || td.innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            rowMatches = true;
+                            break;
+                        }
                     }
                 }
-            }
 
-            tr[i].style.display = rowMatches ? "" : "none";
+                tr[i].style.display = rowMatches ? "" : "none";
+            }
         }
-    }
 
     </script>
 
