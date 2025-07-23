@@ -131,7 +131,7 @@
         <div id="validationPage"></div>
         <div class="d-flex justify-content-between mb-3">
             <div class="d-flex align-items-center flex-wrap gap-2 my-3">
-                <button type="button" id="aTraiter" class="btn btn-outline-warning shadow-sm">
+                <button type="button" id="aTraiter" class="btn btn-outline-warning shadow-sm active">
                     🕒 À traiter
                 </button>
 
@@ -154,21 +154,26 @@
             <div class="d-flex align-items-center gap-3">
                 <h5 id="TTC" class=" container-fluid ms-3 mt-1"></h5>
                 <h5 id="HT" class=" container-fluid ms-3 mt-1"></h5>
+                <div class="form-group mb-0">
+                    <select name="dateInput" id="dateInput" class="form-select form-select-sm"
+                        style="min-width: 180px;">
+                        <option value="">📅 Filtrer par mois</option>
+                        <!-- options dynamiques ici -->
+                    </select>
+                </div>
                 <input type="text" id="myInput" onkeyup="myFunction()"
                     class="container-fluid ms-3 form-control search-bar" placeholder="Rechercher...">
             </div>
         </div>
         <!-- Titre principal avec icône -->
         <h2 class="fw-bold text-dark mb-3">
-            📄 Factures Urcoopa – <span id="tableCaption" class="text-primary">Toutes les factures</span> 
+            📄 Factures Urcoopa – <span id="tableCaption" class="text-primary">Toutes les factures</span>
         </h2>
         <h3>
             Nombre de facture : <span id="nombreFacture"></span>
         </h3>
         <table id="myTable" class="table table-bordered table-hover align-middle mt-4">
-            
-            
-            <thead class="table-light">
+            <thead class="table-dark">
                 <!--<tr>
                     <th>Référence</th>
                     <th>Code Client</th>
@@ -192,13 +197,29 @@
             <tbody id="TableauValeur">
 
             </tbody>
+            <tfoot class="table-light">
+                <tr>
+                    <td colspan="3" rowspan="2"></td>
+                    <td rowspan="2" class="text-center">
+                        <button type="button" id="ValiderTotal" class="btn btn-success btn-sm shadow-sm">
+                            ✅ Valider tout
+                        </button>
+                    </td>
+                    <td class="fw-bold text-end text-muted">Total HT :</td>
+                    <td class="fw-bold text-primary" id="htFooter">-- €</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold text-end text-muted">Total TTC :</td>
+                    <td class="fw-bold text-primary" id="ttcFooter">-- €</td>
+                </tr>
+            </tfoot>
         </table>
     </div>
     <script src="{{ url_for( 'static', path='/js/script.js' ) }}"></script>
     <script>
         //on recupere tous les données depuis python en convertissant en json pour JAVASCRIPT
         let factures = {{ FACTURES | tojson | safe }};
-        //console.log('DANS FACTURES : ', factures);
+        console.log('DANS FACTURES : ', factures);
 
         // je recupere mes boutons
         let bouton_facture = document.querySelector('#touslesfactures');
@@ -218,8 +239,8 @@
         let montant_total_ht = {{ total_ht }};
         montant_total_ht = Number.parseFloat(montant_total_ht).toFixed(2);
         /****/
-        //document.querySelector('#TTC').innerHTML = 'Montant TTC : ' + montant_total_ttc;
-        //document.querySelector('#HT').innerHTML = 'Montant HT : ' + montant_total_ht;
+        //document.querySelector('#TTC').innerHTML = ' TTC : ' + montant_total_ttc;
+        //document.querySelector('#HT').innerHTML = ' HT : ' + montant_total_ht;
 
         //TABLEAU 
         const tbody = document.getElementById('TableauValeur');
@@ -258,8 +279,7 @@
                 bouton_Factures_A_Traiter.addEventListener('click', function (event) {
                     event.preventDefault();
                     event.stopPropagation();
-                    if(tcaption)
-                    {
+                    if (tcaption) {
                         tcaption.innerHTML = 'A traiter'
                     }
                     etat_facture_valider = 0;
@@ -273,8 +293,7 @@
                 bouton_avoirs.addEventListener('click', (event) => {
                     event.preventDefault();
                     event.stopPropagation();
-                    if(tcaption)
-                    {
+                    if (tcaption) {
                         tcaption.innerHTML = 'Tous les avoirs'
                     }
                     etat_facture_valider = 0
@@ -287,8 +306,7 @@
                 bouton_Factures_Valider.addEventListener('click', function (event) {
                     event.preventDefault();
                     event.stopPropagation();
-                    if(tcaption)
-                    {
+                    if (tcaption) {
                         tcaption.innerHTML = 'Déjà validées'
                     }
                     //console.log('ETAT 1')
@@ -298,28 +316,24 @@
             }
 
             // Traitement client adherent
-            if (bouton_Factures_Client_Adherent)
-            {
-                bouton_Factures_Client_Adherent.addEventListener('click', (event)=>{
+            if (bouton_Factures_Client_Adherent) {
+                bouton_Factures_Client_Adherent.addEventListener('click', (event) => {
                     event.preventDefault();
                     event.preventDefault();
-                    if(tcaption)
-                    {
+                    if (tcaption) {
                         tcaption.innerHTML = 'Les clients adhérents'
                     }
                     etat_facture_valider = 0;
                     loadPageFactureClientAdherent(facturesParNumero, etat_facture_valider)
                 });
             }
-            
+
             // Traitement bouton_Factures_Client_Non_Adherent 
-            if (bouton_Factures_Client_Non_Adherent)
-            {
-                bouton_Factures_Client_Non_Adherent.addEventListener('click', (event)=>{
+            if (bouton_Factures_Client_Non_Adherent) {
+                bouton_Factures_Client_Non_Adherent.addEventListener('click', (event) => {
                     event.preventDefault();
                     event.preventDefault();
-                    if(tcaption)
-                    {
+                    if (tcaption) {
                         tcaption.innerHTML = 'Les clients non adhérents'
                     }
                     etat_facture_valider = 0;
@@ -328,13 +342,11 @@
             }
 
             // Traitement bouton_Factures_Client_Inconnu
-            if (bouton_Factures_Client_Inconnu)
-            {
-                bouton_Factures_Client_Inconnu.addEventListener('click', (event)=>{
+            if (bouton_Factures_Client_Inconnu) {
+                bouton_Factures_Client_Inconnu.addEventListener('click', (event) => {
                     event.preventDefault();
                     event.preventDefault();
-                    if(tcaption)
-                    {
+                    if (tcaption) {
                         tcaption.innerHTML = 'Les clients inconnu'
                     }
                     etat_facture_valider = 0;
@@ -342,10 +354,61 @@
                 });
             }
 
+            // traitement facture par date
+            // filtre par dates
+            const dateFiltre = document.getElementById('dateInput');
+            const moisSet = new Set();
+
+            // extraire les mois
+            factures.forEach(f => {
+                //console.log('TESTE FACTURE -> ',f)
+                const dateFacturation = new Date(f.Date_Facture);
+                //console.log('TESTE DATE -> ',dateFacturation) 
+                const moisAnnee = `${dateFacturation.getFullYear()}-${(dateFacturation.getMonth() + 1).toString().padStart(2, '0')}`;
+                //console.log('TESTE mois Années -> ', moisAnnee)
+                moisSet.add(moisAnnee);
+            });
+
+            //console.log('moisSet -> ', moisSet)
+
+            // trier les mois récents en premier
+            const moisList = Array.from(moisSet).sort().reverse();
+
+            // ajouter dans le select
+            moisList.forEach(mois => {
+                const option = document.createElement('option');
+                option.value = mois;
+                option.textContent = `📅 ${mois}`;
+                dateFiltre.appendChild(option);
+            });
+
+
+            dateFiltre.addEventListener('change', (event) => {
+                const valeurMois = event.target.value;
+
+                tbody.innerHTML = '';
+
+                const facturesFiltrées = {};
+                for (let numero in facturesParNumero) {
+                    const lignes = facturesParNumero[numero];
+                    const dateFacturation = new Date(lignes[0].Date_Facture);
+                    const moisAnnee = `${dateFacturation.getFullYear()}-${(dateFacturation.getMonth() + 1).toString().padStart(2, '0')}`;
+
+
+                    //console.log('lignes -> ', lignes )
+                    //console.log('dateFacturation -> ', dateFacturation )
+                    //console.log('mmoisAnnée -> ', moisAnnee )
+                    //console.log('valuer mois -> ' ,valeurMois)
+
+                    if (valeurMois === "" || moisAnnee === valeurMois) {
+                        facturesFiltrées[numero] = lignes;
+                    }
+                }
+                //console.log('factures filtrés -> ', facturesFiltrées) 
+                tableauAdherent(facturesFiltrées, etat_facture_valider);
+            });
+
         }
-
-
-
 
         if (bouton_facture) {
             bouton_facture.addEventListener('click', (event) => {
@@ -379,6 +442,50 @@
                 tr[i].style.display = rowMatches ? "" : "none";
             }
         }
+
+        // Ajouter l'événement au bouton "Valider tout"
+        document.addEventListener('DOMContentLoaded', function () {
+            const boutonValiderTout = document.getElementById('ValiderTotal');
+            if (boutonValiderTout) {
+                boutonValiderTout.addEventListener('click', validerToutesFactures);
+            }
+
+            // Calculer les totaux au chargement initial
+            calculerTotaux();
+
+            // Mettre à jour les totaux après chaque filtrage
+            const originalMyFunction = window.myFunction;
+            window.myFunction = function () {
+                originalMyFunction();
+                mettreAJourTotauxApresFiltre();
+            };
+
+            // Mettre à jour les totaux après les filtres par boutons
+            document.querySelectorAll('[id^="aTraiter"], [id^="aValider"], [id^="client"]').forEach(btn => {
+                btn.addEventListener('click', mettreAJourTotauxApresFiltre);
+            });
+
+            // Mettre à jour les totaux après le filtre par date
+            const dateInput = document.getElementById('dateInput');
+            if (dateInput) {
+                dateInput.addEventListener('change', mettreAJourTotauxApresFiltre);
+            }
+
+            const buttons = document.querySelectorAll('.btn-outline-warning, .btn-outline-success, .btn-outline-primary, .btn-outline-secondary, .btn-outline-danger');
+    
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Retirer active de tous les boutons
+                    buttons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Ajouter active au bouton cliqué
+                    this.classList.add('active');
+                    
+                    // Votre logique de filtrage ici
+                    console.log('Bouton cliqué:', this.id);
+                });
+            });
+        });
 
     </script>
 

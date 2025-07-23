@@ -153,18 +153,82 @@ async def createOdoo(rows: list, models, db, uid, password):
         if not invoice_lines:
             print("❌ Aucune ligne de produit valide à créer. Annulation.")
             return
-
-        # Construction de la facture
-        sendAccountMove = {
-            "move_type": "in_invoice",
-            "partner_id": partner_id,
-            "invoice_partner_display_name": name_fournisseur,
-            "ref": ref_facture,
-            "invoice_date": invoice_date,
-            "invoice_date_due": invoice_date_due,
-            "invoice_line_ids": invoice_lines
-        }
-
+        
+        
+        #type de facture
+        moveType = ''
+        if rows[0]['Type_Facture'] == 'F':
+            moveType = 'in_invoice'
+        elif rows[0]['Type_Facture'] == 'A':
+            moveType = 'in_refund'
+        
+        #filtre facture mag-sicalait uniquement
+        
+        from sql.connexion import recupere_connexion_db
+        connexion = recupere_connexion_db()
+        cursor = connexion.cursor(dictionary=True)
+        cursor.execute('select distinct Code_Client,  Societe_Facture_ODOO from exportodoo.sic_urcoopa_facture suf where Societe_Facture_ODOO  IS NOT NULL ')
+        magasin = cursor.fetchall()
+        
+        #print('ICI MAGASIN -> ',magasin)
+        sendAccountMove = {}
+        
+        #print('ICI ROWS -> ',rows[0]['Type_Client'])
+        if rows[0]['Type_Client'] == 'MAG. SICALAIT':
+            
+            for code_client in magasin: 
+                    
+                    print('[INFO] Code_Client :', rows[0]['Code_Client'], '==', code_client['Code_Client'])
+                    if rows[0]['Code_Client'] == code_client['Code_Client'] :
+                        
+                        #print('code client company id : ', code_client['Societe_Facture_ODOO'])
+                        # Construction de la facture
+                        sendAccountMove = {
+                            "move_type": moveType,
+                            "partner_id": partner_id,
+                            "company_id" : int(code_client['Societe_Facture_ODOO']),
+                            "invoice_partner_display_name": name_fournisseur,
+                            "ref": ref_facture,
+                            "invoice_date": invoice_date,
+                            "invoice_date_due": invoice_date_due,
+                            "invoice_line_ids": invoice_lines
+                        }
+                        
+                        # Debug JSON
+                        #import json
+                        print(f"📦 Facture creer pour Odoo : {rows[0]['Numero_Facture']}")
+                        #print(json.dumps(sendAccountMove, indent=2))
+                        
+                        # Envoi
+                        try:
+                            
+                            move_id = models.execute_kw(
+                                db, uid, password,
+                                'account.move', 'create',
+                                [sendAccountMove]
+                            )
+                                                    
+                            models.execute_kw(
+                                db, uid, password,
+                                'account.move', 'write',
+                                [move_id, {}]  # Un write vide peut déclencher les compute fields
+                            )
+                                                    
+                            print(f"✅📤 [SUCCESS] Facture envoyer à Odoo : {rows[0]['Numero_Facture']}")
+                            #print(f"✅📤 [SUCCESS] Facture Odoo créée avec ID {move_id} \n\n")
+                            
+                        except xmlrpc.client.Fault as e:
+                            #Retourne tous les erreur odoo
+                            #Erreur odoo si facture existe sera retrouné
+                            print(f"❌ Erreur Envoi XML-RPC Odoo : {e.faultString} \n\n")
+                        
+                    else: 
+                        print('[INFO] Code_Client :', rows[0]['Code_Client'] )
+                        continue
+        else : 
+            print('[INFO] TYPE CLIENT :', rows[0]['Type_Client'] )
+                
+        '''
         # Debug JSON
         #import json
         print(f"📦 Facture creer pour Odoo : {rows[0]['Numero_Facture']}")
@@ -186,13 +250,14 @@ async def createOdoo(rows: list, models, db, uid, password):
                 [move_id, {}]  # Un write vide peut déclencher les compute fields
             )
             
+            
             print(f"✅📤 [SUCCESS] Facture envoyer à Odoo : {rows[0]['Numero_Facture']}")
-            #print(f"✅📤 [SUCCESS] Facture Odoo créée avec ID {move_id} \n\n")
+            print(f"✅📤 [SUCCESS] Facture Odoo créée avec ID {move_id} \n\n")
         except xmlrpc.client.Fault as e:
             #Retourne tous les erreur odoo
             #Erreur odoo si facture existe sera retrouné
             print(f"❌ Erreur Envoi XML-RPC Odoo : {e.faultString} \n\n")
-        
+        '''
     except xmlrpc.client.Fault as e:
         print(f"❌ Erreur XML-RPC Odoo : {e.faultString}")
     except Exception as e:

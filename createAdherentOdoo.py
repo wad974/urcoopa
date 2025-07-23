@@ -198,15 +198,16 @@ async def createAdherentOdoo(rows: list, models, db, uid, password):
                 'account.move', 'write',
                 [move_id, {}]  # Un write vide peut déclencher les compute fields
             )
-            '''
+            '''    
             print(f"✅📤 [SUCCESS] Facture envoyer à Odoo : {rows[0]['Numero_Facture']}")
             return(JSONResponse(content={"message": "Votre facture a bien été transférée dans Odoo."}, status_code=200))
-            
+        
             #print(f"✅📤 [SUCCESS] Facture Odoo créée avec ID {move_id} \n\n")
         except xmlrpc.client.Fault as e:
             #Retourne tous les erreur odoo
             #Erreur odoo si facture existe sera retrouné
             print(f"❌ Erreur Envoi XML-RPC Odoo : {e.faultString} \n\n")
+            return(JSONResponse(content={"message": f"{e.faultString}"}, status_code=200))
         
     except xmlrpc.client.Fault as e:
         print(f"❌ Erreur XML-RPC Odoo : {e.faultString}")

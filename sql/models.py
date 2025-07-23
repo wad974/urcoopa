@@ -196,6 +196,26 @@ class CRUD:
             if cnx:
                 cnx.close()
         ''' 
+        
+    # Méthode READ ancien api
+    async def read_livraison(self, numero_facture : str , ligne : int):
+        cnx = self.connexion
+        cursor = cnx.cursor(dictionary=True)  # pour récupérer un dict et comparer facilement
+        
+        #print(numero_facture)
+        try:
+            query = "SELECT * FROM exportodoo.sic_urcoopa_livraison WHERE Numero_BL = %s AND Numero_Ligne_BL = %s"
+            value = ( numero_facture, ligne,)
+            cursor.execute(query, value)
+            resultat = cursor.fetchone()
+            cursor.close()
+            
+            return resultat  # soit None soit un dict complet
+            
+        except mysql.connector.Error as err:
+            print('Erreur :', err)
+            
+    
     # Méthode READ ancien api
     async def read_factures_ancien_api(self, numero_facture : str , ligne : int):
         cnx = self.connexion

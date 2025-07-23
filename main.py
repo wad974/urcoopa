@@ -1,8 +1,9 @@
 from fastapi import Body, FastAPI, Form, HTTPException, Query
-from typing import Annotated
+from typing import Annotated, List
 from xml.etree import ElementTree as ET
 #import server.zeep as zeep
 #from server.zeep import xsd
+from flask import jsonify, request
 import zeep
 import json
 from fastapi import FastAPI, HTTPException, Security, Depends, Request
@@ -108,8 +109,15 @@ models = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/object')
 date_end = datetime.now() # on recupere la date maintenant (int)
 #date_start = date_end - timedelta(days=5) # on soustrait 2jours (int)
 date_start = date_end - timedelta(days=int(os.getenv('DATE_JOUR_FACTURES'))) # on soustrait 2jours (int)
-dateReferenceFacture = date_start.strftime('%Y-%m-%d')
+#dateReferenceFacture = date_start.strftime('%Y-%m-%d')
+dateReferenceFacture = date_end.strftime('%Y-%m-%d')
 
+
+class DateTimeEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, (date, datetime)):
+            return obj.isoformat()
+        return super().default(obj)
 
 ######## HOME / RACINE
 @app.get('/', response_class=HTMLResponse)
@@ -121,7 +129,20 @@ def home(request : Request):
         
         factures = crud.readFiltreAdherent()
         avoirs = crud.readFiltreAdherentAvoir()
-        #print(factures)
+        
+        # Convert date objects to strings
+        def convert_dates(data_list):
+            for item in data_list:
+                for key, value in item.items():
+                    if isinstance(value, (date, datetime)):
+                        item[key] = value.isoformat()
+            return data_list
+
+        factures = convert_dates(factures)
+        avoirs = convert_dates(avoirs)
+        
+        for row in factures:
+            print(row.get('date_validation'))
         
         # si vide []
         if len(factures) == 0:
@@ -246,6 +267,164 @@ async def get_Factures_Sicalait(xCleAPI=API_KEY_URCOOPA,nb_jours=API_KEY_JOUR_FA
         #else:
         #    print('❌[INFO] NON ADHERENT')
     return JSONResponse(content='[SUCCESS] FACTURE AJOUTER BASE DE DONNEES', status_code=200)
+
+### GET LIVRAISONS
+@app.get("/recupere_livraison/")
+async def get_livraison(
+    xCleAPI: str = API_KEY_URCOOPA, 
+    nb_jours: int = API_KEY_JOUR_FACTURES, 
+    dateReference: date = dateReferenceFacture):
+    
+    try:
+        print("🌐 INIT : Démarrage du service get_factures...")
+        print('date : ', dateReference)
+        
+        response = client.service.Get_Livraisons(xCleAPI=xCleAPI, NbJours=nb_jours, DateReference=dateReference)
+        
+        if not response:
+            raise HTTPException(status_code=404, detail="Aucune facture trouvée.")
+        
+        factures = json.loads(response)
+        #print(factures)
+        
+        # boucles sur factures pour recuperer les datas json
+        crud = CRUD()
+        
+        #on utilise un dictionnaire{} au lieu d'une liste[]
+        Urcoopa = []
+        
+        #on modifie les données pour uploader
+        for key, value in factures.items():
+            #print('KEY -> ', json.dumps(key, indent=2))
+            for row in value:
+                #print('VALUE -> ', json.dumps(row['Numero_BL'], indent=2))
+                if row.get('Detail') is not None:
+                    # on fais un boucle dans Détail
+                    for article in row.get('Detail') :
+                        #print('ARTICLE -> ', json.dumps(article, indent=2))
+                        Urcoopa.append(
+                            {
+                                "Numero_BL": row.get("Numero_BL"),
+                                "Code_Client": row.get("Code_Client"),
+                                "Nom_Client": row.get("Nom_Client"),
+                                "Date_BL": row.get("Date_BL"),
+                                "Code_Adresse": row.get("Code_Adresse"),
+                                "Libelle_Adresse": row.get("Libelle_Adresse"),
+                                "Rue": row.get("Rue"),
+                                "Lieu": row.get("Lieu"),
+                                "Code_Postal": row.get("Code_Postal"),
+                                "Ville": row.get("Ville"),
+
+                                "Numero_Ligne_BL": article.get("Numero_Ligne_BL"),
+                                "Code_Produit": article.get("Code_Produit"),
+                                "Libelle_Produit": article.get("Libelle_Produit"),
+                                "Quantite_Livree": article.get("Quantite_Livree"),
+                                "Silo": article.get("Silo"),
+                                "Transporteur": article.get("Transporteur"),
+                                "Depot_Commande": article.get("Depot_Commande"),
+                                "Numero_Commande": article.get("Numero_Commande"),
+                                "Numero_Ligne_Commande": article.get("Numero_Ligne_Commande"),
+                                "Numero_Facture": article.get("Numero_Facture"),
+                                "Numero_Bande": article.get("Numero_Bande")
+                            }
+                        )
+                else :
+                    print("[ERREUR] The list is None, cannot iterate.")
+                    break
+                    
+        #print(json.dumps(Urcoopa, indent=2))
+
+        #fin travaux des données pret a uploader sur SQL et ODOO
+        #on fais une boucle sur urcoopa[]
+        from collections import defaultdict
+
+        # Grouper les lignes par numéro de facture
+        factures_groupees = defaultdict(list)
+        for row in Urcoopa:
+            factures_groupees[row['Numero_BL']].append(row)
+
+        # Traiter facture par facture
+        for numero_facture, lignes_a_traiter in factures_groupees.items():
+            print(f"[INFO] Traitement facture {numero_facture}")
+            
+            ligne = int()
+            for ligne_premier in lignes_a_traiter:
+                ligne = ligne_premier['Numero_Ligne_BL']
+                
+            try :
+                # Verification numéro facture et ligne facture exist
+                resultat = await crud.read_livraison(numero_facture, ligne)
+                #print(resultat)
+            except:
+                print('ERREUR RESULTAT : ',resultat)
+                        
+            if resultat == None :
+                # Facture n'existe pas, créer toutes les lignes
+                for row in lignes_a_traiter:
+                    #print('dans ',resultat)
+                    #print('dans row ', row)
+                    
+                    cnx = recupere_connexion_db()
+                    cursor = cnx.cursor()
+                    
+                    nameChamps = '''
+                    SELECT distinct COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS 
+                    WHERE TABLE_NAME = 'sic_urcoopa_livraison' and COLUMN_KEY<>'PRI';
+                    '''
+
+                    cursor.execute(nameChamps)
+                    dataName = cursor.fetchall()
+                    
+                    columnChamp = []
+                    for colonne in dataName:
+                        columnChamp.append(colonne[0])
+                    
+
+                    # Filtrer les données de 'row' pour ne garder que les colonnes existantes
+                    valeurs_filtrees = []
+                    colonnes_utilisees = []
+                    
+                    for colonne in columnChamp:
+                        if colonne in row:
+                            valeurs_filtrees.append(row[colonne])
+                            colonnes_utilisees.append(colonne)
+                        else:
+                            # Optionnel: ajouter une valeur par défaut (NULL)
+                            valeurs_filtrees.append(None)
+                            colonnes_utilisees.append(colonne)
+                    
+                    # Construire la requête d'insertion
+                    colonnes_str = ', '.join(colonnes_utilisees)
+                    placeholders = ', '.join(['%s'] * len(valeurs_filtrees))
+                    
+                    insert_query = f'''
+                        INSERT INTO exportodoo.sic_urcoopa_livraison ({colonnes_str})
+                        VALUES ({placeholders})
+                    '''
+                    
+                    #print('Requête SQL:', insert_query)
+                    #print('Valeurs:', valeurs_filtrees)
+                    
+                    # Exécuter l'insertion
+                    cursor.execute(insert_query, tuple(valeurs_filtrees))
+                    cnx.commit()
+                    
+                    cursor.close()
+                    
+                    #resultat_create = await crud.create_facture_ancien_api(row)
+                    #print(f'[INFO] Message : {resultat_create}')
+                    #print(f'[INFO] Message ')
+                    print(f'✅ Ligne {row.get("Numero_Ligne_BL")} créée pour nouvelle facture {numero_facture}')
+                    
+            else : 
+                print(f'ℹ️ Ligne {ligne} existe déjà dans la facture {numero_facture}')
+                
+        
+        return factures
+    
+    except Exception as e:
+        print('ERREUR CONNEXION ', e)
+
 
 ### FACTURES
 @app.get("/Recupere_Factures/")
@@ -413,10 +592,11 @@ async def get_factures(
         try :
             print('Procédure lancer MAJ SQL lancé!')
             cnx = recupere_connexion_db()
-            cursor = cnx.cursor(dictionary=True)
+            cursor = cnx.cursor()
 
             # Appel de la procédure stockée
             cursor.callproc("exportodoo.URCOOPA_PREPA_FACTURES")
+            cnx.commit()
             #cursor.execute('{ CALL exportodoo.URCOOPA_PREPA_FACTURES() }')
             
             # Récupérer les résultats de la procédure
@@ -425,11 +605,12 @@ async def get_factures(
 
             cursor.close()
             cnx.close()
-            print ('✅ Message mise à jour SQL: ', data[0])
+            print ('✅ Message mise à jour procédure SQL: ', data[0])
         except Exception as e: 
             print('[ERREUR] PROCEDURE :', e)
         # QUAND TOUS DATAS EST DANS SQL ON TRAITE DE SUITE POUR ODOO
         # en creant un JSON
+        #return JSONResponse(content={'message' : 'SUCCESS'})
         try :
             print('✅ [SUCCESS] Fin ajout facture bdd')
             print('📤[INFO] Début ajout facture Odoo')
@@ -443,7 +624,9 @@ async def get_factures(
 
                 if lignes_filtrées:
                     # Appel unique à createOdoo avec toutes les lignes de cette facture
-                    await createOdoo(lignes_filtrées,models, db, uid, password )
+                    #await createOdoo(lignes_filtrées,models, db, uid, password)
+                    from testcreateOdoo import testcreateOdoo
+                    await testcreateOdoo(lignes_filtrées,models, db, uid, password)
                     
                     '''
                     ligne0 = lignes_filtrées[0]
@@ -772,12 +955,14 @@ async def post_commande():
                 #print(json.dumps(datas, indent=2))
                 
                 if len(datas) == 0 or datas[0].get('code_urcoopa') is None:
-                    code_client = "5010"
+                    code_client = "5010" #code par defaut
+                    code_adresse_livraison = '01' #code par defaut
                     print('Code_Client :', code_client)
                 
                 else: 
                     #"Code_Client": "5024",
                     code_client = datas[0].get('code_urcoopa')
+                    code_adresse_livraison = datas[0].get('code')
                 
             commande_json ={ 
             'commande' :
@@ -787,7 +972,7 @@ async def post_commande():
                         "Code_Client": code_client,
                         "Numero_Commande": reference,
                         "Nom_Client": json.loads(f'"{commande.get("picking_type_id")[1]}"'),
-                        "Code_Adresse_Livraison": "01",
+                        "Code_Adresse_Livraison": code_adresse_livraison,
                         "Commentaire": commentaire,
                         "Date_Livraison_Souhaitee": datetime.now().strftime('%Y%m%d'),
                         "Num_Telephone": info_user.get("phone", ""),
@@ -1036,6 +1221,82 @@ async def create_facture_adherent_odoo(request: Request):
 
     # tu peux ensuite utiliser facture_adherent['Numero_Facture'], etc.
     return JSONResponse(content={"message": "Facture adhérent créée dans Odoo"})
+
+
+
+# Modèle Pydantic pour la validation des données
+class ValidationRequest(BaseModel):
+    factures: List[str]
+    totalHT: float
+    totalTTC: float
+#POST VALIDER TOUTES LES FACTURES
+@app.post('/valider-toutes-factures', response_class=JSONResponse)
+async def valider_toutes_factures(request: Request):
+    try:
+        # Récupérer les données JSON du body
+        body = await request.body()
+        data = json.loads(body.decode('utf-8'))
+        
+        db = recupere_connexion_db()
+        cursor = db.cursor()
+        
+        factures = data.get('factures', [])
+        total_ht = data.get('totalHT', 0)
+        total_ttc = data.get('totalTTC', 0)
+        
+        if not factures:
+            return JSONResponse(
+                status_code=400,
+                content={
+                    'success': False,
+                    'message': 'Aucune facture à valider'
+                }
+            )
+        
+        factures_validees = 0
+        
+        # Valider toutes les factures
+        for numero_facture in factures:
+            cursor.execute("""
+                UPDATE sic_urcoopa_facture 
+                SET facture_valider = 1, 
+                    date_validation = NOW()
+                WHERE Numero_Facture = %s AND (facture_valider IS NULL OR facture_valider = 0)
+            """, (numero_facture,))
+            
+            if cursor.rowcount > 0:
+                factures_validees += 1
+        
+        db.commit()
+        
+        return JSONResponse(
+            status_code=200,
+            content={
+                'success': True,
+                'message': f'{factures_validees} factures validées avec succès',
+                'total_ht': round(total_ht, 2),
+                'total_ttc': round(total_ttc, 2),
+                'factures_validees': factures_validees
+            }
+        )
+        
+    except Exception as e:
+        if 'db' in locals():
+            db.rollback()
+            
+        return JSONResponse(
+            status_code=500,
+            content={
+                'success': False,
+                'message': f'Erreur: {str(e)}'
+            }
+        )
+    
+    finally:
+        if 'cursor' in locals():
+            cursor.close()
+        if 'db' in locals():
+            db.close()
 
 
 from crontab import CronTab

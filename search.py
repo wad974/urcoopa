@@ -34,28 +34,107 @@ if uid:
     models = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/object')
     
     # 1. Rechercher le partenaire URCOOPA
+    
+    
+    #partner = partner[0].get('purchase_order_id')[1]
+    
+    
+    fields = models.execute_kw(
+        db, uid, password,
+        'account.move.line', 'fields_get',
+        [],
+        {'attributes': ['string', 'type']}
+    )
+
+    print('✅ Champs account.move.line disponibles :', fields.keys())
+    '''  
     partner = models.execute_kw(
         db, uid, password,
-        'purchase.order.line', 'search_read',
-        #[[['name', '=', 'URCOOPA']]],
-        #[[['name', '=', 'LEPA ST JOSEPH']]],
+        'purchase.order', 'search_read',
+        [
+            #[['parent_state', '=', 'posted']],
+            #[['partner_id', '=', '5081' ]]
+        ],
+        {
+            #'limit': 1000,
+            #'fields': ['purchase_order_id','partner_id', 'name', 'partner_ref', 'invoice_status']
+        }
+    #)[0].get('purchase_order_id')[1]
+    )
+    
+    nbCommande = []
+    
+    for ligne in partner:
+        
+        if ligne.get('partner_id')[0] == 5081 and ligne.get('invoice_status') == 'no': 
+            
+            if ligne.get('partner_ref'):
+                numero_reference_gesica = ligne.get('partner_ref').replace('GESICA', '').strip()
+            else :
+                numero_reference_gesica= ''
+            nbCommande.append(ligne
+                
+            )
+            
+                {
+                'name' : ligne.get('name'),
+                'partner_ref' : numero_reference_gesica,
+                'invoice_status' : ligne.get('invoice_status')
+                
+                
+    
+       
+    partner = models.execute_kw(
+        db, uid, password,
+        'account.move.line', 'search_read',
+        [
+            #[['parent_state', '=', 'posted']],
+            [['purchase_order_id', '=', '']]
+        ],
+        {
+            'limit': 1000,
+            'fields': ['purchase_order_id']
+        }
+    #)[0].get('purchase_order_id')[1]
+    )
+        partner = models.execute_kw(
+        db, uid, password,
+        'account.move.line', 'search_read',
         [],
         {
-            'limit' : 1000,
-            #'fields': ['id', 'name', 'product_uom']
+            'limit': 200
+            #'fields': ['id', 'name', 'parent_ids']
+        }
+    )
+    
+    for value in partner: 
+        
+        if value.get('parent_ids')[0] == 19 :
+            print('sicalait => ', value)
+    
+    
+    partner = models.execute_kw(
+        db, uid, password,
+        'res.company', 'search_read',
+        #[[['name', '=', 'URCOOPA']]],
+        #[[['name', '=', 'LEPA ST JOSEPH']]],
+        [[[ 'parent_ids', '=', [19] ]]],
+        {
+            #'limit' : 1000,
+            'fields': ['id', 'name', 'parent_ids']
         }
         #{'fields': ['id', 'name']}
     )
     
-    '''
     # 2. Trouver les produits liés à ce fournisseur
-    supplier_infos = models.execute_kw(
+    company = models.execute_kw(
         db, uid, password,
-        'product.supplierinfo', 'search_read',
+        'product.supplierinfo', 'read',
         [[['partner_id', '=', partner['id']]]],
         {'fields': ['product_tmpl_id', 'product_code']}
     )
-
+    
+    
     # 3. Extraire les IDs de templates produits
     #if info.get('product_tmpl_id')
     product_ids = [info['product_tmpl_id'][0] for info in supplier_infos ]
@@ -83,13 +162,13 @@ if uid:
     '''
     
     #test que chaque produits match
-    print('Res.Partner: \n\n\n')
+    #print('Res.Partner: \n\n\n')
     #print(json.dumps(ids.get('id'), indent=4, ensure_ascii=False))
-    print(json.dumps(partner, indent=4, ensure_ascii=False))
+    print(json.dumps(fields, indent=4, ensure_ascii=False))
 
     # Méthodes import json
     with open('res_partner.json', 'w', encoding='utf-8') as f:
-        json.dump(partner, f, ensure_ascii=False, indent=4)
+        json.dump(fields, f, ensure_ascii=False, indent=4)
     
     #print('models read. RESULTAT: ', partner)
     print("Enregistrement effectué ")

@@ -69,6 +69,118 @@ function tableTbody(numero , facture, index) {
     tbody.appendChild(row);
 }*/
 
+//const { StrictMode } = require("react");
+
+function formaterMontant(montant) {
+    return montant.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+}
+
+// Fonction pour calculer et mettre à jour les totaux
+function calculerTotaux() {
+    const rows = document.querySelectorAll('#myTable tbody tr:not([style*="display: none"])');
+    let totalHT = 0;
+    let totalTTC = 0;
+    
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        if (cells.length >= 6) {
+            // Extraire le montant TTC de la dernière colonne (enlever le symbole €)
+            const montantTTC = parseFloat(cells[5].textContent.replace('€', '').trim());
+            if (!isNaN(montantTTC)) {
+                totalTTC += montantTTC;
+                // Calculer le HT approximatif (en supposant 20% de TVA)
+                // Calculer le HT approximatif (en supposant 2.10% de TVA)
+                totalHT += montantTTC / 1.021;
+            }
+        }
+    });
+    
+    // Mettre à jour les totaux dans le footer
+    document.getElementById('htFooter').textContent = formaterMontant(totalHT) + ' €';
+    document.getElementById('ttcFooter').textContent = formaterMontant(totalTTC) + ' €';
+    
+    return { totalHT, totalTTC };
+}
+
+// Fonction pour valider toutes les factures visibles
+function validerToutesFactures() {
+    const confirmation = confirm(
+        `⚠️ Êtes-vous sûr de vouloir valider TOUTES les factures affichées ?\n\n` +
+        `📊 ${numerosFactures.length} factures validées\n` +
+        `💰 Total HT validé : ${totaux.formaterMontant(totalHT)} €\n` +
+        `💰 Total TTC validé : ${totaux.formaterMontant(totalTTC)} €`);
+    
+    if (!confirmation) return;
+    
+    showLoader(); // Afficher le loader
+    
+    // Récupérer toutes les lignes visibles (non masquées par les filtres)
+    const rows = document.querySelectorAll('#myTable tbody tr:not([style*="display: none"])');
+    const numerosFactures = [];
+    
+    rows.forEach(row => {
+        const numeroFacture = row.querySelector('td:first-child').textContent.trim();
+        if (numeroFacture) {
+            numerosFactures.push(numeroFacture);
+        }
+    });
+    
+    if (numerosFactures.length === 0) {
+        alert("❌ Aucune facture à valider !");
+        hideLoader();
+        return;
+    }
+    
+    // Calculer le total avant validation
+    const totaux = calculerTotaux();
+    
+    // Appel AJAX pour valider toutes les factures
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        hideLoader();
+        
+        if (this.status === 200) {
+            const response = JSON.parse(this.responseText);
+            
+            // Afficher un message de succès avec les totaux
+            alert(`✅ Validation réussie !\n\n` +
+                `📊 ${numerosFactures.length} factures validées\n` +
+                `💰 Total HT validé : ${totaux.formaterMontant(totalHT) } €\n` +
+                `💰 Total TTC validé : ${totaux.formaterMontant(totalTTC) } €`);
+            
+            // Actualiser la page ou mettre à jour l'affichage
+            location.reload();
+        } else {
+            const errorResponse = JSON.parse(this.responseText);
+            alert(`❌ Erreur lors de la validation : ${errorResponse.message}`);
+        }
+    };
+    
+    xhttp.onerror = function() {
+        hideLoader();
+        alert("❌ Erreur de connexion lors de la validation !");
+    };
+    
+    // Envoyer les données au backend
+    xhttp.open("POST", "/valider-toutes-factures", true);
+    xhttp.setRequestHeader('Content-Type', 'application/json');
+    xhttp.send(JSON.stringify({
+        factures: numerosFactures,
+        totalHT: totaux.totalHT,
+        totalTTC: totaux.totalTTC
+    }));
+}
+
+// Fonction pour mettre à jour les totaux en temps réel lors des filtres
+function mettreAJourTotauxApresFiltre() {
+    // Attendre un peu que le DOM soit mis à jour
+    setTimeout(() => {
+        calculerTotaux();
+    }, 100);
+}
+
+
+
 function tableTbody(lignes, index, etat) {
     const facture = lignes[0]; // la première ligne représente les infos globales
 
@@ -214,12 +326,12 @@ function tableauClientNonAdherent(facturesParNumero, etat) {
 
     //boucle sur factures
     Object.entries(facturesParNumero).forEach(([numero,value], index) => {
-
-        let typeClientAdherent = null
-        let idClientAdherent = null
+        console.log('Value', value)
+        let typeClientAdherent = String()
+        let idClientAdherent = String()
 
         value.forEach((ligne) => {
-            //console.log(ligne.facture_valider)
+            console.log('ligne',ligne.Code_Client_ODOO)
             typeClientAdherent = ligne.Code_Client_ODOO
             idClientAdherent = ligne.ID_Client_ODOO
             //typeClientAdherent = ligne.facture_valider
@@ -343,15 +455,19 @@ function envoyerOdoo(facture) {
             console.info(response)
             if (this.status == 500){
                 document.getElementById("message").innerHTML = '🛑<strong> Erreur : </strong> '+response.message+' <a href="mailto:support.sdpma@sicalait.fr">📧 Contactez le support informatique</a>';
+                console.log("Articles non reconnu.");
+
             }else if (this.status == 200){
                 document.getElementById("message").innerHTML = '✅<strong>Succès !</strong> '+response.message;
+                console.log("✅ Facture envoyée dans Odoo.");
             }else if (this.status == 511)
             {
                 document.getElementById("message").innerHTML = '🛑<strong> Erreur : </strong> '+response.message+' <a href="https://staging-erp.groupe-sicalait.fr/web#cids=19&menu_id=127&action=286&model=res.partner&view_type=form">ℹ️ Créer le client dans Odoo</a>';
+                console.error("Client à créer.");
             }
             
             hideLoader(); // ✅ Cache le loader quand terminé
-            console.log("✅ Facture envoyée dans Odoo.");
+            
         };
         xdata.open("POST", "/create_facture_adherent_odoo", true);
         xdata.setRequestHeader('Content-Type', 'application/json');
