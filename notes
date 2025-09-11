@@ -1,0 +1,67 @@
+# Configuration
+$subnet = "172.17.2"  # Votre sous-réseau
+$glpiServer = "http://172.17.240.10"  # Votre serveur GLPI
+$username = "administrateur"  # Compte admin des postes
+$password = "motdepasse"  # Mot de passe admin
+
+# Création des credentials
+$securePassword = ConvertTo-SecureString $password -AsPlainText -Force
+$credential = New-Object System.Management.Automation.PSCredential($username, $securePassword)
+
+# URL de téléchargement GLPI Agent
+$glpiAgentUrl = "https://github.com/glpi-project/glpi-agent/releases/download/1.5/GLPI-Agent-1.5-x64.msi"
+
+Write-Host "🔍 Scan et déploiement GLPI sur $subnet.1-255" -ForegroundColor Green
+
+# Scanner et déployer sur chaque IP
+1..255 | ForEach-Object -Parallel {
+    $ip = "$using:subnet.$_"
+    $glpiServer = $using:glpiServer
+    $credential = $using:credential
+    $glpiAgentUrl = $using:glpiAgentUrl
+    
+    # Test de connectivité
+    if (Test-Connection -ComputerName $ip -Count 1 -Quiet -TimeoutSeconds 2) {
+        Write-Host "📡 $ip : Poste détecté, tentative d'installation..." -ForegroundColor Yellow
+        
+        try {
+            # Script d'installation à exécuter sur le poste distant
+            $installScript = {
+                param($Server, $DownloadUrl)
+                
+                $tempPath = "$env:TEMP\glpi-agent.msi"
+                
+                try {
+                    # Télécharger GLPI Agent
+                    Invoke-WebRequest -Uri $DownloadUrl -OutFile $tempPath -TimeoutSec 60
+                    
+                    # Installation silencieuse
+                    $process = Start-Process msiexec.exe -ArgumentList "/i `"$tempPath`" /quiet SERVER=$Server SCAN-HOMEDIRS=1 SCAN-PROFILES=1" -Wait -PassThru
+                    
+                    # Nettoyer
+                    Remove-Item $tempPath -Force -ErrorAction SilentlyContinue
+                    
+                    if ($process.ExitCode -eq 0) {
+                        return "✅ Installation réussie"
+                    } else {
+                        return "❌ Erreur installation (code: $($process.ExitCode))"
+                    }
+                } catch {
+                    return "❌ Erreur: $($_.Exception.Message)"
+                }
+            }
+            
+            # Exécution sur le poste distant
+            $result = Invoke-Command -ComputerName $ip -Credential $credential -ScriptBlock $installScript -ArgumentList $glpiServer, $glpiAgentUrl -ErrorAction Stop
+            
+            Write-Host "✅ $ip : $result" -ForegroundColor Green
+            
+        } catch {
+            Write-Host "❌ $ip : Échec connexion - $($_.Exception.Message)" -ForegroundColor Red
+        }
+    }
+    # Pas de message pour les IPs injoignables pour éviter le spam
+    
+} -ThrottleLimit 20  # 20 connexions simultanées max
+
+Write-Host "🏁 Déploiement terminé !" -ForegroundColor Green

@@ -95,15 +95,15 @@ password = os.getenv('PASSWORD_ODOO')
 info = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/common')
 
 uid = info.authenticate(db, username, password, {})
+#uid = ''info.authenticate(db, username, password, {})
     
 if not uid:
     print('*'*50)
     print("[ERREUR]❌ Échec de l'authentification.")
     print('*'*50)
     
-    
-
-print(f"✅ Authentification réussie. UID: {uid} - {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} \n\n")
+if uid:   
+    print(f"✅ Authentification réussie. UID: {uid} - {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} \n\n")
 models = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/object')
 
 date_end = datetime.now() # on recupere la date maintenant (int)
@@ -111,7 +111,6 @@ date_end = datetime.now() # on recupere la date maintenant (int)
 date_start = date_end - timedelta(days=int(os.getenv('DATE_JOUR_FACTURES'))) # on soustrait 2jours (int)
 #dateReferenceFacture = date_start.strftime('%Y-%m-%d')
 dateReferenceFacture = date_end.strftime('%Y-%m-%d')
-
 
 class DateTimeEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -129,6 +128,9 @@ def home(request : Request):
         
         factures = crud.readFiltreAdherent()
         avoirs = crud.readFiltreAdherentAvoir()
+        
+        # Récupération des données comptables pour le mois en cours
+        donnees_comptables = crud.readDonneesComptables()
         
         # Convert date objects to strings
         def convert_dates(data_list):
@@ -154,7 +156,8 @@ def home(request : Request):
                                             "total_ht": '0',
                                             "total_ttc": '0',
                                             #'adherent_null' : regroupe_non_adherent,
-                                            "year": datetime.now().year
+                                            "year": datetime.now().year,
+                                            'donnees_comptables': donnees_comptables
                                         })
         
         else: 
@@ -167,7 +170,8 @@ def home(request : Request):
                                             "total_ht": '0',
                                             "total_ttc": '0',
                                             #'adherent_null' : regroupe_non_adherent,
-                                            "year": datetime.now().year
+                                            "year": datetime.now().year,
+                                            'donnees_comptables': donnees_comptables
                                         })
         
     except mysql.connector.Error as erreur:
@@ -182,6 +186,78 @@ def home(request : Request):
             'year' : datetime.now().year
         })
     '''
+
+
+######## API pour données comptables par mois
+@app.get('/api/donnees-comptables/{annee}/{mois}')
+def get_donnees_comptables_mois(annee: int, mois: int):
+    try:
+        crud = CRUD()
+        
+        # Construire les dates de début et fin du mois
+        date_debut = f"{annee}-{mois:02d}-01"
+        
+        # Calculer le dernier jour du mois
+        if mois == 12:
+            date_fin = f"{annee + 1}-01-01"
+        else:
+            date_fin = f"{annee}-{mois + 1:02d}-01"
+        
+        donnees = crud.readDonneesComptables(date_debut, date_fin)
+        print('CHOIX MOIS => ', donnees)
+        
+        return {
+            "success": True,
+            "data": donnees,
+            "periode": f"{annee}-{mois:02d}"
+        }
+        
+    except Exception as e:
+        print(f"Erreur lors de la récupération des données comptables : {e}")
+        return {
+            "success": False,
+            "error": str(e),
+            "data": []
+        }
+
+######## API pour données adherent par mois
+@app.get('/api/donnees-adherent')
+def get_donnees_adherent(annee: int, mois: int):
+    try:
+        crud = CRUD()
+        
+        # Construire la data base pour recuperer les infos sur tous les adherents 
+        db  = recupere_connexion_db()
+        cursor  = db.cursor(dictionary=True)
+        
+        requete  = '''
+                SELECT DISTINCT Type_Client
+                from exportodoo.sic_urcoopa_facture
+            '''     
+        
+        # Execute la requête
+        cursor.execute(requete,)
+        datas = cursor.fetchall()
+        
+        # datas matcher avec odoo
+        '''
+        SELECT DISTINCT name
+        FROM exportodoo.res_partner;
+        '''
+        
+        return {
+            "success": True,
+            "data": datas,
+            "periode": f"{annee}-{mois:02d}"
+        }
+        
+    except Exception as e:
+        print(f"Erreur lors de la récupération des données comptables : {e}")
+        return {
+            "success": False,
+            "error": str(e),
+            "data": []
+        }
 
 '''
 #GET COMMANDES DEPUIS GESICA
@@ -611,6 +687,8 @@ async def get_factures(
         # QUAND TOUS DATAS EST DANS SQL ON TRAITE DE SUITE POUR ODOO
         # en creant un JSON
         #return JSONResponse(content={'message' : 'SUCCESS'})
+        # Ajout ODOO debut
+        '''
         try :
             print('✅ [SUCCESS] Fin ajout facture bdd')
             print('📤[INFO] Début ajout facture Odoo')
@@ -628,7 +706,7 @@ async def get_factures(
                     from testcreateOdoo import testcreateOdoo
                     await testcreateOdoo(lignes_filtrées,models, db, uid, password)
                     
-                    '''
+                    
                     ligne0 = lignes_filtrées[0]
 
                     invoice_lines = []
@@ -683,13 +761,13 @@ async def get_factures(
                         #Retourne tous les erreur odoo
                         #Erreur odoo si facture existe sera retrouné
                         print(f"❌ Erreur Envoi XML-RPC Odoo : {e.faultString} \n\n")               
-                    '''
+                
         except Exception as e:
             print(f'❌ Erreur insertion ligne : {e}')
         
         print('✅📤 [SUCCESS] IMPORT FACTURE URCOOPA EFFECTUE !')
         return JSONResponse(content=facture_odoo, status_code=200 )
-        '''
+        ''' '''
         return facture_odoo
         if numeros_facture_enregistrer:
             
@@ -735,6 +813,39 @@ async def get_factures(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
+
+###############################
+# AJOUT FACTURE ODOO
+###############################
+
+@app.get('/ajout-facture-odoo')
+async def ajout_facture_odoo():
+    print('[INFO] 🌐 init ajout facture odoo')
+    
+    cnx = recupere_connexion_db()
+    cursor  = cnx.cursor(dictionary=True)
+    
+    requete = 'SELECT * FROM exportodoo.sic_urcoopa_facture'
+    cursor.execute(requete)
+    datas = cursor.fetchall()
+    
+    factures_groupees = defaultdict(list)
+    
+    for row in datas:
+        factures_groupees[row.get('Numero_Facture')].append(row)
+    
+    for numero_facture, lignes in factures_groupees.items():
+        # On filtre : ne traiter que les lignes NON ADHERENT
+        lignes_filtrées = [row for row in lignes if row.get("Type_Client") != "ADHERENT"]
+
+        if lignes_filtrées:
+            # Appel unique à createOdoo avec toutes les lignes de cette facture
+            #await createOdoo(lignes_filtrées,models, db, uid, password)
+            from testcreateOdoo import testcreateOdoo
+            await testcreateOdoo(lignes_filtrées,models, db, uid, password)
+    
+    return JSONResponse(content='AJOUT FACTURE ODOO OK')
+
 #PUSH FACTURES
 @app.post("/envoyer-commande/")
 async def post_commande():
@@ -811,7 +922,7 @@ async def post_commande():
             #print('COMMANDE : ', commande['user_id'])
             info_user = models.execute_kw(
                 db, uid, password,
-                #'purchase.order.line', 'search_read',
+                #'purchase.order.line', 'search_read',      
                 'res.company', 'search_read',
                 [[[ 'id', '=', commande['user_id'][0] ]]],  # pas de filtre, on veut tout
                 {

@@ -1,7 +1,7 @@
 from .connexion import recupere_connexion_db
 import mysql.connector
 from mysql.connector import errorcode
-
+import json
 # Classe pour le CRUD
 class CRUD:
     
@@ -9,6 +9,80 @@ class CRUD:
         # Initialiser la connexion à la base de données
         self.connexion = recupere_connexion_db()
         
+        # Ajoutez cette méthode dans votre classe CRUD
+        
+
+    def readDonneesComptables(self, date_debut: str = None, date_fin: str = None):
+        """
+        Récupère les données comptables pour l'écriture TVA
+        Args:
+            date_debut: Date de début au format 'YYYY-MM-DD' (ex: '2025-07-01')
+            date_fin: Date de fin au format 'YYYY-MM-DD' (ex: '2025-07-31')
+        """
+        cnx = None
+        cursor = None
+        
+        try:
+            # Créer une nouvelle connexion pour éviter les conflits
+            cnx = recupere_connexion_db()
+            cursor = cnx.cursor(dictionary=True)
+            
+            # Si pas de dates fournies, utiliser le mois en cours
+            if not date_debut or not date_fin:
+                from datetime import datetime
+                now = datetime.now()
+                date_debut = f"{now.year}-{now.month:02d}-01"
+                # Dernier jour du mois
+                if now.month == 12:
+                    date_fin = f"{now.year + 1}-01-01"
+                else:
+                    date_fin = f"{now.year}-{now.month + 1:02d}-01"
+            
+            requete ='''
+                SELECT left(Date_Facture,7) mois_facture, Type_Facture ,
+                (case when Code_Produit='INTR' then 'INTR' else '' end) est_intr,
+                sum(Montant_HT_Ligne) total_HT,
+                sum(Montant_HT_Ligne*Taux_TVA/100) total_TVA                
+                FROM exportodoo.sic_urcoopa_facture
+                where Societe_Facture ='VRAC'
+                and left(Code_Client,1)='5'
+                and Date_Facture>=%s
+                and Date_Facture<=%s
+                and Nom_Client not in (select Nom_Client from exportodoo.sic_urcoopa_Exclution_mois where mois_facture=left(sic_urcoopa_facture.Date_Facture,7))
+                group by left(Date_Facture,7), Type_Facture, (case when Code_Produit='INTR' then 'INTR' else '' end)
+            '''
+            
+            # Correction du paramètre pour le nom client
+            cursor.execute(requete, (date_debut, date_fin,))
+            resultat = cursor.fetchall()
+            
+            print('VRAC => ', resultat)
+            
+            #Consommer tous les résultats restants
+            while cursor.nextset():
+                pass
+                
+            return resultat
+            
+        except mysql.connector.Error as err:
+            print(f'Erreur MySQL lors de la récupération des données comptables : {err}')
+            return []
+        except Exception as e:
+            print(f'Erreur générale lors de la récupération des données comptables : {e}')
+            return []
+        finally:
+            # Fermer proprement les ressources
+            if cursor:
+                try:
+                    cursor.close()
+                except:
+                    pass
+            if cnx:
+                try:
+                    cnx.close()
+                except:
+                    pass
+            
     #METHODE PROCEDURE 
     async def procedureUrcoopa(self):
         

@@ -259,7 +259,7 @@ async def testcreateOdoo(rows: list, models, db, uid, password):
                             
                             # Debug JSON
                             #import json
-                            print(f"📦 Facture creer pour Odoo : {rows[0]['Numero_Facture']}")
+                            print(f"\n📦 Facture creer pour Odoo : {rows[0]['Numero_Facture']}")
                             #print(json.dumps(sendAccountMove, indent=2))
                             
                             # Envoi

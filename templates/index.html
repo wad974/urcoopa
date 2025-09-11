@@ -93,6 +93,152 @@
     .hideloader {
         display: none !important;
     }
+
+    #validationPage {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.8);
+        overflow: auto;
+        z-index: 1050;
+    }
+
+    #documentComptableModal {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.8);
+        overflow: auto;
+        z-index: 1050;
+    }
+
+    .modal-content-custom {
+        margin: 2% auto;
+        max-width: 90%;
+        width: auto;
+        min-width: 800px;
+    }
+
+    #myInput {
+        background-image: url('static/css/searchicon.png');
+        background-position: 10px 12px;
+        background-repeat: no-repeat;
+        background-size: 25px;
+        width: 350px;
+        font-size: 16px;
+        padding: 12px 20px 12px 40px;
+        border: 1px solid #ddd;
+        margin-bottom: 12px;
+    }
+
+    #myTable {
+        border-collapse: collapse;
+        width: 100%;
+        border: 1px solid #ddd;
+        font-size: 16px;
+    }
+
+    #myTable th,
+    #myTable td {
+        text-align: left;
+        padding: 12px;
+    }
+
+    #myTable tr {
+        border-bottom: 1px solid #ddd;
+    }
+
+    #myTable tr.header,
+    #myTable tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .btn {
+        padding: 0.5rem 0.75rem !important;
+        font-size: 0.875rem !important;
+    }
+
+    #loader {
+        backdrop-filter: blur(2px);
+    }
+
+    .chargement {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.8);
+        z-index: 9999;
+    }
+
+    .hideloader {
+        display: none !important;
+    }
+
+    /* Styles pour le document comptable */
+    .document-comptable-container {
+        background-color: white;
+        border: 2px solid #dee2e6;
+        border-radius: 0.375rem;
+    }
+
+    .header-section {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-bottom: 1px solid #dee2e6;
+        border-radius: 0.375rem 0.375rem 0 0;
+    }
+
+    .details-section {
+        background-color: #e9ecef;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #dee2e6;
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .document-table {
+        font-size: 0.875rem;
+    }
+
+    .document-table th {
+        background-color: #495057;
+        color: white;
+        border: 1px solid #dee2e6;
+        padding: 0.5rem;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .document-table td {
+        border: 1px solid #dee2e6;
+        padding: 0.375rem 0.75rem;
+        text-align: left;
+    }
+
+    .number-cell {
+        text-align: right;
+        font-family: 'Courier New', monospace;
+    }
+
+    .center-cell {
+        text-align: center;
+    }
+
+    .tva-row {
+        background-color: #fff3cd;
+    }
+
+    .document-table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
 </style>
 
 <body>
@@ -115,8 +261,12 @@
             </a>
             <a id="touslesfactures" class="nav-link d-inline" title="Affiche tous les factures" href="/">Tous les
                 factures</a>
+
             <a id="touslesavoirs" class="nav-link d-inline link-underline-hover" title="Affiche tous les Avoirs"
                 href="#">Tous les Avoirs</a>
+
+            <a id="documentComptable" class="nav-link d-inline link-underline-hover" title="Affiche le document comptable"
+                href="#">📊 VRAC</a>
         </div>
         <div>
             <a type="button" class="btn btn-primary btn-sm"
@@ -124,7 +274,194 @@
         </div>
     </nav>
 
-
+    <!--SWITCH AJAX-->
+    <!-- Modal Document Comptable -->
+    <div id="documentComptableModal">
+        <div class="modal-content-custom bg-white rounded shadow-lg">
+            <div class="modal-header border-bottom p-3 d-flex justify-content-between align-items-center">
+                <h5 class="modal-title mb-0">📊 Document Comptable - TVA COLLECTEE 2.1%</h5>
+                <button type="button" class="btn-close" id="closeDocumentModal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="document-comptable-container">
+                    <!-- En-tête -->
+                    <div class="header-section">
+                        <h6 class="fw-bold mb-3 text-primary">En-tête de la pièce</h6>
+                        
+                        <div class="row mb-2">
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-auto">
+                                        <strong>Date d'opération:</strong> <span class="text-primary dateOperation"></span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <strong>Numéro de Document:</strong> <span class="text-primary">00000000</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <strong>du:</strong> <span class="text-primary"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex flex-column gap-1">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="libelle" id="libelle_ecriture" checked>
+                                        <label class="form-check-label small" for="libelle_ecriture">Libellé écriture</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="libelle" id="libelle_compte">
+                                        <label class="form-check-label small" for="libelle_compte">Libellé compte</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-2">
+                            <div class="col-auto">
+                                <strong>Date d'échéance:</strong> <span class="text-primary dateEcheance"></span>
+                            </div>
+                            <div class="col-auto">
+                                <strong>Devise d'affichage:</strong> 
+                                <select class="form-select form-select-sm d-inline-block" style="width: auto;">
+                                    <option selected>Euro</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-12">
+                                <strong>Libellé:</strong> <span class="text-primary">TVA COLLECTEE 2.1%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Détail -->
+                    <div class="details-section">
+                        Détail de la pièce
+                    </div>
+                    
+                    <!-- Tableau -->
+                    <div class="table-responsive">
+                        <table class="document-table table table-sm mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Aux.</th>
+                                    <th>Compte</th>
+                                    <th>Libellé</th>
+                                    <th>Montant avoir</th>
+                                    <th>Montant facture</th>
+                                    <th>Devise</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="tva-row">
+                                    <td class="center-cell fw-bold"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="number-cell"></td>
+                                    <td class="number-cell fw-bold text-success"></td>
+                                    <td class="center-cell"></td>
+                                    <td class="center-cell"></td>
+                                </tr>
+                                <tr class="tva-row">
+                                    <td class="center-cell fw-bold"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="number-cell fw-bold text-danger"></td>
+                                    <td class="number-cell"></td>
+                                    <td class="center-cell"></td>
+                                    <td class="center-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td class="center-cell fw-bold"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="number-cell fw-bold text-danger"></td>
+                                    <td class="number-cell"></td>
+                                    <td class="center-cell"></td>
+                                    <td class="center-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td class="center-cell fw-bold"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="number-cell"></td>
+                                    <td class="number-cell fw-bold text-success"></td>
+                                    <td class="center-cell"></td>
+                                    <td class="center-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td class="center-cell fw-bold"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="number-cell fw-bold text-danger"></td>
+                                    <td class="number-cell"></td>
+                                    <td class="center-cell"></td>
+                                    <td class="center-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td class="center-cell fw-bold"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="number-cell"></td>
+                                    <td class="number-cell fw-bold text-success"></td>
+                                    <td class="center-cell"></td>
+                                    <td class="center-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td class="center-cell fw-bold"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="number-cell"></td>
+                                    <td class="number-cell fw-bold text-success"></td>
+                                    <td class="center-cell"></td>
+                                    <td class="center-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td class="center-cell fw-bold"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="number-cell fw-bold text-danger"></td>
+                                    <td class="number-cell"></td>
+                                    <td class="center-cell"></td>
+                                    <td class="center-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td class="center-cell fw-bold"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="number-cell"></td>
+                                    <td class="number-cell fw-bold text-success"></td>
+                                    <td class="center-cell"></td>
+                                    <td class="center-cell"></td>
+                                </tr>
+                                <tr>
+                                    <td class="center-cell fw-bold"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="number-cell fw-bold text-danger"></td>
+                                    <td class="number-cell"></td>
+                                    <td class="center-cell"></td>
+                                    <td class="center-cell"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-top p-3">
+                <button type="button" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-printer"></i> Imprimer
+                </button>
+                <button type="button" class="btn btn-success btn-sm">
+                    <i class="bi bi-check-circle"></i> Valider l'écriture
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" id="closeDocumentModalFooter">
+                    <i class="bi bi-x-circle"></i> Fermer
+                </button>
+            </div>
+        </div>
+    </div>
 
     <div class="container-fluid mt-4">
         <!--PAGE VALIDATION-->
@@ -216,10 +553,14 @@
         </table>
     </div>
     <script src="{{ url_for( 'static', path='/js/script.js' ) }}"></script>
+    <script src="{{ url_for( 'static', path='/js/donneesComptables.js' ) }}"></script>
     <script>
         //on recupere tous les données depuis python en convertissant en json pour JAVASCRIPT
         let factures = {{ FACTURES | tojson | safe }};
         console.log('DANS FACTURES : ', factures);
+
+        let donneesComptables = {{ donnees_comptables | tojson | safe }};
+        console.log('Données Comptable: ', donneesComptables)
 
         // je recupere mes boutons
         let bouton_facture = document.querySelector('#touslesfactures');
@@ -486,7 +827,7 @@
                 });
             });
         });
-
+        
     </script>
 
 </body>
