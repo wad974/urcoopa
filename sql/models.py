@@ -10,7 +10,35 @@ class CRUD:
         self.connexion = recupere_connexion_db()
         
         # Ajoutez cette méthode dans votre classe CRUD
+    
+    def save_non_correspondances(self, urcoopa_only, odoo_only):
+        """Sauvegarde les non-correspondances dans la table"""
+        db = self.connexion
+        cursor = db.cursor()
         
+        # Vider la table avant insertion
+        cursor.execute("TRUNCATE TABLE exportodoo.sic_urcoopa_non_correspondance")
+        
+        # Insérer ceux qui sont seulement dans Urcoopa
+        for nom in urcoopa_only:
+            cursor.execute("""
+                INSERT INTO exportodoo.sic_urcoopa_non_correspondance 
+                (Nom_Adherent_Urcoopa, Nom_Adherent_Odoo)
+                VALUES (%s, NULL)
+            """, (nom,))
+        
+        # Insérer ceux qui sont seulement dans Odoo
+        for nom in odoo_only:
+            cursor.execute("""
+                INSERT INTO exportodoo.sic_urcoopa_non_correspondance 
+                (Nom_Adherent_Urcoopa, Nom_Adherent_Odoo)
+                VALUES (NULL, %s)
+            """, (nom,))
+        
+        db.commit()
+        cursor.close()
+        db.close()
+        print(f"\n✅ {len(urcoopa_only) + len(odoo_only)} non-correspondances sauvegardées")
 
     def readDonneesComptables(self, date_debut: str = None, date_fin: str = None):
         """

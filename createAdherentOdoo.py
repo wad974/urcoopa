@@ -33,6 +33,7 @@ async def createAdherentOdoo(rows: list, models, db, uid, password):
         )
         print(f"✅ Ids fournisseur -> Odoo  : {ids_fournisseur}")
         if not ids_fournisseur or len(ids_fournisseur) == 0:
+            #ICI ON PEUT INSERER LES CLIENTS QUI NE MATCH OU EXISTE PAS DANS LA BASE DE DONNEES
             return(JSONResponse(content={"message": "Client adherent non trouvé."}, status_code=511))
             return
         # Id fournisseur 

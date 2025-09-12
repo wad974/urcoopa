@@ -221,34 +221,68 @@ def get_donnees_comptables_mois(annee: int, mois: int):
         }
 
 ######## API pour données adherent par mois
-@app.get('/api/donnees-adherent')
-def get_donnees_adherent(annee: int, mois: int):
+@app.get('/api/correspondance-adherent')
+def get_donnees_adherent():
     try:
         crud = CRUD()
         
         # Construire la data base pour recuperer les infos sur tous les adherents 
-        db  = recupere_connexion_db()
-        cursor  = db.cursor(dictionary=True)
+        # Récupération des noms Urcoopa
+        db = recupere_connexion_db()
+        cursor = db.cursor(dictionary=True)
         
-        requete  = '''
-                SELECT DISTINCT Type_Client
-                from exportodoo.sic_urcoopa_facture
-            '''     
-        
-        # Execute la requête
-        cursor.execute(requete,)
-        datas = cursor.fetchall()
-        
-        # datas matcher avec odoo
+        requete_urcoopa = '''
+            SELECT DISTINCT Nom_Client
+            FROM exportodoo.sic_urcoopa_facture
+            WHERE Nom_Client IS NOT NULL
         '''
-        SELECT DISTINCT name
-        FROM exportodoo.res_partner;
+        cursor.execute(requete_urcoopa)
+        nom_client_urcoopa = cursor.fetchall()
+        
+        # Récupération des noms Odoo
+        requete_res_partner = '''
+            SELECT DISTINCT name
+            FROM exportodoo.res_partner
+            WHERE name IS NOT NULL
         '''
+        
+        cursor.execute(requete_res_partner)
+        name_odoo = cursor.fetchall()
+        
+        cursor.close()
+        db.close()
+        
+        # Conversion en sets pour comparaison rapide
+        urcoopa_set = {row['Nom_Client'].strip().upper() for row in nom_client_urcoopa}
+        odoo_set = {row['name'].strip().upper() for row in name_odoo}
+        
+        # Trouver les différences
+        only_in_urcoopa = urcoopa_set - odoo_set
+        only_in_odoo = odoo_set - urcoopa_set
+        in_both = urcoopa_set & odoo_set
+        
+        print(f"\n📊 STATISTIQUES:")
+        print(f" - Total Urcoopa: {len(urcoopa_set)}")
+        print(f" - Total Odoo: {len(odoo_set)}")
+        print(f" - Correspondances: {len(in_both)}")
+        print(f" - Uniquement dans Urcoopa: {len(only_in_urcoopa)}")
+        print(f" - Uniquement dans Odoo: {len(only_in_odoo)}")
+        
+        print(f"\n❌ ADHERENTS URCOOPA SANS CORRESPONDANCE ODOO:")
+        
+        for nom in sorted(only_in_urcoopa):
+            print(f"  - {nom}")
+        print(f'*'*50)
+        
+        # Sauvegarder les non-correspondances en base
+        if only_in_urcoopa or only_in_odoo:
+            crud.save_non_correspondances(only_in_urcoopa, only_in_odoo)
         
         return {
             "success": True,
-            "data": datas,
-            "periode": f"{annee}-{mois:02d}"
+            "only_in_urcoopa": only_in_urcoopa,
+            "only_in_odoo": only_in_odoo,
+            #"periode": f"{annee}-{mois:02d}"
         }
         
     except Exception as e:
@@ -258,7 +292,7 @@ def get_donnees_adherent(annee: int, mois: int):
             "error": str(e),
             "data": []
         }
-
+        
 '''
 #GET COMMANDES DEPUIS GESICA
 @app.get('/Commandes_Gesica')
@@ -1320,7 +1354,7 @@ async def create_facture_adherent_odoo(request: Request):
         lignes_filtrées = [row for row in lignes]
 
         if lignes_filtrées:
-                    # Appel unique à createOdoo avec toutes les lignes de cette facture
+                    # Appel unique à createAdherent avec toutes les lignes de cette facture
                     return await createAdherentOdoo(lignes_filtrées,models, db, uid, password )
 
                     if result :
