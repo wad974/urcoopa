@@ -222,68 +222,60 @@ def get_donnees_comptables_mois(annee: int, mois: int):
 
 ######## API pour données adherent par mois
 @app.get('/api/correspondance-adherent')
-def get_donnees_adherent():
+async def get_donnees_adherent():
     try:
+        
+        # status initial 
+        status = False
+        
+        # requete pour recuperer adherent et les status à traiter
         crud = CRUD()
         
-        # Construire la data base pour recuperer les infos sur tous les adherents 
-        # Récupération des noms Urcoopa
-        db = recupere_connexion_db()
-        cursor = db.cursor(dictionary=True)
-        
-        requete_urcoopa = '''
-            SELECT DISTINCT Nom_Client
-            FROM exportodoo.sic_urcoopa_facture
-            WHERE Nom_Client IS NOT NULL
+        database = recupere_connexion_db()
+        cursor = database.cursor(dictionary=True)
+        requete = '''
+            SELECT * FROM exportodoo.sic_urcoopa_facture 
+            where Type_Client = 'ADHERENT'
+            and Statut_Correspondance_Article = 'à traiter'
+            and Statut_Correspondance_Adherent = 'à traiter'
         '''
-        cursor.execute(requete_urcoopa)
-        nom_client_urcoopa = cursor.fetchall()
+        cursor.execute(requete,)
+        datas = cursor.fetchall()
         
-        # Récupération des noms Odoo
-        requete_res_partner = '''
-            SELECT DISTINCT name
-            FROM exportodoo.res_partner
-            WHERE name IS NOT NULL
-        '''
+        if len(datas) == 0:
         
-        cursor.execute(requete_res_partner)
-        name_odoo = cursor.fetchall()
+            # Construire la data base pour recuperer les infos sur tous les adherents 
+            facture_adherent = datas  # <-- lit le JSON envoyé dans le body
+            #print("📦 JSON reçu :", json.dumps(facture_adherent, indent=2))
+            print("📦 JSON reçu ")
+            
+            #on groupe les lignes par numéros facture
+            facture_groupé = defaultdict(list)
+
+            for ligne in facture_adherent:
+                numero = ligne.get("Numero_Facture")
+                facture_groupé[numero].append(ligne)
+                
+            print('📤[INFO] Début ajout facture Odoo')
+            for numero_facture, lignes in facture_groupé.items():
+                # On filtre : ne traiter que les lignes ADHERENT
+                lignes_filtrées = [row for row in lignes]
+
+                if lignes_filtrées:
+                            # Appel unique à createAdherent avec toutes les lignes de cette facture
+                            await createAdherentOdoo(lignes_filtrées,models, db, uid, password, status )
+                            continue
+            return {
+                "success": True,
+                #"periode": f"{annee}-{mois:02d}"
+            }
         
-        cursor.close()
-        db.close()
-        
-        # Conversion en sets pour comparaison rapide
-        urcoopa_set = {row['Nom_Client'].strip().upper() for row in nom_client_urcoopa}
-        odoo_set = {row['name'].strip().upper() for row in name_odoo}
-        
-        # Trouver les différences
-        only_in_urcoopa = urcoopa_set - odoo_set
-        only_in_odoo = odoo_set - urcoopa_set
-        in_both = urcoopa_set & odoo_set
-        
-        print(f"\n📊 STATISTIQUES:")
-        print(f" - Total Urcoopa: {len(urcoopa_set)}")
-        print(f" - Total Odoo: {len(odoo_set)}")
-        print(f" - Correspondances: {len(in_both)}")
-        print(f" - Uniquement dans Urcoopa: {len(only_in_urcoopa)}")
-        print(f" - Uniquement dans Odoo: {len(only_in_odoo)}")
-        
-        print(f"\n❌ ADHERENTS URCOOPA SANS CORRESPONDANCE ODOO:")
-        
-        for nom in sorted(only_in_urcoopa):
-            print(f"  - {nom}")
-        print(f'*'*50)
-        
-        # Sauvegarder les non-correspondances en base
-        if only_in_urcoopa or only_in_odoo:
-            crud.save_non_correspondances(only_in_urcoopa, only_in_odoo)
-        
-        return {
-            "success": True,
-            "only_in_urcoopa": only_in_urcoopa,
-            "only_in_odoo": only_in_odoo,
-            #"periode": f"{annee}-{mois:02d}"
-        }
+        else: 
+            return {
+                "success": True,
+                "Message" : "Aucune facture à traiter"
+                #"periode": f"{annee}-{mois:02d}"
+            }
         
     except Exception as e:
         print(f"Erreur lors de la récupération des données comptables : {e}")
@@ -1337,6 +1329,12 @@ async def valider_facture(
 #POST HOME SITE RACINE VERS ODOO
 @app.post('/create_facture_adherent_odoo', response_class=JSONResponse)
 async def create_facture_adherent_odoo(request: Request):
+    # status est pour distingué si on dois faire un retour ou un print
+    # True pour create facture donc return message erreur 
+    # FAlse pour correspondance donc continue la boucle pour trouver d'autre coorespondance
+    status = True
+    
+    
     facture_adherent = await request.json()  # <-- lit le JSON envoyé dans le body
     #print("📦 JSON reçu :", json.dumps(facture_adherent, indent=2))
     print("📦 JSON reçu ")
@@ -1355,7 +1353,7 @@ async def create_facture_adherent_odoo(request: Request):
 
         if lignes_filtrées:
                     # Appel unique à createAdherent avec toutes les lignes de cette facture
-                    return await createAdherentOdoo(lignes_filtrées,models, db, uid, password )
+                    return await createAdherentOdoo(lignes_filtrées,models, db, uid, password, status )
 
                     if result :
                         return result
@@ -1370,7 +1368,7 @@ async def create_facture_adherent_odoo(request: Request):
 
 
 # Modèle Pydantic pour la validation des données
-class ValidationRequest(BaseModel):
+class ValidationRequest(BaseModel): 
     factures: List[str]
     totalHT: float
     totalTTC: float

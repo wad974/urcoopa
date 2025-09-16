@@ -39,14 +39,14 @@ if uid:
     #partner = partner[0].get('purchase_order_id')[1]
     
     
-    fields = models.execute_kw(
-        db, uid, password,
-        'account.move.line', 'fields_get',
-        [],
-        {'attributes': ['string', 'type']}
-    )
+    product_ids = models.execute_kw(
+                db, uid, password,
+                'product.product', 'search',
+                [[['product_tmpl_id', '=', '110822']]],
+                {'limit': 1}
+            )
 
-    print('✅ Champs account.move.line disponibles :', fields.keys())
+    print('✅ Champs account.move.line disponibles :', product_ids)
     '''  
     partner = models.execute_kw(
         db, uid, password,
@@ -83,7 +83,6 @@ if uid:
                 
                 
     
-       
     partner = models.execute_kw(
         db, uid, password,
         'account.move.line', 'search_read',
@@ -164,11 +163,11 @@ if uid:
     #test que chaque produits match
     #print('Res.Partner: \n\n\n')
     #print(json.dumps(ids.get('id'), indent=4, ensure_ascii=False))
-    print(json.dumps(fields, indent=4, ensure_ascii=False))
+    print(json.dumps(product_ids, indent=4, ensure_ascii=False))
 
     # Méthodes import json
     with open('res_partner.json', 'w', encoding='utf-8') as f:
-        json.dump(fields, f, ensure_ascii=False, indent=4)
+        json.dump(product_ids, f, ensure_ascii=False, indent=4)
     
     #print('models read. RESULTAT: ', partner)
     print("Enregistrement effectué ")

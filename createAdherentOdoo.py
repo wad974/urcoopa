@@ -3,6 +3,7 @@ import requests
 import json
 import os
 from sql.connexion import recupere_connexion_db
+from sql.models import CRUD
 import time
 import datetime
 import xmlrpc.client
@@ -12,7 +13,7 @@ from fastapi.responses import JSONResponse
 
 
 
-async def createAdherentOdoo(rows: list, models, db, uid, password):
+async def createAdherentOdoo(rows: list, models, db, uid, password, status):
     
     #efface la console
     #clear = lambda: os.system('clear')
@@ -22,8 +23,8 @@ async def createAdherentOdoo(rows: list, models, db, uid, password):
     #for attempt in range(3):
     try :
         
-        print('Recherche dans res.partner')
-        print(rows[0]['Nom_Client'])
+        print('🔍[INFO] Recherche dans res.partner')
+        print('🔍[INFO] Nom adherent à matcher: ',rows[0]['Nom_Client'])
         # Récupération du fournisseur URCOOPA
         ids_fournisseur = models.execute_kw(
             db, uid, password,
@@ -31,11 +32,21 @@ async def createAdherentOdoo(rows: list, models, db, uid, password):
             [[['name', '=', rows[0]['Nom_Client'] ]]],
             {'limit': 1}
         )
-        print(f"✅ Ids fournisseur -> Odoo  : {ids_fournisseur}")
+        print(f"✅ Ids fournisseur qui match -> Odoo  : {ids_fournisseur}")
+        
         if not ids_fournisseur or len(ids_fournisseur) == 0:
             #ICI ON PEUT INSERER LES CLIENTS QUI NE MATCH OU EXISTE PAS DANS LA BASE DE DONNEES
-            return(JSONResponse(content={"message": "Client adherent non trouvé."}, status_code=511))
-            return
+            crud = CRUD()
+            
+            print(f"❌ Adherent {rows[0]['Nom_Client']} non trouvé dans supplierinfo. \n\n")
+            crud.insertAdherentCorrespondance(rows[0]['Nom_Client'])
+            crud.updateSicUrcoopaFacture(rows[0]['Numero_Facture'])
+            
+            if status : 
+                return(JSONResponse(content={"message": "Client adherent non trouvé."}, status_code=511))
+            else :
+                return
+            
         # Id fournisseur 
         partner_id = ids_fournisseur[0]
 
@@ -47,13 +58,13 @@ async def createAdherentOdoo(rows: list, models, db, uid, password):
             {'fields': ['name']}
         )[0]['name']
         # Id fournisseur 
-        print(f"✅ Name fournisseur -> Odoo : {name_fournisseur}")
+        print(f"✅ Name fournisseur qui match -> Odoo : {name_fournisseur}")
         
         
         # Infos communes à toute la facture
         #Contenu de row avant traitement pour Odoo
         
-        print(f"✅ Contenu de Rows avant injection. Rows: {json.dumps(rows, indent=2)}")
+        #print(f"✅ Contenu de Rows avant injection. Rows: {json.dumps(rows, indent=2)}")
         #numero_facture = f"URCOOPA/{str(datetime.datetime.now().strftime('%Y/%m'))}/{str(rows[0]['Numero_Facture'])}"
         ref_facture = rows[0]['Numero_Facture']
         invoice_date = rows[0]['Date_Facture']
@@ -65,54 +76,67 @@ async def createAdherentOdoo(rows: list, models, db, uid, password):
         for row in rows:
             
             #code produit
-            print(json.dumps(row, indent=2))
+            #print(json.dumps(row, indent=2))
             print(f"🔍 [INFO] Recherche produit à {datetime.datetime.now().strftime('%H:%M:%S')} : {row.get('Code_Produit')}")
             code_produit = row.get('Code_Produit')
+            tmpl_id = int()
             
-            #time.sleep(1)  # ralentis de 1000ms
-            supplier_ids = models.execute_kw(
-                db, uid, password,
-                'product.supplierinfo', 'search',
-                [[
-                    ['product_code', '=', code_produit],
-                    #['partner_id', '=', partner_id]
-                ]],
-                {'limit': 1}
-            )
-            #supplier_ids récupérer
-            print(f'✅ [SUCCESS] Supplier_ids récupérer dans Odoo : {supplier_ids}')
+            if code_produit is None:
+                tmpl_id = int(row.get('ID_Produit_tmpl_ODOO'))
+                print('[INFO] Code produit is None tmpl_id = ', tmpl_id)
+            
+            if code_produit is not None:
+                #time.sleep(1)  # ralentis de 1000ms
+                supplier_ids = models.execute_kw(
+                    db, uid, password,
+                    'product.supplierinfo', 'search',
+                    [[
+                        ['product_code', '=', code_produit],
+                        #['partner_id', '=', partner_id]
+                    ]],
+                    {'limit': 1}
+                )
+                #supplier_ids récupérer
+                print(f'✅ [SUCCESS] Supplier_ids récupérer dans Odoo : {supplier_ids}')
 
-            if not supplier_ids:
-                return(JSONResponse(content={"message": f"Produit {code_produit} non trouvé dans supplierinfo."}, status_code=500))
+                if not supplier_ids:
+                    
+                    crud = CRUD()
+                    print(f"❌ Produit {code_produit} non trouvé dans supplierinfo. \n\n")
+                    crud.insertArticleCorrespondance(code_produit)
+                    crud.updateSicUrcoopaFacture(ref_facture)
+                    
+                    if status : 
+                        return(JSONResponse(content={"message": f"Produit {code_produit} non trouvé dans supplierinfo."}, status_code=500))
+                    else :
+                        continue
                 
-                print(f"❌ Produit {code_produit} non trouvé dans supplierinfo.")
-                continue
-            
-            #time.sleep(1)  # ralentis de 1000ms
-            #supplier_data
-            supplier_data = models.execute_kw(
-                db, uid, password,
-                'product.supplierinfo', 'read',
-                [supplier_ids],
-                {'fields': ['product_tmpl_id']}
-            )[0]
+                #time.sleep(1)  # ralentis de 1000ms
+                #supplier_data
+                supplier_data = models.execute_kw(
+                    db, uid, password,
+                    'product.supplierinfo', 'read',
+                    [supplier_ids],
+                    {'fields': ['product_tmpl_id']}
+                )[0]
 
-            #supplier _data récuperer
-            print(f'✅ [SUCCESS] Supplier_data récupéré -> Odoo : {supplier_data}')
+                #supplier _data récuperer
+                print(f'✅ [SUCCESS] Supplier_data récupéré -> Odoo : {supplier_data}')
 
-            #product tmpl id recupéré uniquement
-            product_tmpl = supplier_data.get('product_tmpl_id')
+                #product tmpl id recupéré uniquement
+                product_tmpl = supplier_data.get('product_tmpl_id')
 
-            #Si product tmpl est False on arrete la boucle et on continue sur l'autre produit
-            if not product_tmpl or product_tmpl[0] is False:
-                return(JSONResponse(content={"message": f"Produit code dans Facture -> Rows {code_produit} non trouvé dans supplierinfo."}, status_code=500))
+                #Si product tmpl est False on arrete la boucle et on continue sur l'autre produit
+                if not product_tmpl or product_tmpl[0] is False:
+                    return(JSONResponse(content={"message": f"Produit code dans Facture -> Rows {code_produit} non trouvé dans supplierinfo."}, status_code=500))
+                    
+                    print(f"❌ Produit code dans Facture -> Rows {code_produit} non trouvé dans supplierinfo.")
+                    continue
                 
-                print(f"❌ Produit code dans Facture -> Rows {code_produit} non trouvé dans supplierinfo.")
-                continue
-            
-            tmpl_id = supplier_data['product_tmpl_id'][0]
+                tmpl_id = supplier_data['product_tmpl_id'][0]
 
             #time.sleep(1)  # ralentis de 1000ms
+            print(f'✅ tmpl_id récupérer  : {tmpl_id}')
             product_ids = models.execute_kw(
                 db, uid, password,
                 'product.product', 'search',
@@ -179,30 +203,42 @@ async def createAdherentOdoo(rows: list, models, db, uid, password):
             "invoice_line_ids": invoice_lines
         }
 
-        # Debug JSON
+        #Debug JSON
         #import json
-        print(f"📦 Facture creer pour Odoo : {rows[0]['Numero_Facture']} - {sendAccountMove}")
+        #print(f"📦 Facture creer pour Odoo : {rows[0]['Numero_Facture']} - {sendAccountMove}")
         #print(json.dumps(sendAccountMove, indent=2))
         
         # Envoi
         try:
-            '''
-            move_id = models.execute_kw(
-                db, uid, password,
-                'account.move', 'create',
-                [sendAccountMove]
-            )
-            
-            
-            models.execute_kw(
-                db, uid, password,
-                'account.move', 'write',
-                [move_id, {}]  # Un write vide peut déclencher les compute fields
-            )
-            '''    
-            print(f"✅📤 [SUCCESS] Facture envoyer à Odoo : {rows[0]['Numero_Facture']}")
-            return(JSONResponse(content={"message": "Votre facture a bien été transférée dans Odoo."}, status_code=200))
-        
+            if status:
+                print(f"📦 Facture creer pour Odoo : {rows[0]['Numero_Facture']} - {sendAccountMove}")
+                
+                '''
+                move_id = models.execute_kw(
+                    db, uid, password,
+                    'account.move', 'create',
+                    [sendAccountMove]
+                )
+                
+                
+                models.execute_kw(
+                    db, uid, password,
+                    'account.move', 'write',
+                    [move_id, {}]  # Un write vide peut déclencher les compute fields
+                )
+                '''    
+                
+                print(f"✅📤 [SUCCESS] Facture envoyer à Odoo : {rows[0]['Numero_Facture']}")
+                
+                
+                return(JSONResponse(content={"message": "Votre facture a bien été transférée dans Odoo."}, status_code=200))
+            else : 
+                
+                crud = CRUD()
+                crud.updateSicUrcoopaFacture(ref_facture)
+                
+                print(f"✅📤 [SUCCESS] Facture Mise à jour réussie \n\n")
+                    
             #print(f"✅📤 [SUCCESS] Facture Odoo créée avec ID {move_id} \n\n")
         except xmlrpc.client.Fault as e:
             #Retourne tous les erreur odoo

@@ -11,7 +11,7 @@ class CRUD:
         
         # Ajoutez cette méthode dans votre classe CRUD
     
-    def save_non_correspondances(self, urcoopa_only, odoo_only):
+    def save_non_correspondances(self, urcoopa_only, odoo_only, only_CodeProduct_in_urcoopa, only_ProductCode_in_odoo):
         """Sauvegarde les non-correspondances dans la table"""
         db = self.connexion
         cursor = db.cursor()
@@ -34,6 +34,22 @@ class CRUD:
                 (Nom_Adherent_Urcoopa, Nom_Adherent_Odoo)
                 VALUES (NULL, %s)
             """, (nom,))
+            
+        # Insérer Numéros Articles ceux qui sont seulement dans Urcoopa
+        for numero in only_CodeProduct_in_urcoopa:
+            cursor.execute("""
+                INSERT INTO exportodoo.sic_urcoopa_non_correspondance 
+                (Nom_Adherent_Urcoopa, Nom_Adherent_Odoo)
+                VALUES (NULL, %s)
+            """, (numero,))
+            
+        # Insérer Numéros Articles ceux qui sont seulement dans Urcoopa
+        for numero in only_ProductCode_in_odoo:
+            cursor.execute("""
+                INSERT INTO exportodoo.sic_urcoopa_non_correspondance 
+                (Nom_Adherent_Urcoopa, Nom_Adherent_Odoo)
+                VALUES (NULL, %s)
+            """, (numero,))
         
         db.commit()
         cursor.close()
@@ -461,3 +477,100 @@ class CRUD:
             '''
         return True  # sinon tout est pareil
         
+    #METHODE INSERT CORRESPONDANCE ARTICLES
+    
+    def insertArticleCorrespondance(self, code_produit):
+        
+        try:
+            #code produit qui ne sont pas matcher avec Urcoopa<->Odoo envoyer dans Base de données
+            cnx = self.connexion
+            cursor = cnx.cursor()
+            
+            #on controle d'abord qu'il y a pas la meme donnees
+            ctrl = '''
+            SELECT Numero_Article_Urcoopa
+            FROM exportodoo.sic_urcoopa_non_correspondance_article
+            WHERE Numero_Article_Urcoopa = %s
+            '''
+            ctrl_code = (code_produit,)
+            cursor.execute(ctrl, ctrl_code)
+            response = cursor.fetchone()
+            if response is None:
+                
+                print('[INFO] Aucun code produit trouvé')
+                requete = '''
+                    insert into exportodoo.sic_urcoopa_non_correspondance_article (Numero_Article_Urcoopa)
+                    values (%s)
+                '''
+                valeurs = ( code_produit,)
+                cursor.execute(requete, valeurs)
+                cnx.commit()
+                
+                cursor.close()
+                cnx.close()
+                print(f'✅ [SUCCESS] code produit manquant dans database')
+            
+            else :
+                print(f"❌ [ERREUR] {code_produit} DEJA DANS DATABASE")
+        except :
+            print(f"❌ [ERREUR] {code_produit} COMMIT DANS DATABASE")
+            
+            
+    #METHODE INSERT CORRESPONDANCE ADHERENT
+    def insertAdherentCorrespondance(self, nom_adherent):
+        
+        try:
+            #code produit qui ne sont pas matcher avec Urcoopa<->Odoo envoyer dans Base de données
+            cnx = self.connexion
+            cursor = cnx.cursor()
+            
+            #on controle d'abord qu'il y a pas la meme donnees
+            ctrl = '''
+            SELECT Nom_Adherent_Urcoopa
+            FROM exportodoo.sic_urcoopa_non_correspondance_adherent
+            WHERE Nom_Adherent_Urcoopa = %s
+            '''
+            ctrl_code = (nom_adherent,)
+            cursor.execute(ctrl, ctrl_code)
+            response = cursor.fetchone()
+            if response is None:
+                
+                print('[INFO] Aucun adherent trouvé')
+                requete = '''
+                    insert into exportodoo.sic_urcoopa_non_correspondance_adherent (Nom_Adherent_Urcoopa)
+                    values (%s)
+                '''
+                valeurs = ( nom_adherent,)
+                cursor.execute(requete, valeurs)
+                cnx.commit()
+                
+                cursor.close()
+                cnx.close()
+                print(f'✅ [SUCCESS] Adherent manquant dans database')
+            
+            else :
+                print(f"❌ [ERREUR] {nom_adherent} DEJA DANS DATABASE")
+        except :
+            print(f"❌ [ERREUR] {nom_adherent} COMMIT DANS DATABASE")
+            
+    #METHODE UPDATE SIC URCOOPA FACTURE
+    def updateSicUrcoopaFacture(self, Numero_Facture):
+        try:
+            cnx = self.connexion
+            cursor = cnx.cursor()
+            
+            Nouveau_status_bdd = 'déjà traiter'
+            
+            requete = '''
+                update exportodoo.sic_urcoopa_facture 
+                set Statut_Correspondance_Article = %s , Statut_Correspondance_Adherent = %s
+                where Numero_Facture = %s
+            '''
+            
+            valeursUpdate = ( Nouveau_status_bdd, Nouveau_status_bdd, Numero_Facture,)
+            cursor.execute(requete,valeursUpdate)
+            cnx.commit()
+            
+            return print(f"✅📤 [SUCCESS] Facture Mise à jour réussie")
+        except:
+            print(f"❌ [ERREUR] {Numero_Facture} UDAPTE DANS DATABASE")
