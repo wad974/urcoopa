@@ -220,7 +220,7 @@ def get_donnees_comptables_mois(annee: int, mois: int):
             "data": []
         }
 
-######## API pour données adherent par mois
+######## API pour données correspondance adherent par mois
 @app.get('/api/correspondance-adherent')
 async def get_donnees_adherent():
     try:
@@ -242,8 +242,16 @@ async def get_donnees_adherent():
         cursor.execute(requete,)
         datas = cursor.fetchall()
         
+        # si datas est vide []
         if len(datas) == 0:
+            return {
+                    "success": True,
+                    "Message" : "Aucune facture à traiter"
+                    #"periode": f"{annee}-{mois:02d}"
+                }
         
+        else: 
+            
             # Construire la data base pour recuperer les infos sur tous les adherents 
             facture_adherent = datas  # <-- lit le JSON envoyé dans le body
             #print("📦 JSON reçu :", json.dumps(facture_adherent, indent=2))
@@ -270,10 +278,74 @@ async def get_donnees_adherent():
                 #"periode": f"{annee}-{mois:02d}"
             }
         
-        else: 
+    except Exception as e:
+        print(f"Erreur lors de la récupération des données comptables : {e}")
+        return {
+            "success": False,
+            "error": str(e),
+            "data": []
+        }
+        
+        
+    
+######## API pour injections correspondance adherent urcoopa
+@app.get('/api/injection-correspondance-adherent')
+async def get_injection_donnees_adherent():
+    try:
+        
+        # status initial 
+        status = True
+        
+        # requete pour recuperer adherent et les status à traiter
+        crud = CRUD()
+        
+        database = recupere_connexion_db()
+        cursor = database.cursor(dictionary=True)
+        requete = '''
+            select * 
+            from exportodoo.sic_urcoopa_facture suf 
+            where Type_Client = 'Adherent'
+            and Nom_Client not in (SELECT Nom_Adherent_Urcoopa FROM exportodoo.sic_urcoopa_non_correspondance_adherent )
+            and Code_Produit not in (SELECT Numero_Article_Urcoopa FROM exportodoo.sic_urcoopa_non_correspondance_article )
+        '''
+        cursor.execute(requete,)
+        datas = cursor.fetchall()
+        
+        if len(datas) == 0:
             return {
                 "success": True,
                 "Message" : "Aucune facture à traiter"
+                #"periode": f"{annee}-{mois:02d}"
+            }
+        
+        else: 
+            
+            # Construire la data base pour recuperer les infos sur tous les adherents 
+            facture_adherent = datas  # <-- lit le JSON envoyé dans le body
+            #print("📦 JSON reçu :", json.dumps(facture_adherent, indent=2))
+            print("📦 JSON reçu ")
+            
+            #on groupe les lignes par numéros facture
+            facture_groupé = defaultdict(list)
+
+            for ligne in facture_adherent:
+                numero = ligne.get("Numero_Facture")
+                facture_groupé[numero].append(ligne)
+                
+            print('📤[INFO] Début ajout facture Odoo')
+            for numero_facture, lignes in facture_groupé.items():
+                # On filtre : ne traiter que les lignes ADHERENT
+                lignes_filtrées = [row for row in lignes]
+
+                if lignes_filtrées:
+                            # Appel unique à createAdherent avec toutes les lignes de cette facture
+                            await createAdherentOdoo(lignes_filtrées,models, db, uid, password, status )
+                            break
+            
+            #fin de traitement boule ci dessus
+            return {
+                "success": True,
+                "message": "Injection terminé!"
                 #"periode": f"{annee}-{mois:02d}"
             }
         
@@ -284,7 +356,6 @@ async def get_donnees_adherent():
             "error": str(e),
             "data": []
         }
-        
 '''
 #GET COMMANDES DEPUIS GESICA
 @app.get('/Commandes_Gesica')

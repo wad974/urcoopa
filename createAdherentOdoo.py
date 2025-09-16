@@ -47,9 +47,42 @@ async def createAdherentOdoo(rows: list, models, db, uid, password, status):
             else :
                 return
             
-        # Id fournisseur 
+        # recherche id fournisseur sicalait pour urcoopa->sicalait
+        # Récupération du fournisseur URCOOPA
+        ids_fournisseur_Sicalait = models.execute_kw(
+            db, uid, password,
+            'res.partner', 'search',
+            [[['name', '=', 'SICALAIT' ]]],
+            {'limit': 1}
+        )
+        
+        #urcoopa
+        ids_fournisseur_Urcoopa = models.execute_kw(
+            db, uid, password,
+            'res.partner', 'search',
+            [[['name', '=', 'URCOOPA' ]]],
+            {'limit': 1}
+        )
+        
+        name_fournisseur_sicalait = models.execute_kw(
+            db, uid, password,
+            'res.partner', 'read',
+            [ids_fournisseur_Sicalait],
+            {'fields': ['name']}
+        )[0]['name']
+        
+        name_fournisseur_urcoopa = models.execute_kw(
+            db, uid, password,
+            'res.partner', 'read',
+            [ids_fournisseur_Urcoopa],
+            {'fields': ['name']}
+        )[0]['name']
+        
+        partner_id_sicalait = ids_fournisseur_Sicalait[0]
+        partner_id_urcoopa = ids_fournisseur_Urcoopa[0]
+            
+        # Id fournisseur pour sicalait->adherent
         partner_id = ids_fournisseur[0]
-
         
         name_fournisseur = models.execute_kw(
             db, uid, password,
@@ -153,7 +186,7 @@ async def createAdherentOdoo(rows: list, models, db, uid, password, status):
                 continue
 
             product_id = product_ids[0]
-            print(f"✅ Produit trouvé pour {code_produit} ➔ ID {product_id} \n\n")
+            print(f"✅ Produit trouvé pour {code_produit} ➔ ID {product_id}")
 
             #unité facture
             udm_code = row.get('Unite_Facturee')
@@ -192,17 +225,6 @@ async def createAdherentOdoo(rows: list, models, db, uid, password, status):
             print("❌ Aucune ligne de produit valide à créer. Annulation.")
             return
 
-        # Construction de la facture
-        sendAccountMove = {
-            "move_type": "out_invoice",
-            "partner_id": partner_id,
-            "invoice_partner_display_name": name_fournisseur,
-            "ref": ref_facture,
-            "invoice_date": invoice_date,
-            "invoice_date_due": invoice_date_due,
-            "invoice_line_ids": invoice_lines
-        }
-
         #Debug JSON
         #import json
         #print(f"📦 Facture creer pour Odoo : {rows[0]['Numero_Facture']} - {sendAccountMove}")
@@ -211,24 +233,86 @@ async def createAdherentOdoo(rows: list, models, db, uid, password, status):
         # Envoi
         try:
             if status:
-                print(f"📦 Facture creer pour Odoo : {rows[0]['Numero_Facture']} - {sendAccountMove}")
                 
-                '''
+                # Construction de la facture pour l'urcoopa en premier
+                sendAccountMoveFournisseur = {
+                    "move_type": "in_invoice",
+                    "partner_id": partner_id_urcoopa,
+                    "invoice_partner_display_name": name_fournisseur_urcoopa,
+                    "ref": ref_facture,
+                    "invoice_date": invoice_date,
+                    "invoice_date_due": invoice_date_due,
+                    "invoice_line_ids": invoice_lines
+                }
+                
+                print(f"📦 Facture Urcoopa creer pour Odoo_Sicalait : {rows[0]['Numero_Facture']} - {sendAccountMoveFournisseur}")
+                
+                
+                # on creer dans account.move la facture fournisseur
+                move_id = models.execute_kw(
+                    db, uid, password,
+                    'account.move', 'create',
+                    [sendAccountMoveFournisseur]
+                )
+                
+                # Un write vide peut déclencher les compute fields
+                models.execute_kw(
+                    db, uid, password,
+                    'account.move', 'write',
+                    [move_id, {}]  
+                )
+                
+                print(f"✅📤 [SUCCESS] Facture Urcoopa envoyer à Odoo_Sicalait : {rows[0]['Numero_Facture']} \n")
+                
+                #puis on injecte la facture adherent 
+                # COEFFICIENT SUR FACTURE ADHERENT
+                # augementation pour ajouter 5%
+                POURCENTAGE_COEF = float(os.getenv('COEFFICIENT'))
+                #PORCENTAGE_COEF = 1.05 #coefficient de 5% (100% + 5% = 105% - 1.0 + 0.05)
+                invoice_lines_avec_coef = []
+                
+                for row in invoice_lines:
+                    
+                    # row = [0, 0, {'product_id': 102562, 'quantity': 2.04, 'price_unit': 486.23}]
+                    ligne = row[2]  # Récupère le dictionnaire en position 2
+                    
+                    invoice_lines_avec_coef.append([0, 0, {
+                        'product_id': ligne.get('product_id'),
+                        'quantity': ligne.get('quantity'),
+                        'price_unit': ligne.get('price_unit') * POURCENTAGE_COEF  # Application du coef
+                    }])
+                        
+                #DEBUG INVOICE    
+                print(invoice_lines)
+                print(invoice_lines_avec_coef)
+                
+                # Construction de la facture pour l'adherent en deuxiement
+                sendAccountMove = {
+                    "move_type": "out_invoice",
+                    #"invoice_user_id": partner_id_sicalait, # A rajouter dans res.users le partner_id de sicalait
+                    "partner_id": partner_id,
+                    "invoice_partner_display_name": name_fournisseur,
+                    "ref": ref_facture,
+                    "invoice_date": invoice_date,
+                    "invoice_date_due": invoice_date_due,
+                    "invoice_line_ids": invoice_lines_avec_coef # injection facture avec coef
+                }
+                
+                print(f"📦 Facture Sicalait creer pour Adherent : {rows[0]['Numero_Facture']} - {sendAccountMove}")
+                
                 move_id = models.execute_kw(
                     db, uid, password,
                     'account.move', 'create',
                     [sendAccountMove]
                 )
                 
-                
                 models.execute_kw(
                     db, uid, password,
                     'account.move', 'write',
                     [move_id, {}]  # Un write vide peut déclencher les compute fields
                 )
-                '''    
                 
-                print(f"✅📤 [SUCCESS] Facture envoyer à Odoo : {rows[0]['Numero_Facture']}")
+                print(f"✅📤 [SUCCESS] Facture Sicalait creer pour Adherent: {rows[0]['Numero_Facture']} \n\n")
                 
                 
                 return(JSONResponse(content={"message": "Votre facture a bien été transférée dans Odoo."}, status_code=200))
