@@ -14,6 +14,14 @@ function formatMontant(montant) {
 function genererTableauComptable(data) {
     donnees = data.data
     mois = data.periode
+    laDateOperation = document.querySelector('.dateOperation')
+    console.log(laDateOperation)
+    // charger date mois 
+    if (laDateOperation)
+    {
+        document.querySelector('.dateOperation').innerHTML = mois
+    }
+
     const tbody = document.querySelector('.document-table tbody');
 
     //console.log('TESTE TBODY => ',tbody)
@@ -36,7 +44,7 @@ function genererTableauComptable(data) {
     donnees.forEach(row => {
         const typeFacture = row.Type_Facture;
         const estIntr = row.est_intr === 'INTR';
-        const total_HT = parseFloat(row.total_HT);
+        const total_HT = Math.abs(parseFloat(row.total_HT));
         const total_TVA = parseFloat(row.total_TVA);
         const moisSelection = row.mois_facture
 
@@ -45,18 +53,41 @@ function genererTableauComptable(data) {
                 
                 if (estIntr) {
                     ecritures.push({
-                        compte: '7075000',
+                        compte: '76800',
                         libelle: 'VENTES VRAC (INTR)',
                         debit: 0,
                         credit: total_HT,
                         classe: ''
                     });
+                    ecritures.push({
+                        compte: '76800',
+                        libelle: 'VENTES VRAC (INTR)',
+                        debit: total_HT,
+                        credit: 0,
+                        classe: ''
+                    });
                 } else {
+                    
+                    ecritures.unshift({
+                        compte: '44573',
+                        libelle: 'TVA VRAC URCOOPA',
+                        debit: total_TVA,
+                        credit: 0,
+                        classe: ''
+                    }),
+
                     ecritures.unshift({
                         compte: '44573',
                         libelle: 'TVA VRAC URCOOPA',
                         debit: 0,
                         credit: total_TVA,
+                        classe: ''
+                    }),
+                    ecritures.push({
+                        compte: '6075000',
+                        libelle: 'VENTES VRAC',
+                        debit: total_HT,
+                        credit: 0,
                         classe: ''
                     }),
                     ecritures.push({
@@ -66,31 +97,41 @@ function genererTableauComptable(data) {
                         credit: total_HT,
                         classe: ''
                     });
+                    
                 }
-            } else if (typeFacture === 'A') { // Avoirs
+            } else if (typeFacture === 'A' ) { // Avoirs
                 if (estIntr) {
                     ecritures.push({
-                        compte: '6075000',
+                        compte: '76800',
                         libelle: 'ACHATS VRAC (INTR)',
                         debit: total_HT,
                         credit: 0,
                         classe: ''
+                    }),
+                    ecritures.push({
+                        compte: '76800',
+                        libelle: 'ACHATS VRAC (INTR)',
+                        debit: 0,
+                        credit: total_HT,
+                        classe: ''
                     });
                 } else {
-                    ecritures.unshift({
-                        compte: '44563',
-                        libelle: 'TVA VRAC URCOOPA',
-                        debit: total_TVA,
-                        credit: 0,
-                        classe: ''
-                    }),
+
                     ecritures.push({
                         compte: '6075000',
                         libelle: 'ACHATS VRAC',
                         debit: total_HT,
                         credit: 0,
                         classe: ''
+                    }),
+                    ecritures.push({
+                        compte: '6075000',
+                        libelle: 'ACHATS VRAC',
+                        debit: 0,
+                        credit: total_HT,
+                        classe: ''
                     });
+                    
                 }
             }
         }
@@ -142,8 +183,8 @@ function genererTableauComptable(data) {
             <td></td>
             <td class="center-cell fw-bold">${ecriture.compte}</td>
             <td>${ecriture.libelle}</td>
-            <td class="number-cell ${ecriture.debit < 0 ? 'fw-bold text-danger' : ''}">${ecriture.debit < 0 ? formatMontant(ecriture.debit) : ''}</td>
-            <td class="number-cell ${ecriture.credit > 0 ? 'fw-bold text-success' : ''}">${ecriture.credit > 0 ? formatMontant(ecriture.credit) : ''}</td>
+            <td class="number-cell ${ecriture.debit < 0 || ecriture.debit > 0 ? 'fw-bold text-danger' : ''}"> ${ecriture.debit < 0 || ecriture.debit > 0  ? formatMontant(Math.abs(ecriture.debit)) : ''} </td>
+            <td class="number-cell ${ecriture.credit > 0 || ecriture.credit < 0  ? 'fw-bold text-success' : ''}"> ${ecriture.credit > 0 || ecriture.credit < 0  ? formatMontant(ecriture.credit) : ''} </td>
             <td class="center-cell">EUR</td>
         `;
         
@@ -201,11 +242,11 @@ function ajouterSelecteurMois() {
 
     if (modalHeader && !document.getElementById('selecteurMoisComptable')) {
         const selecteurContainer = document.createElement('div');
-        selecteurContainer.className = 'd-flex align-items-center gap-2 ms-auto';
+        selecteurContainer.className = 'd-flex align-items-center gap-2 ms-auto me-5';
         selecteurContainer.innerHTML = `
-            <label class="small mb-0 text-muted">Période:</label>
-            <select id="selecteurMoisComptable" class="form-select form-select-sm" style="width: 150px;">
-                <option value="">Sélectionner un mois</option>
+            <label class="strong h4 mb-0 text-muted">Période:</label>
+            <select id="selecteurMoisComptable" class="form-select form-select-sm" style="width: 250px;">
+                <option value="" selected >Sélectionner un mois</option>
             </select>
         `;
 
@@ -219,7 +260,7 @@ function ajouterSelecteurMois() {
             const option = document.createElement('option');
             option.value = `${annee}-${mois}`;
             option.textContent = `${annee}-${mois.toString().padStart(2, '0')}`;
-            if (i === 0) option.selected = true; // Sélectionner le mois actuel
+            if (i === 0) option.selected = false; // Sélectionner le mois actuel
             selecteurContainer.querySelector('select').appendChild(option);
         }
 
@@ -263,10 +304,12 @@ if (bouton_document_comptable) {
             // Générer le tableau avec les données actuelles ou charger le mois actuel
             if (donneesComptables && donneesComptables.length > 0) {
                 genererTableauComptable(donneesComptables);
+
             } else {
                 // Charger les données du mois actuel
                 const maintenant = new Date();
                 chargerDonneesMois(maintenant.getFullYear(), maintenant.getMonth() + 1);
+
             }
         }
     });

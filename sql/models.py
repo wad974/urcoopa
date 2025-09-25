@@ -82,11 +82,30 @@ class CRUD:
                 else:
                     date_fin = f"{now.year}-{now.month + 1:02d}-01"
             
+            '''
+            REQUTE POUR TVA ET HT
+            
+            
+            SELECT left(Date_Facture,7) mois_facture, Type_Facture ,
+            (case when Code_Produit='INTR' then 'INTR' else '' end) est_intr,
+            sum(Montant_HT_Ligne) total_HT
+            #sum(Montant_HT_Ligne*Taux_TVA/100) total_TVA                
+            FROM exportodoo.sic_urcoopa_facture
+            where Societe_Facture ='VRAC'
+            and left(Code_Client,1)='5'
+            and Date_Facture>=%s
+            and Date_Facture<=%s
+            and Nom_Client not in (select Nom_Client from exportodoo.sic_urcoopa_Exclution_mois where mois_facture=left(sic_urcoopa_facture.Date_Facture,7))
+            group by left(Date_Facture,7), Type_Facture, (case when Code_Produit='INTR' then 'INTR' else '' end)
+        
+            
+            '''
+            
+            
             requete ='''
                 SELECT left(Date_Facture,7) mois_facture, Type_Facture ,
                 (case when Code_Produit='INTR' then 'INTR' else '' end) est_intr,
-                sum(Montant_HT_Ligne) total_HT,
-                sum(Montant_HT_Ligne*Taux_TVA/100) total_TVA                
+                sum(Montant_HT_Ligne) total_HT             
                 FROM exportodoo.sic_urcoopa_facture
                 where Societe_Facture ='VRAC'
                 and left(Code_Client,1)='5'
@@ -94,12 +113,57 @@ class CRUD:
                 and Date_Facture<=%s
                 and Nom_Client not in (select Nom_Client from exportodoo.sic_urcoopa_Exclution_mois where mois_facture=left(sic_urcoopa_facture.Date_Facture,7))
                 group by left(Date_Facture,7), Type_Facture, (case when Code_Produit='INTR' then 'INTR' else '' end)
-            '''
+                '''
+            
             
             # Correction du paramètre pour le nom client
             cursor.execute(requete, (date_debut, date_fin,))
-            resultat = cursor.fetchall()
+            resultatHT = cursor.fetchall()
             
+            cursor.close()
+            cnx.close()
+            
+            print('VRAC => ', resultatHT)
+            
+            cnx = recupere_connexion_db()
+            cursor = cnx.cursor(dictionary=True)
+            
+            requete2 ='''
+                SELECT left(Date_Facture,7) mois_facture, sum(Montant_HT_Ligne*Taux_TVA/100) total_TVA
+                FROM exportodoo.sic_urcoopa_facture
+                where Societe_Facture ='VRAC'
+                and left(Code_Client,1)='5'
+                and Date_Facture>=%s
+                and Date_Facture<=%s
+                and Nom_Client not in (select Nom_Client from exportodoo.sic_urcoopa_Exclution_mois where mois_facture=left(sic_urcoopa_facture.Date_Facture,7))
+                group by left(Date_Facture,7)
+                '''
+            
+            
+            # Correction du paramètre pour le nom client
+            cursor.execute(requete2, (date_debut, date_fin,))
+            resultatTVA = cursor.fetchall()
+            
+            cursor.close()
+            cnx.close()
+            
+            print('VRAC => ', resultatTVA)
+            
+            # Créer un dictionnaire des TVA par mois pour faciliter la fusion
+            tva_par_mois = {row['mois_facture']: row['total_TVA'] for row in resultatTVA}
+
+            # Regrouper les résultats
+            resultat = []
+            for row in resultatHT:
+                mois = row['mois_facture']
+                resultat.append({
+                    'mois_facture': mois,
+                    'Type_Facture': row['Type_Facture'],
+                    'est_intr': row['est_intr'],
+                    'total_HT': row['total_HT'],
+                    'total_TVA': tva_par_mois.get(mois, 0)  # TVA du mois complet
+                })
+
             print('VRAC => ', resultat)
             
             #Consommer tous les résultats restants
@@ -392,6 +456,7 @@ class CRUD:
             cursor.close()
             # Note: Ne pas fermer la connexion ici si elle est réutilisée ailleurs
             # cnx.disconnect()  # Décommentez si vous voulez fermer la connexion
+    
     #Méthode READ ALL
     async def readAll(self,):
         cnx = self.connexion
@@ -571,6 +636,28 @@ class CRUD:
             cursor.execute(requete,valeursUpdate)
             cnx.commit()
             
-            return print(f"✅📤 [SUCCESS] Facture Mise à jour réussie")
+            return print(f"✅📤 [SUCCESS] Facture Mise à jour réussie dans la base de données \n\n")
+        except:
+            print(f"❌ [ERREUR] {Numero_Facture} UDAPTE DANS DATABASE")
+            
+    #METHODE UPDATE SIC URCOOPA FACTURE INTEGRATIOON ODOO
+    def UpdateStatutIntegrationFactureOdoo(self, Numero_Facture):
+        try:
+            cnx = self.connexion
+            cursor = cnx.cursor()
+            
+            Nouveau_status_bdd = 'intégré'
+            
+            requete = '''
+                update exportodoo.sic_urcoopa_facture 
+                set Statut_Integration_Fac_inOdoo = %s
+                where Numero_Facture = %s
+            '''
+            
+            valeursUpdate = ( Nouveau_status_bdd, Numero_Facture,)
+            cursor.execute(requete,valeursUpdate)
+            cnx.commit()
+            
+            return print(f"✅📤 [SUCCESS] Facture Mise à jour dans base de données \n\n")
         except:
             print(f"❌ [ERREUR] {Numero_Facture} UDAPTE DANS DATABASE")

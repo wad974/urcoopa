@@ -115,6 +115,7 @@ async def createAdherentOdoo(rows: list, models, db, uid, password, status):
             tmpl_id = int()
             
             if code_produit is None:
+                print('[INFO] Code produit is None recuperation dans ID_Produit_tmpl_ODOO : ',row.get('ID_Produit_tmpl_ODOO') ,' - TypeOf :', type(row.get('ID_Produit_tmpl_ODOO')) )
                 tmpl_id = int(row.get('ID_Produit_tmpl_ODOO'))
                 print('[INFO] Code produit is None tmpl_id = ', tmpl_id)
             
@@ -135,7 +136,7 @@ async def createAdherentOdoo(rows: list, models, db, uid, password, status):
                 if not supplier_ids:
                     
                     crud = CRUD()
-                    print(f"❌ Produit {code_produit} non trouvé dans supplierinfo. \n\n")
+                    print(f"❌ Produit {code_produit} non trouvé dans supplierinfo.")
                     crud.insertArticleCorrespondance(code_produit)
                     crud.updateSicUrcoopaFacture(ref_facture)
                     
@@ -321,7 +322,7 @@ async def createAdherentOdoo(rows: list, models, db, uid, password, status):
                 crud = CRUD()
                 crud.updateSicUrcoopaFacture(ref_facture)
                 
-                print(f"✅📤 [SUCCESS] Facture Mise à jour réussie \n\n")
+                print(f"✅📤 [SUCCESS] Facture Mise à jour réussie dans la base de données \n\n")
                     
             #print(f"✅📤 [SUCCESS] Facture Odoo créée avec ID {move_id} \n\n")
         except xmlrpc.client.Fault as e:

@@ -78,8 +78,9 @@ function injectScriptsHtmlFactureUrcoopaAdherent() {
 
             xhrButton.addEventListener("click", () => {
                 log.textContent = "";
+                //let url = "https://172.17.240.18:9898/factureAdherentUrcoopa";
                 let url = "https://172.17.240.18:9898/factureAdherentUrcoopa";
-
+                
                 const xhr = new XMLHttpRequest();
                 xhr.open("GET", url);
                 addListeners(xhr);
@@ -124,7 +125,8 @@ function initPOSFactureUrcoopaAdherent() {
             aDivBox.setAttribute('class', 'dropdown-item o_nav_entry facture-urcoopa-adherent-button');
             aDivBox.setAttribute('role', 'menuitem');
             aDivBox.setAttribute('tabindex', '1');
-            aDivBox.setAttribute('href', 'http://172.17.240.18:9898/');
+            //aDivBox.setAttribute('href', 'http://172.17.240.18:9898/');
+            aDivBox.setAttribute('href', 'http://127.0.0.1:9898/');
             aDivBox.setAttribute('data-hotkey', '2');
             aDivBox.setAttribute('aria-selected', 'false');
             aDivBox.setAttribute('data-section', '119');

@@ -131,7 +131,7 @@
         background-repeat: no-repeat;
         background-size: 25px;
         width: 350px;
-        font-size: 16px;
+        font-size: 15px;
         padding: 12px 20px 12px 40px;
         border: 1px solid #ddd;
         margin-bottom: 12px;
@@ -141,7 +141,7 @@
         border-collapse: collapse;
         width: 100%;
         border: 1px solid #ddd;
-        font-size: 16px;
+        font-size: 15px;
     }
 
     #myTable th,
@@ -214,7 +214,7 @@
         border: 1px solid #dee2e6;
         padding: 0.5rem;
         text-align: center;
-        font-weight: 600;
+        font-weight: 500;
     }
 
     .document-table td {
@@ -255,7 +255,7 @@
     <nav class="topbar d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
             <i class="bi bi-x-diamond-fill me-2 text-primary"></i>
-            <a href="https://staging-erp.groupe-sicalait.fr/web#action=288&model=account.journal&view_type=kanban"
+            <a href="https://sdpmajdb-odoo17-dev-staging-sicalait-23500291.dev.odoo.com/web#action=288&model=account.journal&view_type=kanban&cids=5-48-49-50-51-52-53-54-55-68-19-43-44-45-46-47&menu_id=311"
                 class="nav-link d-inline link-underline-opacity-100-hover">
                 <span class="fw-bold me-4">Factures adhérents urcoopa</span>
             </a>
@@ -294,14 +294,18 @@
                                     <div class="col-auto">
                                         <strong>Date d'opération:</strong> <span class="text-primary dateOperation"></span>
                                     </div>
+                                    <!--
                                     <div class="col-auto">
                                         <strong>Numéro de Document:</strong> <span class="text-primary">00000000</span>
                                     </div>
+                                    
                                     <div class="col-auto">
-                                        <strong>du:</strong> <span class="text-primary"></span>
+                                        <strong>du:</strong> <span class="text-primary dateFin"></span>
                                     </div>
+                                    -->
                                 </div>
                             </div>
+                            <!--
                             <div class="col-md-4">
                                 <div class="d-flex flex-column gap-1">
                                     <div class="form-check form-check-inline">
@@ -313,13 +317,15 @@
                                         <label class="form-check-label small" for="libelle_compte">Libellé compte</label>
                                     </div>
                                 </div>
-                            </div>
+                            </div>-->
                         </div>
                         
                         <div class="row mb-2">
+                            <!--
                             <div class="col-auto">
                                 <strong>Date d'échéance:</strong> <span class="text-primary dateEcheance"></span>
                             </div>
+                            -->
                             <div class="col-auto">
                                 <strong>Devise d'affichage:</strong> 
                                 <select class="form-select form-select-sm d-inline-block" style="width: auto;">
@@ -348,8 +354,8 @@
                                     <th>Aux.</th>
                                     <th>Compte</th>
                                     <th>Libellé</th>
-                                    <th>Montant avoir</th>
-                                    <th>Montant facture</th>
+                                    <th>Montant Débit (avoir)</th>
+                                    <th>Montant Crédit (facture)</th>
                                     <th>Devise</th>
                                 </tr>
                             </thead>
@@ -450,12 +456,14 @@
                 </div>
             </div>
             <div class="modal-footer border-top p-3">
-                <button type="button" class="btn btn-outline-primary btn-sm">
-                    <i class="bi bi-printer"></i> Imprimer
-                </button>
-                <button type="button" class="btn btn-success btn-sm">
-                    <i class="bi bi-check-circle"></i> Valider l'écriture
-                </button>
+                <!--
+                    <button type="button" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-printer"></i> Imprimer
+                    </button>
+                    <button type="button" class="btn btn-success btn-sm">
+                        <i class="bi bi-check-circle"></i> Valider l'écriture
+                    </button>
+                -->
                 <button type="button" class="btn btn-secondary btn-sm" id="closeDocumentModalFooter">
                     <i class="bi bi-x-circle"></i> Fermer
                 </button>
@@ -503,12 +511,12 @@
             </div>
         </div>
         <!-- Titre principal avec icône -->
-        <h2 class="fw-bold text-dark mb-3">
+        <h3 class="fw-bold text-dark">
             📄 Factures Urcoopa – <span id="tableCaption" class="text-primary">Toutes les factures</span>
-        </h2>
-        <h3>
-            Nombre de facture : <span id="nombreFacture"></span>
         </h3>
+        <h6 class="d-flex justify-content-end">
+            Nombre de facture :  <span id="nombreFacture"></span>
+        </h6>
         <table id="myTable" class="table table-bordered table-hover align-middle mt-4">
             <thead class="table-dark">
                 <!--<tr>
@@ -535,9 +543,10 @@
 
             </tbody>
             <tfoot class="table-light">
-                <tr>
+                <!--<tr>
                     <td colspan="3" rowspan="2"></td>
                     <td rowspan="2" class="text-center">
+                        
                         <button type="button" id="ValiderTotal" class="btn btn-success btn-sm shadow-sm">
                             ✅ Valider tout
                         </button>
@@ -548,7 +557,7 @@
                 <tr>
                     <td class="fw-bold text-end text-muted">Total TTC :</td>
                     <td class="fw-bold text-primary" id="ttcFooter">-- €</td>
-                </tr>
+                </tr>-->
             </tfoot>
         </table>
     </div>

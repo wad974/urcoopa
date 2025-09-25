@@ -118,76 +118,6 @@ class DateTimeEncoder(json.JSONEncoder):
             return obj.isoformat()
         return super().default(obj)
 
-######## HOME / RACINE
-@app.get('/', response_class=HTMLResponse)
-def home(request : Request):
-    try: 
-        print('🌐 init home')
-        
-        crud = CRUD()
-        
-        factures = crud.readFiltreAdherent()
-        avoirs = crud.readFiltreAdherentAvoir()
-        
-        # Récupération des données comptables pour le mois en cours
-        donnees_comptables = crud.readDonneesComptables()
-        
-        # Convert date objects to strings
-        def convert_dates(data_list):
-            for item in data_list:
-                for key, value in item.items():
-                    if isinstance(value, (date, datetime)):
-                        item[key] = value.isoformat()
-            return data_list
-
-        factures = convert_dates(factures)
-        avoirs = convert_dates(avoirs)
-        
-        for row in factures:
-            print(row.get('date_validation'))
-        
-        # si vide []
-        if len(factures) == 0:
-            return templates.TemplateResponse( 
-                                        'index.html', 
-                                        { 
-                                            'request' : request,
-                                            'tous_factures_adherent_regroupe' : '' ,
-                                            "total_ht": '0',
-                                            "total_ttc": '0',
-                                            #'adherent_null' : regroupe_non_adherent,
-                                            "year": datetime.now().year,
-                                            'donnees_comptables': donnees_comptables
-                                        })
-        
-        else: 
-            return templates.TemplateResponse( 
-                                        'index.html', 
-                                        { 
-                                            'request' : request,
-                                            'FACTURES' : factures ,
-                                            'AVOIRS' : avoirs ,
-                                            "total_ht": '0',
-                                            "total_ttc": '0',
-                                            #'adherent_null' : regroupe_non_adherent,
-                                            "year": datetime.now().year,
-                                            'donnees_comptables': donnees_comptables
-                                        })
-        
-    except mysql.connector.Error as erreur:
-        print(f'Erreur lors de la connexion à la base de données : {erreur}')
-        return {"Erreur connexion Base de données : {erreur}"}
-    '''
-    return templates.TemplateResponse(
-        'index.html', 
-        {
-            "request" : request, 
-            'title' : 'Accueil',
-            'year' : datetime.now().year
-        })
-    '''
-
-
 ######## API pour données comptables par mois
 @app.get('/api/donnees-comptables/{annee}/{mois}')
 def get_donnees_comptables_mois(annee: int, mois: int):
@@ -220,9 +150,10 @@ def get_donnees_comptables_mois(annee: int, mois: int):
             "data": []
         }
 
+
 ######## API pour données correspondance adherent par mois
-@app.get('/api/correspondance-adherent')
-async def get_donnees_adherent():
+@app.get('/api/verification-correspondance-adherent')
+async def get_verification_donnees_adherent():
     try:
         
         # status initial 
@@ -233,12 +164,25 @@ async def get_donnees_adherent():
         
         database = recupere_connexion_db()
         cursor = database.cursor(dictionary=True)
-        requete = '''
+        
+        '''
+        REQUETE POUR ADHERENT UNIQUEMENT 
+        
             SELECT * FROM exportodoo.sic_urcoopa_facture 
             where Type_Client = 'ADHERENT'
             and Statut_Correspondance_Article = 'à traiter'
             and Statut_Correspondance_Adherent = 'à traiter'
+        
         '''
+        
+        requete = '''
+            SELECT * FROM exportodoo.sic_urcoopa_facture 
+            where Societe_Facture ='VRAC'
+            and left(Code_Client,1)<>'5'
+            and Statut_Correspondance_Article = 'à traiter'
+            and Statut_Correspondance_Adherent = 'à traiter'
+        '''
+        
         cursor.execute(requete,)
         datas = cursor.fetchall()
         
@@ -285,11 +229,10 @@ async def get_donnees_adherent():
             "error": str(e),
             "data": []
         }
-        
-        
-    
+
+
 ######## API pour injections correspondance adherent urcoopa
-@app.get('/api/injection-correspondance-adherent')
+@app.get('/api/injection-dans-odoo-donnees-adherent')
 async def get_injection_donnees_adherent():
     try:
         
@@ -301,8 +244,23 @@ async def get_injection_donnees_adherent():
         
         database = recupere_connexion_db()
         cursor = database.cursor(dictionary=True)
+        
+        '''
+        REQUETE INJECTIOON ADHERENT UNIQUEMENT 
+
+            select * from exportodoo.sic_urcoopa_facture suf 
+            where Societe_Facture ='VRAC'
+            and left(Code_Client,1)<>'5'
+            
+            select *
+            from exportodoo.sic_urcoopa_facture suf 
+            where Type_Client = 'Adherent'
+            and Nom_Client not in (SELECT Nom_Adherent_Urcoopa FROM exportodoo.sic_urcoopa_non_correspondance_adherent )
+            and Code_Produit not in (SELECT Numero_Article_Urcoopa FROM exportodoo.sic_urcoopa_non_correspondance_article )
+        '''
+        
         requete = '''
-            select * 
+            select *
             from exportodoo.sic_urcoopa_facture suf 
             where Type_Client = 'Adherent'
             and Nom_Client not in (SELECT Nom_Adherent_Urcoopa FROM exportodoo.sic_urcoopa_non_correspondance_adherent )
@@ -321,7 +279,7 @@ async def get_injection_donnees_adherent():
         else: 
             
             # Construire la data base pour recuperer les infos sur tous les adherents 
-            facture_adherent = datas  # <-- lit le JSON envoyé dans le body
+            facture_adherent = datas  # <-- lis le JSON envoyé dans le body
             #print("📦 JSON reçu :", json.dumps(facture_adherent, indent=2))
             print("📦 JSON reçu ")
             
@@ -333,15 +291,24 @@ async def get_injection_donnees_adherent():
                 facture_groupé[numero].append(ligne)
                 
             print('📤[INFO] Début ajout facture Odoo')
+            
+            #boucle initialisé à faire
+            i = 0 
+            
             for numero_facture, lignes in facture_groupé.items():
                 # On filtre : ne traiter que les lignes ADHERENT
                 lignes_filtrées = [row for row in lignes]
 
                 if lignes_filtrées:
-                            # Appel unique à createAdherent avec toutes les lignes de cette facture
-                            await createAdherentOdoo(lignes_filtrées,models, db, uid, password, status )
-                            break
-            
+                    # Appel unique à createAdherent avec toutes les lignes de cette facture
+                    await createAdherentOdoo(lignes_filtrées,models, db, uid, password, status )
+                    
+                    #petit boucle pour bloquer les 5 premier facture puis break
+                    i = i + 1 
+                    
+                    if i == 100:
+                        break
+                    
             #fin de traitement boule ci dessus
             return {
                 "success": True,
@@ -356,6 +323,8 @@ async def get_injection_donnees_adherent():
             "error": str(e),
             "data": []
         }
+
+
 '''
 #GET COMMANDES DEPUIS GESICA
 @app.get('/Commandes_Gesica')
@@ -404,6 +373,7 @@ async def get_commandes_gesica():
         raise HTTPException(status_code=500, detail=str(e))
 '''
 
+
 ### GET FACTURES ANCIEN API
 @app.get('/ancien_api_recupere_factures')
 async def get_Factures_Sicalait(xCleAPI=API_KEY_URCOOPA,nb_jours=API_KEY_JOUR_FACTURES):
@@ -440,6 +410,7 @@ async def get_Factures_Sicalait(xCleAPI=API_KEY_URCOOPA,nb_jours=API_KEY_JOUR_FA
         #else:
         #    print('❌[INFO] NON ADHERENT')
     return JSONResponse(content='[SUCCESS] FACTURE AJOUTER BASE DE DONNEES', status_code=200)
+
 
 ### GET LIVRAISONS
 @app.get("/recupere_livraison/")
@@ -599,7 +570,7 @@ async def get_livraison(
         print('ERREUR CONNEXION ', e)
 
 
-### FACTURES
+### FACTURES RECUPERATION URCOOPA
 @app.get("/Recupere_Factures/")
 async def get_factures(
     xCleAPI: str = API_KEY_URCOOPA, 
@@ -782,6 +753,11 @@ async def get_factures(
         except Exception as e: 
             print('[ERREUR] PROCEDURE :', e)
         # QUAND TOUS DATAS EST DANS SQL ON TRAITE DE SUITE POUR ODOO
+        return {
+            'Status' : 'SUCCESS',
+            'Message' : 'La récuperation des factures urcoopa éffectué !'
+        }
+        
         # en creant un JSON
         #return JSONResponse(content={'message' : 'SUCCESS'})
         # Ajout ODOO debut
@@ -909,12 +885,11 @@ async def get_factures(
         raise HTTPException(status_code=500, detail=f"Erreur SOAP : {fault}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
+
 
 ###############################
 # AJOUT FACTURE ODOO
 ###############################
-
 @app.get('/ajout-facture-odoo')
 async def ajout_facture_odoo():
     print('[INFO] 🌐 init ajout facture odoo')
@@ -922,7 +897,39 @@ async def ajout_facture_odoo():
     cnx = recupere_connexion_db()
     cursor  = cnx.cursor(dictionary=True)
     
-    requete = 'SELECT * FROM exportodoo.sic_urcoopa_facture'
+    requete = """ 
+        SELECT * FROM exportodoo.sic_urcoopa_facture 
+        where Type_Client <> 'ADHERENT'
+        AND Statut_Integration_Fac_inOdoo = 'à intégrer'
+        """
+    
+    
+    """
+    requete = '''
+        select *
+        from exportodoo.sic_urcoopa_facture suf 
+        where Societe_Facture ='VRAC'
+        and left(Code_Client,1)<>'5'
+        and Nom_Client not in (SELECT Nom_Adherent_Urcoopa FROM exportodoo.sic_urcoopa_non_correspondance_adherent )
+        and Code_Produit not in (SELECT Numero_Article_Urcoopa FROM exportodoo.sic_urcoopa_non_correspondance_article )
+    '''
+    requete = SELECT left(Date_Facture,7) mois_facture, Type_Facture ,
+                (case when Code_Produit='INTR' then 'INTR' else '' end) est_intr,
+                sum(Montant_HT_Ligne) total_HT,
+                sum(Montant_HT_Ligne*Taux_TVA/100) total_TVA                
+                FROM exportodoo.sic_urcoopa_facture
+                where Societe_Facture ='VRAC'
+                and left(Code_Client,1)='5'
+                
+            select *
+            from exportodoo.sic_urcoopa_facture suf 
+            where Societe_Facture ='VRAC'
+            and left(Code_Client,1)<>'5'
+            and Nom_Client not in (SELECT Nom_Adherent_Urcoopa FROM exportodoo.sic_urcoopa_non_correspondance_adherent )
+            and Code_Produit not in (SELECT Numero_Article_Urcoopa FROM exportodoo.sic_urcoopa_non_correspondance_article )
+            
+    """
+    
     cursor.execute(requete)
     datas = cursor.fetchall()
     
@@ -943,6 +950,10 @@ async def ajout_facture_odoo():
     
     return JSONResponse(content='AJOUT FACTURE ODOO OK')
 
+
+###############################
+# POST FACTURE ODOO DANS URCOOPA
+###############################
 #PUSH FACTURES
 @app.post("/envoyer-commande/")
 async def post_commande():
@@ -1213,6 +1224,80 @@ async def post_commande():
         #raise HTTPException(status_code=500, detail=str(e))
     '''   
     ######################################################
+
+
+###############################
+# AJOUT RECUPERATION FACTURE DANS SITE HOME TEMPLATE
+###############################
+######## HOME / RACINE
+@app.get('/', response_class=HTMLResponse)
+def home(request : Request):
+    try: 
+        print('🌐 init home')
+        
+        crud = CRUD()
+        
+        factures = crud.readFiltreAdherent()
+        avoirs = crud.readFiltreAdherentAvoir()
+        
+        # Récupération des données comptables pour le mois en cours
+        donnees_comptables_ht  = crud.readDonneesComptables()
+        
+        # Convert date objects to strings
+        def convert_dates(data_list):
+            for item in data_list:
+                for key, value in item.items():
+                    if isinstance(value, (date, datetime)):
+                        item[key] = value.isoformat()
+            return data_list
+        
+        factures = convert_dates(factures)
+        avoirs = convert_dates(avoirs)
+        
+        #for row in factures:
+            #print(row.get('date_validation'))
+        
+        # si vide []
+        if len(factures) == 0:
+            return templates.TemplateResponse( 
+                                        'index.html', 
+                                        { 
+                                            'request' : request,
+                                            'tous_factures_adherent_regroupe' : '' ,
+                                            "total_ht": '0',
+                                            "total_ttc": '0',
+                                            #'adherent_null' : regroupe_non_adherent,
+                                            "year": datetime.now().year,
+                                            'donnees_comptables': donnees_comptables_ht
+                                        })
+        
+        else: 
+            return templates.TemplateResponse( 
+                                        'index.html', 
+                                        { 
+                                            'request' : request,
+                                            'FACTURES' : factures ,
+                                            'AVOIRS' : avoirs ,
+                                            "total_ht": '0',
+                                            "total_ttc": '0',
+                                            #'adherent_null' : regroupe_non_adherent,
+                                            "year": datetime.now().year,
+                                            'donnees_comptables': donnees_comptables_ht
+                                        })
+        
+    except mysql.connector.Error as erreur:
+        print(f'Erreur lors de la connexion à la base de données : {erreur}')
+        return {"Erreur connexion Base de données : {erreur}"}
+    '''
+    return templates.TemplateResponse(
+        'index.html', 
+        {
+            "request" : request, 
+            'title' : 'Accueil',
+            'year' : datetime.now().year
+        })
+    '''
+
 
 #recuperation adherent dans base de données exportOdoo
 @app.get('/factureAdherentUrcoopa', response_class=HTMLResponse)
