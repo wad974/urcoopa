@@ -39,6 +39,55 @@ if uid:
     #partner = partner[0].get('purchase_order_id')[1]
     
     
+    # 1. Trouver le partenaire
+    partner_ids = models.execute_kw(
+        db, uid, password,
+        'res.partner', 'search',
+        [[['name', '=', 'SICALAIT - ALIMENT']]],
+        {'limit': 1}
+    )
+
+    if not partner_ids:
+        print("❌ Partenaire introuvable.")
+        exit()
+
+    partner_id = partner_ids[0]
+    print(f"[INFO] Partenaire trouvé : ID={partner_id}")
+
+    # 2. Rechercher les bons de commande liés à ce partenaire
+    purchase_orders = models.execute_kw(
+        db, uid, password,
+        'purchase.order', 'search_read',
+        [[['partner_id', '=', partner_id]]],
+        {'fields': ['id', 'name', 'state']}
+    )
+
+    if not purchase_orders:
+        print("❌ Aucun bon de commande trouvé pour ce partenaire.")
+        exit()
+
+    print(f"[INFO] {len(purchase_orders)} commandes trouvées.")
+
+    # 3. Parcourir et agir selon l'état
+    for order in purchase_orders:
+        if order['state'] == 'draft':   # 👉 pour confirmer les brouillons
+            models.execute_kw(
+                db, uid, password,
+                'purchase.order', 'button_confirm',
+                [[order['id']]]
+            )
+            print(f"✅ Commande {order['name']} confirmée.")
+        elif order['state'] == 'purchase':  # 👉 si déjà confirmée, on peut annuler
+            models.execute_kw(
+                db, uid, password,
+                'purchase.order', 'button_cancel',
+                [[order['id']]]
+            )
+            print(f"⛔ Commande {order['name']} annulée.")
+        else:
+            print(f"⚠️ Commande {order['name']} ignorée (state={order['state']}).")
+    
+    '''  
     product_ids = models.execute_kw(
                 db, uid, password,
                 'product.product', 'search',
@@ -47,7 +96,7 @@ if uid:
             )
 
     print('✅ Champs account.move.line disponibles :', product_ids)
-    '''  
+
     partner = models.execute_kw(
         db, uid, password,
         'purchase.order', 'search_read',
@@ -158,7 +207,7 @@ if uid:
     for p in products:
         tmpl_id = p['id']
         p['product_code'] = code_map.get(tmpl_id)
-    '''
+    
     
     #test que chaque produits match
     #print('Res.Partner: \n\n\n')
@@ -171,7 +220,7 @@ if uid:
     
     #print('models read. RESULTAT: ', partner)
     print("Enregistrement effectué ")
-    
+    '''
     
 else:
     print("Authentication failed.")

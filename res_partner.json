@@ -1,1 +1,5151 @@
-[]
+[
+    {
+        "id": 1132,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_user_id": false,
+        "activity_type_id": false,
+        "activity_type_icon": false,
+        "activity_date_deadline": false,
+        "my_activity_date_deadline": false,
+        "activity_summary": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_calendar_event_id": false,
+        "message_is_follower": false,
+        "message_follower_ids": [
+            18015,
+            18016
+        ],
+        "message_partner_ids": [
+            3,
+            7351
+        ],
+        "message_ids": [
+            39914,
+            39913,
+            39912,
+            39911,
+            39910,
+            39909,
+            39908,
+            39907,
+            39906,
+            39905,
+            39904,
+            39903,
+            39902,
+            39901,
+            39900,
+            39899,
+            39898,
+            39897,
+            39896,
+            39895,
+            39894,
+            39893,
+            39892,
+            39891,
+            39890,
+            39889,
+            39888,
+            39887,
+            39886,
+            39885,
+            39884,
+            39883,
+            39882,
+            39881,
+            39880,
+            39879,
+            39878,
+            39877,
+            39876,
+            39875,
+            39871,
+            39869,
+            39868,
+            39867,
+            39866,
+            39865,
+            39864,
+            39863,
+            39862,
+            39861,
+            39860,
+            39859,
+            39858,
+            39857,
+            39856,
+            39855,
+            39854,
+            39853,
+            39852,
+            39851,
+            39850,
+            39849,
+            39848,
+            39847,
+            39846,
+            39845,
+            39844,
+            39843,
+            39842,
+            39841,
+            39840,
+            39839,
+            39838,
+            39837,
+            39836,
+            39835,
+            39834,
+            39833,
+            39832,
+            39831,
+            39830,
+            39829,
+            39828,
+            39827,
+            39826,
+            39825,
+            39824,
+            39823,
+            39822,
+            39821,
+            39820,
+            39819,
+            39818,
+            39817,
+            39816,
+            39815,
+            39814,
+            39813,
+            39812,
+            39811,
+            39810,
+            39809,
+            39808,
+            39807,
+            39806,
+            39805,
+            39804,
+            39803,
+            39802,
+            39801,
+            39800,
+            39799,
+            39798,
+            39797,
+            39796,
+            39795,
+            39794,
+            39793,
+            39792,
+            39791,
+            39790
+        ],
+        "has_message": true,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_attachment_count": 0,
+        "rating_ids": [],
+        "website_message_ids": [],
+        "message_has_sms_error": false,
+        "access_url": "/my/purchase/1132",
+        "access_token": false,
+        "access_warning": "",
+        "name": "P0001132",
+        "priority": "0",
+        "origin": false,
+        "partner_ref": false,
+        "date_order": "2025-09-25 11:46:45",
+        "date_approve": "2025-09-25 11:50:02",
+        "partner_id": [
+            7351,
+            "ZOLUX SAS"
+        ],
+        "dest_address_id": false,
+        "currency_id": [
+            125,
+            "EUR"
+        ],
+        "state": "purchase",
+        "order_line": [
+            46269,
+            46272,
+            46274,
+            46276,
+            46279,
+            46280,
+            46282,
+            46283,
+            46285,
+            46286,
+            46288,
+            46289,
+            46290,
+            46291,
+            46293,
+            46294,
+            46296,
+            46297,
+            46298,
+            46299,
+            46300,
+            46302,
+            46305,
+            46308,
+            46309,
+            46312,
+            46314,
+            46317,
+            46318,
+            46319,
+            46320,
+            46321,
+            46322,
+            46323,
+            46324,
+            46325,
+            46328,
+            46330,
+            46331,
+            46332
+        ],
+        "notes": false,
+        "invoice_count": 1,
+        "invoice_ids": [
+            2803
+        ],
+        "invoice_status": "invoiced",
+        "date_planned": "2025-10-15 11:46:45",
+        "date_calendar_start": "2025-09-25 11:50:02",
+        "amount_untaxed": 2579.23,
+        "tax_totals": {
+            "amount_untaxed": 2579.23,
+            "amount_total": 2579.23,
+            "formatted_amount_total": "2 579,23 €",
+            "formatted_amount_untaxed": "2 579,23 €",
+            "groups_by_subtotal": {
+                "Montant hors taxes": [
+                    {
+                        "group_key": 25,
+                        "tax_group_id": 25,
+                        "tax_group_name": "VAT 8.5%",
+                        "tax_group_amount": 0.0,
+                        "tax_group_base_amount": 2579.2299999999996,
+                        "formatted_tax_group_amount": "0,00 €",
+                        "formatted_tax_group_base_amount": "2 579,23 €",
+                        "hide_base_amount": false
+                    }
+                ]
+            },
+            "subtotals": [
+                {
+                    "name": "Montant hors taxes",
+                    "amount": 2579.2299999999996,
+                    "formatted_amount": "2 579,23 €"
+                }
+            ],
+            "subtotals_order": [
+                "Montant hors taxes"
+            ],
+            "display_tax_base": false
+        },
+        "amount_tax": 0.0,
+        "amount_total": 2579.23,
+        "fiscal_position_id": [
+            17,
+            "Import/Export Outside Europe + DOM-TOM"
+        ],
+        "tax_country_id": [
+            75,
+            "France"
+        ],
+        "tax_calculation_rounding_method": "round_per_line",
+        "payment_term_id": false,
+        "incoterm_id": false,
+        "product_id": [
+            54896,
+            "[1135387] PATTE POULET 150G"
+        ],
+        "user_id": [
+            2,
+            "ADMINISTRATOR"
+        ],
+        "company_id": [
+            19,
+            "SICALAIT"
+        ],
+        "country_code": "FR",
+        "currency_rate": 1.0,
+        "mail_reminder_confirmed": false,
+        "mail_reception_confirmed": false,
+        "receipt_reminder_email": false,
+        "reminder_date_before_receipt": 1,
+        "display_name": "P0001132",
+        "create_uid": [
+            2,
+            "ADMINISTRATOR"
+        ],
+        "create_date": "2025-09-25 11:46:54",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ],
+        "write_date": "2025-09-29 14:15:32",
+        "requisition_id": false,
+        "is_quantity_copy": false,
+        "purchase_group_id": false,
+        "alternative_po_ids": [],
+        "has_alternatives": false,
+        "incoterm_location": false,
+        "incoming_picking_count": 1,
+        "picking_ids": [
+            4002
+        ],
+        "picking_type_id": [
+            355,
+            "SICALAIT - SLS: IMP-EN"
+        ],
+        "default_location_dest_id_usage": "supplier",
+        "group_id": false,
+        "is_shipped": true,
+        "effective_date": false,
+        "on_time_rate": 100.0,
+        "receipt_status": "full",
+        "mto_reference_reflex": false,
+        "mrp_production_count": 0,
+        "on_time_rate_perc": 1.0,
+        "sale_order_count": 0,
+        "sum_franco": false,
+        "qty_franco": false,
+        "auto_generated": false,
+        "auto_sale_order_id": false,
+        "transfert_magasin": false,
+        "departure_freight_forwarder": false,
+        "import_folder_ids": [
+            2,
+            8
+        ],
+        "button_transit_reception_visibility": false,
+        "freight_forwarder_reception_confirmed": true,
+        "import_priority": "0",
+        "is_importation_complete": false,
+        "import_estimated_arrival": "2025-11-24",
+        "folder_import_estimated_arrival": "2025-11-24",
+        "tags": [],
+        "import_incoterm_ids": [],
+        "is_an_import_order": true,
+        "palets": 15,
+        "quality_alert_count": 0,
+        "quality_alert_ids": [],
+        "available_incoterm_ids": [],
+        "purchase_order_type_id": [
+            2
+        ],
+        "purchase_tag_ids": [
+            2
+        ],
+        "purchase_input_mask_id": false,
+        "dropship_picking_count": 0,
+        "edi_legacy_reference": false,
+        "destination_company_id": [
+            19,
+            "SICALAIT"
+        ],
+        "x_studio_transfert_magasin": false,
+        "x_studio_comptabiliser": false
+    },
+    {
+        "id": 1133,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_user_id": false,
+        "activity_type_id": false,
+        "activity_type_icon": false,
+        "activity_date_deadline": false,
+        "my_activity_date_deadline": false,
+        "activity_summary": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_calendar_event_id": false,
+        "message_is_follower": false,
+        "message_follower_ids": [
+            18035,
+            18036
+        ],
+        "message_partner_ids": [
+            3,
+            7129
+        ],
+        "message_ids": [
+            39953,
+            39951,
+            39950
+        ],
+        "has_message": true,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_attachment_count": 0,
+        "rating_ids": [],
+        "website_message_ids": [],
+        "message_has_sms_error": false,
+        "access_url": "/my/purchase/1133",
+        "access_token": false,
+        "access_warning": "",
+        "name": "P0001133",
+        "priority": "0",
+        "origin": false,
+        "partner_ref": false,
+        "date_order": "2025-09-25 12:37:04",
+        "date_approve": "2025-09-25 12:37:21",
+        "partner_id": [
+            7129,
+            "ROYAL CANIN"
+        ],
+        "dest_address_id": false,
+        "currency_id": [
+            125,
+            "EUR"
+        ],
+        "state": "purchase",
+        "order_line": [
+            46333
+        ],
+        "notes": false,
+        "invoice_count": 1,
+        "invoice_ids": [
+            2808
+        ],
+        "invoice_status": "invoiced",
+        "date_planned": "2025-09-25 12:37:04",
+        "date_calendar_start": "2025-09-25 12:37:21",
+        "amount_untaxed": 3419.0,
+        "tax_totals": {
+            "amount_untaxed": 3419.0,
+            "amount_total": 3709.62,
+            "formatted_amount_total": "3 709,62 €",
+            "formatted_amount_untaxed": "3 419,00 €",
+            "groups_by_subtotal": {
+                "Montant hors taxes": [
+                    {
+                        "group_key": 25,
+                        "tax_group_id": 25,
+                        "tax_group_name": "VAT 8.5%",
+                        "tax_group_amount": 290.62,
+                        "tax_group_base_amount": 3419.0,
+                        "formatted_tax_group_amount": "290,62 €",
+                        "formatted_tax_group_base_amount": "3 419,00 €",
+                        "hide_base_amount": false
+                    }
+                ]
+            },
+            "subtotals": [
+                {
+                    "name": "Montant hors taxes",
+                    "amount": 3419.0,
+                    "formatted_amount": "3 419,00 €"
+                }
+            ],
+            "subtotals_order": [
+                "Montant hors taxes"
+            ],
+            "display_tax_base": false
+        },
+        "amount_tax": 290.62,
+        "amount_total": 3709.62,
+        "fiscal_position_id": [
+            20,
+            "Réunion 2"
+        ],
+        "tax_country_id": [
+            75,
+            "France"
+        ],
+        "tax_calculation_rounding_method": "round_per_line",
+        "payment_term_id": false,
+        "incoterm_id": false,
+        "product_id": [
+            54896,
+            "[1135387] PATTE POULET 150G"
+        ],
+        "user_id": [
+            2,
+            "ADMINISTRATOR"
+        ],
+        "company_id": [
+            19,
+            "SICALAIT"
+        ],
+        "country_code": "FR",
+        "currency_rate": 1.0,
+        "mail_reminder_confirmed": false,
+        "mail_reception_confirmed": false,
+        "receipt_reminder_email": false,
+        "reminder_date_before_receipt": 1,
+        "display_name": "P0001133",
+        "create_uid": [
+            2,
+            "ADMINISTRATOR"
+        ],
+        "create_date": "2025-09-25 12:37:20",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ],
+        "write_date": "2025-09-29 14:15:32",
+        "requisition_id": false,
+        "is_quantity_copy": false,
+        "purchase_group_id": false,
+        "alternative_po_ids": [],
+        "has_alternatives": false,
+        "incoterm_location": false,
+        "incoming_picking_count": 1,
+        "picking_ids": [
+            4007
+        ],
+        "picking_type_id": [
+            355,
+            "SICALAIT - SLS: IMP-EN"
+        ],
+        "default_location_dest_id_usage": "supplier",
+        "group_id": false,
+        "is_shipped": true,
+        "effective_date": false,
+        "on_time_rate": 100.0,
+        "receipt_status": "full",
+        "mto_reference_reflex": false,
+        "mrp_production_count": 0,
+        "on_time_rate_perc": 1.0,
+        "sale_order_count": 0,
+        "sum_franco": false,
+        "qty_franco": false,
+        "auto_generated": false,
+        "auto_sale_order_id": false,
+        "transfert_magasin": false,
+        "departure_freight_forwarder": false,
+        "import_folder_ids": [
+            3
+        ],
+        "button_transit_reception_visibility": false,
+        "freight_forwarder_reception_confirmed": true,
+        "import_priority": "0",
+        "is_importation_complete": false,
+        "import_estimated_arrival": "2025-11-24",
+        "folder_import_estimated_arrival": "2025-11-24",
+        "tags": [],
+        "import_incoterm_ids": [],
+        "is_an_import_order": true,
+        "palets": 0,
+        "quality_alert_count": 0,
+        "quality_alert_ids": [],
+        "available_incoterm_ids": [],
+        "purchase_order_type_id": [],
+        "purchase_tag_ids": [],
+        "purchase_input_mask_id": false,
+        "dropship_picking_count": 0,
+        "edi_legacy_reference": false,
+        "destination_company_id": [
+            19,
+            "SICALAIT"
+        ],
+        "x_studio_transfert_magasin": false,
+        "x_studio_comptabiliser": false
+    },
+    {
+        "id": 1134,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_user_id": false,
+        "activity_type_id": false,
+        "activity_type_icon": false,
+        "activity_date_deadline": false,
+        "my_activity_date_deadline": false,
+        "activity_summary": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_calendar_event_id": false,
+        "message_is_follower": false,
+        "message_follower_ids": [
+            18042,
+            18043
+        ],
+        "message_partner_ids": [
+            3,
+            7351
+        ],
+        "message_ids": [
+            40007,
+            40006,
+            40005,
+            40004,
+            40003,
+            40002,
+            40001,
+            40000,
+            39999,
+            39998,
+            39997,
+            39996,
+            39995,
+            39994,
+            39993,
+            39992,
+            39991,
+            39990,
+            39989,
+            39988,
+            39987,
+            39986,
+            39985,
+            39984,
+            39983,
+            39982,
+            39981,
+            39980,
+            39979,
+            39978,
+            39977,
+            39976,
+            39975,
+            39974,
+            39973,
+            39972,
+            39971,
+            39970,
+            39969,
+            39968,
+            39966,
+            39965
+        ],
+        "has_message": true,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_attachment_count": 0,
+        "rating_ids": [],
+        "website_message_ids": [],
+        "message_has_sms_error": false,
+        "access_url": "/my/purchase/1134",
+        "access_token": false,
+        "access_warning": "",
+        "name": "P0001134",
+        "priority": "0",
+        "origin": false,
+        "partner_ref": false,
+        "date_order": "2025-09-25 12:59:03",
+        "date_approve": "2025-09-25 12:59:19",
+        "partner_id": [
+            7351,
+            "ZOLUX SAS"
+        ],
+        "dest_address_id": false,
+        "currency_id": [
+            125,
+            "EUR"
+        ],
+        "state": "purchase",
+        "order_line": [
+            46334,
+            46335,
+            46336,
+            46337,
+            46338,
+            46339,
+            46340,
+            46341,
+            46342,
+            46343,
+            46344,
+            46345,
+            46346,
+            46347,
+            46348,
+            46349,
+            46350,
+            46351,
+            46352,
+            46353,
+            46354,
+            46355,
+            46356,
+            46357,
+            46358,
+            46359,
+            46360,
+            46361,
+            46362,
+            46363,
+            46364,
+            46365,
+            46366,
+            46367,
+            46368,
+            46369,
+            46370,
+            46371,
+            46372,
+            46373
+        ],
+        "notes": false,
+        "invoice_count": 1,
+        "invoice_ids": [
+            2809
+        ],
+        "invoice_status": "invoiced",
+        "date_planned": "2025-10-15 12:59:03",
+        "date_calendar_start": "2025-09-25 12:59:19",
+        "amount_untaxed": 2579.23,
+        "tax_totals": {
+            "amount_untaxed": 2579.23,
+            "amount_total": 2579.23,
+            "formatted_amount_total": "2 579,23 €",
+            "formatted_amount_untaxed": "2 579,23 €",
+            "groups_by_subtotal": {
+                "Montant hors taxes": [
+                    {
+                        "group_key": 25,
+                        "tax_group_id": 25,
+                        "tax_group_name": "VAT 8.5%",
+                        "tax_group_amount": 0.0,
+                        "tax_group_base_amount": 2579.2299999999996,
+                        "formatted_tax_group_amount": "0,00 €",
+                        "formatted_tax_group_base_amount": "2 579,23 €",
+                        "hide_base_amount": false
+                    }
+                ]
+            },
+            "subtotals": [
+                {
+                    "name": "Montant hors taxes",
+                    "amount": 2579.2299999999996,
+                    "formatted_amount": "2 579,23 €"
+                }
+            ],
+            "subtotals_order": [
+                "Montant hors taxes"
+            ],
+            "display_tax_base": false
+        },
+        "amount_tax": 0.0,
+        "amount_total": 2579.23,
+        "fiscal_position_id": [
+            17,
+            "Import/Export Outside Europe + DOM-TOM"
+        ],
+        "tax_country_id": [
+            75,
+            "France"
+        ],
+        "tax_calculation_rounding_method": "round_per_line",
+        "payment_term_id": false,
+        "incoterm_id": false,
+        "product_id": [
+            54896,
+            "[1135387] PATTE POULET 150G"
+        ],
+        "user_id": [
+            2,
+            "ADMINISTRATOR"
+        ],
+        "company_id": [
+            19,
+            "SICALAIT"
+        ],
+        "country_code": "FR",
+        "currency_rate": 1.0,
+        "mail_reminder_confirmed": false,
+        "mail_reception_confirmed": false,
+        "receipt_reminder_email": false,
+        "reminder_date_before_receipt": 1,
+        "display_name": "P0001134",
+        "create_uid": [
+            2,
+            "ADMINISTRATOR"
+        ],
+        "create_date": "2025-09-25 12:59:03",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ],
+        "write_date": "2025-09-29 14:15:32",
+        "requisition_id": false,
+        "is_quantity_copy": false,
+        "purchase_group_id": false,
+        "alternative_po_ids": [],
+        "has_alternatives": false,
+        "incoterm_location": false,
+        "incoming_picking_count": 1,
+        "picking_ids": [
+            4008
+        ],
+        "picking_type_id": [
+            355,
+            "SICALAIT - SLS: IMP-EN"
+        ],
+        "default_location_dest_id_usage": "supplier",
+        "group_id": false,
+        "is_shipped": true,
+        "effective_date": false,
+        "on_time_rate": 100.0,
+        "receipt_status": "full",
+        "mto_reference_reflex": false,
+        "mrp_production_count": 0,
+        "on_time_rate_perc": 1.0,
+        "sale_order_count": 0,
+        "sum_franco": false,
+        "qty_franco": false,
+        "auto_generated": false,
+        "auto_sale_order_id": false,
+        "transfert_magasin": false,
+        "departure_freight_forwarder": false,
+        "import_folder_ids": [
+            4,
+            6
+        ],
+        "button_transit_reception_visibility": false,
+        "freight_forwarder_reception_confirmed": true,
+        "import_priority": "0",
+        "is_importation_complete": false,
+        "import_estimated_arrival": "2025-11-24",
+        "folder_import_estimated_arrival": "2025-11-24",
+        "tags": [],
+        "import_incoterm_ids": [],
+        "is_an_import_order": true,
+        "palets": 15,
+        "quality_alert_count": 0,
+        "quality_alert_ids": [],
+        "available_incoterm_ids": [],
+        "purchase_order_type_id": [
+            2
+        ],
+        "purchase_tag_ids": [
+            2
+        ],
+        "purchase_input_mask_id": false,
+        "dropship_picking_count": 0,
+        "edi_legacy_reference": false,
+        "destination_company_id": [
+            19,
+            "SICALAIT"
+        ],
+        "x_studio_transfert_magasin": false,
+        "x_studio_comptabiliser": false
+    },
+    {
+        "id": 1135,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_user_id": false,
+        "activity_type_id": false,
+        "activity_type_icon": false,
+        "activity_date_deadline": false,
+        "my_activity_date_deadline": false,
+        "activity_summary": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_calendar_event_id": false,
+        "message_is_follower": false,
+        "message_follower_ids": [
+            18055,
+            18056
+        ],
+        "message_partner_ids": [
+            3,
+            7351
+        ],
+        "message_ids": [
+            40118,
+            40117,
+            40116,
+            40115,
+            40114,
+            40113,
+            40112,
+            40111,
+            40110,
+            40109,
+            40108,
+            40107,
+            40106,
+            40105,
+            40104,
+            40103,
+            40102,
+            40101,
+            40100,
+            40099,
+            40098,
+            40097,
+            40096,
+            40095,
+            40094,
+            40093,
+            40092,
+            40091,
+            40090,
+            40089,
+            40088,
+            40087,
+            40086,
+            40085,
+            40084,
+            40083,
+            40082,
+            40081,
+            40080,
+            40079,
+            40035,
+            40034
+        ],
+        "has_message": true,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_attachment_count": 0,
+        "rating_ids": [],
+        "website_message_ids": [],
+        "message_has_sms_error": false,
+        "access_url": "/my/purchase/1135",
+        "access_token": false,
+        "access_warning": "",
+        "name": "P0001135",
+        "priority": "0",
+        "origin": false,
+        "partner_ref": false,
+        "date_order": "2025-09-25 13:29:45",
+        "date_approve": "2025-09-25 13:29:57",
+        "partner_id": [
+            7351,
+            "ZOLUX SAS"
+        ],
+        "dest_address_id": false,
+        "currency_id": [
+            125,
+            "EUR"
+        ],
+        "state": "purchase",
+        "order_line": [
+            46374,
+            46375,
+            46376,
+            46377,
+            46378,
+            46379,
+            46380,
+            46381,
+            46382,
+            46383,
+            46384,
+            46385,
+            46386,
+            46387,
+            46388,
+            46389,
+            46390,
+            46391,
+            46392,
+            46393,
+            46394,
+            46395,
+            46396,
+            46397,
+            46398,
+            46399,
+            46400,
+            46401,
+            46402,
+            46403,
+            46404,
+            46405,
+            46406,
+            46407,
+            46408,
+            46409,
+            46410,
+            46411,
+            46412,
+            46413
+        ],
+        "notes": false,
+        "invoice_count": 1,
+        "invoice_ids": [
+            2811
+        ],
+        "invoice_status": "invoiced",
+        "date_planned": "2025-10-15 13:29:45",
+        "date_calendar_start": "2025-09-25 13:29:57",
+        "amount_untaxed": 2579.23,
+        "tax_totals": {
+            "amount_untaxed": 2579.23,
+            "amount_total": 2579.23,
+            "formatted_amount_total": "2 579,23 €",
+            "formatted_amount_untaxed": "2 579,23 €",
+            "groups_by_subtotal": {
+                "Montant hors taxes": [
+                    {
+                        "group_key": 25,
+                        "tax_group_id": 25,
+                        "tax_group_name": "VAT 8.5%",
+                        "tax_group_amount": 0.0,
+                        "tax_group_base_amount": 2579.2299999999996,
+                        "formatted_tax_group_amount": "0,00 €",
+                        "formatted_tax_group_base_amount": "2 579,23 €",
+                        "hide_base_amount": false
+                    }
+                ]
+            },
+            "subtotals": [
+                {
+                    "name": "Montant hors taxes",
+                    "amount": 2579.2299999999996,
+                    "formatted_amount": "2 579,23 €"
+                }
+            ],
+            "subtotals_order": [
+                "Montant hors taxes"
+            ],
+            "display_tax_base": false
+        },
+        "amount_tax": 0.0,
+        "amount_total": 2579.23,
+        "fiscal_position_id": [
+            17,
+            "Import/Export Outside Europe + DOM-TOM"
+        ],
+        "tax_country_id": [
+            75,
+            "France"
+        ],
+        "tax_calculation_rounding_method": "round_per_line",
+        "payment_term_id": false,
+        "incoterm_id": false,
+        "product_id": [
+            54896,
+            "[1135387] PATTE POULET 150G"
+        ],
+        "user_id": [
+            2,
+            "ADMINISTRATOR"
+        ],
+        "company_id": [
+            19,
+            "SICALAIT"
+        ],
+        "country_code": "FR",
+        "currency_rate": 1.0,
+        "mail_reminder_confirmed": false,
+        "mail_reception_confirmed": false,
+        "receipt_reminder_email": false,
+        "reminder_date_before_receipt": 1,
+        "display_name": "P0001135",
+        "create_uid": [
+            2,
+            "ADMINISTRATOR"
+        ],
+        "create_date": "2025-09-25 13:29:45",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ],
+        "write_date": "2025-09-29 14:15:32",
+        "requisition_id": false,
+        "is_quantity_copy": false,
+        "purchase_group_id": false,
+        "alternative_po_ids": [],
+        "has_alternatives": false,
+        "incoterm_location": false,
+        "incoming_picking_count": 1,
+        "picking_ids": [
+            4012
+        ],
+        "picking_type_id": [
+            355,
+            "SICALAIT - SLS: IMP-EN"
+        ],
+        "default_location_dest_id_usage": "supplier",
+        "group_id": false,
+        "is_shipped": true,
+        "effective_date": false,
+        "on_time_rate": 100.0,
+        "receipt_status": "full",
+        "mto_reference_reflex": false,
+        "mrp_production_count": 0,
+        "on_time_rate_perc": 1.0,
+        "sale_order_count": 0,
+        "sum_franco": false,
+        "qty_franco": false,
+        "auto_generated": false,
+        "auto_sale_order_id": false,
+        "transfert_magasin": false,
+        "departure_freight_forwarder": false,
+        "import_folder_ids": [
+            5
+        ],
+        "button_transit_reception_visibility": false,
+        "freight_forwarder_reception_confirmed": true,
+        "import_priority": "0",
+        "is_importation_complete": false,
+        "import_estimated_arrival": "2025-11-24",
+        "folder_import_estimated_arrival": "2025-11-24",
+        "tags": [],
+        "import_incoterm_ids": [],
+        "is_an_import_order": true,
+        "palets": 15,
+        "quality_alert_count": 0,
+        "quality_alert_ids": [],
+        "available_incoterm_ids": [],
+        "purchase_order_type_id": [
+            2
+        ],
+        "purchase_tag_ids": [
+            2
+        ],
+        "purchase_input_mask_id": false,
+        "dropship_picking_count": 0,
+        "edi_legacy_reference": false,
+        "destination_company_id": [
+            19,
+            "SICALAIT"
+        ],
+        "x_studio_transfert_magasin": false,
+        "x_studio_comptabiliser": false
+    },
+    {
+        "id": 1136,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_user_id": false,
+        "activity_type_id": false,
+        "activity_type_icon": false,
+        "activity_date_deadline": false,
+        "my_activity_date_deadline": false,
+        "activity_summary": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_calendar_event_id": false,
+        "message_is_follower": false,
+        "message_follower_ids": [
+            18064
+        ],
+        "message_partner_ids": [
+            3
+        ],
+        "message_ids": [
+            40161
+        ],
+        "has_message": true,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_attachment_count": 0,
+        "rating_ids": [],
+        "website_message_ids": [],
+        "message_has_sms_error": false,
+        "access_url": "/my/purchase/1136",
+        "access_token": false,
+        "access_warning": "",
+        "name": "P0001136",
+        "priority": "0",
+        "origin": false,
+        "partner_ref": false,
+        "date_order": "2025-09-25 13:31:46",
+        "date_approve": false,
+        "partner_id": [
+            7351,
+            "ZOLUX SAS"
+        ],
+        "dest_address_id": false,
+        "currency_id": [
+            125,
+            "EUR"
+        ],
+        "state": "draft",
+        "order_line": [
+            46414,
+            46415,
+            46416,
+            46417,
+            46418,
+            46419,
+            46420,
+            46421,
+            46422,
+            46423,
+            46424,
+            46425,
+            46426,
+            46427,
+            46428,
+            46429,
+            46430,
+            46431,
+            46432,
+            46433,
+            46434,
+            46435,
+            46436,
+            46437,
+            46438,
+            46439,
+            46440,
+            46441,
+            46442,
+            46443,
+            46444,
+            46445,
+            46446,
+            46447,
+            46448,
+            46449,
+            46450,
+            46451,
+            46452,
+            46453
+        ],
+        "notes": false,
+        "invoice_count": 0,
+        "invoice_ids": [],
+        "invoice_status": "no",
+        "date_planned": "2025-10-15 13:31:46",
+        "date_calendar_start": "2025-09-25 13:31:46",
+        "amount_untaxed": 2579.23,
+        "tax_totals": {
+            "amount_untaxed": 2579.23,
+            "amount_total": 2579.23,
+            "formatted_amount_total": "2 579,23 €",
+            "formatted_amount_untaxed": "2 579,23 €",
+            "groups_by_subtotal": {
+                "Montant hors taxes": [
+                    {
+                        "group_key": 25,
+                        "tax_group_id": 25,
+                        "tax_group_name": "VAT 8.5%",
+                        "tax_group_amount": 0.0,
+                        "tax_group_base_amount": 2579.2299999999996,
+                        "formatted_tax_group_amount": "0,00 €",
+                        "formatted_tax_group_base_amount": "2 579,23 €",
+                        "hide_base_amount": false
+                    }
+                ]
+            },
+            "subtotals": [
+                {
+                    "name": "Montant hors taxes",
+                    "amount": 2579.2299999999996,
+                    "formatted_amount": "2 579,23 €"
+                }
+            ],
+            "subtotals_order": [
+                "Montant hors taxes"
+            ],
+            "display_tax_base": false
+        },
+        "amount_tax": 0.0,
+        "amount_total": 2579.23,
+        "fiscal_position_id": [
+            17,
+            "Import/Export Outside Europe + DOM-TOM"
+        ],
+        "tax_country_id": [
+            75,
+            "France"
+        ],
+        "tax_calculation_rounding_method": "round_per_line",
+        "payment_term_id": false,
+        "incoterm_id": false,
+        "product_id": [
+            54896,
+            "[1135387] PATTE POULET 150G"
+        ],
+        "user_id": [
+            2,
+            "ADMINISTRATOR"
+        ],
+        "company_id": [
+            19,
+            "SICALAIT"
+        ],
+        "country_code": "FR",
+        "currency_rate": 1.0,
+        "mail_reminder_confirmed": false,
+        "mail_reception_confirmed": false,
+        "receipt_reminder_email": false,
+        "reminder_date_before_receipt": 1,
+        "display_name": "P0001136",
+        "create_uid": [
+            2,
+            "ADMINISTRATOR"
+        ],
+        "create_date": "2025-09-25 13:31:46",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ],
+        "write_date": "2025-09-29 14:15:32",
+        "requisition_id": false,
+        "is_quantity_copy": false,
+        "purchase_group_id": false,
+        "alternative_po_ids": [],
+        "has_alternatives": false,
+        "incoterm_location": false,
+        "incoming_picking_count": 0,
+        "picking_ids": [],
+        "picking_type_id": [
+            355,
+            "SICALAIT - SLS: IMP-EN"
+        ],
+        "default_location_dest_id_usage": "supplier",
+        "group_id": false,
+        "is_shipped": false,
+        "effective_date": false,
+        "on_time_rate": 100.0,
+        "receipt_status": "pending",
+        "mto_reference_reflex": false,
+        "mrp_production_count": 0,
+        "on_time_rate_perc": 1.0,
+        "sale_order_count": 0,
+        "sum_franco": false,
+        "qty_franco": false,
+        "auto_generated": false,
+        "auto_sale_order_id": false,
+        "transfert_magasin": false,
+        "departure_freight_forwarder": false,
+        "import_folder_ids": [],
+        "button_transit_reception_visibility": false,
+        "freight_forwarder_reception_confirmed": false,
+        "import_priority": "0",
+        "is_importation_complete": false,
+        "import_estimated_arrival": "2025-11-24",
+        "folder_import_estimated_arrival": "2025-11-24",
+        "tags": [],
+        "import_incoterm_ids": [],
+        "is_an_import_order": true,
+        "palets": 15,
+        "quality_alert_count": 0,
+        "quality_alert_ids": [],
+        "available_incoterm_ids": [],
+        "purchase_order_type_id": [
+            2
+        ],
+        "purchase_tag_ids": [
+            2
+        ],
+        "purchase_input_mask_id": false,
+        "dropship_picking_count": 0,
+        "edi_legacy_reference": false,
+        "destination_company_id": [
+            19,
+            "SICALAIT"
+        ],
+        "x_studio_transfert_magasin": false,
+        "x_studio_comptabiliser": false
+    },
+    {
+        "id": 1137,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_user_id": false,
+        "activity_type_id": false,
+        "activity_type_icon": false,
+        "activity_date_deadline": false,
+        "my_activity_date_deadline": false,
+        "activity_summary": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_calendar_event_id": false,
+        "message_is_follower": false,
+        "message_follower_ids": [
+            18081,
+            18082
+        ],
+        "message_partner_ids": [
+            3,
+            7351
+        ],
+        "message_ids": [
+            40260,
+            40259,
+            40258,
+            40257,
+            40256,
+            40255,
+            40254,
+            40253,
+            40252,
+            40251,
+            40250,
+            40249,
+            40248,
+            40247,
+            40246,
+            40245,
+            40244,
+            40243,
+            40242,
+            40241,
+            40240,
+            40239,
+            40238,
+            40237,
+            40236,
+            40235,
+            40234,
+            40233,
+            40232,
+            40231,
+            40230,
+            40229,
+            40228,
+            40227,
+            40226,
+            40225,
+            40224,
+            40223,
+            40222,
+            40221,
+            40209,
+            40208
+        ],
+        "has_message": true,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_attachment_count": 0,
+        "rating_ids": [],
+        "website_message_ids": [],
+        "message_has_sms_error": false,
+        "access_url": "/my/purchase/1137",
+        "access_token": false,
+        "access_warning": "",
+        "name": "P0001137",
+        "priority": "0",
+        "origin": false,
+        "partner_ref": false,
+        "date_order": "2025-09-25 13:36:35",
+        "date_approve": "2025-09-25 13:36:43",
+        "partner_id": [
+            7351,
+            "ZOLUX SAS"
+        ],
+        "dest_address_id": false,
+        "currency_id": [
+            125,
+            "EUR"
+        ],
+        "state": "purchase",
+        "order_line": [
+            46454,
+            46455,
+            46456,
+            46457,
+            46458,
+            46459,
+            46460,
+            46461,
+            46462,
+            46463,
+            46464,
+            46465,
+            46466,
+            46467,
+            46468,
+            46469,
+            46470,
+            46471,
+            46472,
+            46473,
+            46474,
+            46475,
+            46476,
+            46477,
+            46478,
+            46479,
+            46480,
+            46481,
+            46482,
+            46483,
+            46484,
+            46485,
+            46486,
+            46487,
+            46488,
+            46489,
+            46490,
+            46491,
+            46492,
+            46493
+        ],
+        "notes": false,
+        "invoice_count": 1,
+        "invoice_ids": [
+            2816
+        ],
+        "invoice_status": "invoiced",
+        "date_planned": "2025-10-15 13:36:35",
+        "date_calendar_start": "2025-09-25 13:36:43",
+        "amount_untaxed": 2579.23,
+        "tax_totals": {
+            "amount_untaxed": 2579.23,
+            "amount_total": 2579.23,
+            "formatted_amount_total": "2 579,23 €",
+            "formatted_amount_untaxed": "2 579,23 €",
+            "groups_by_subtotal": {
+                "Montant hors taxes": [
+                    {
+                        "group_key": 25,
+                        "tax_group_id": 25,
+                        "tax_group_name": "VAT 8.5%",
+                        "tax_group_amount": 0.0,
+                        "tax_group_base_amount": 2579.2299999999996,
+                        "formatted_tax_group_amount": "0,00 €",
+                        "formatted_tax_group_base_amount": "2 579,23 €",
+                        "hide_base_amount": false
+                    }
+                ]
+            },
+            "subtotals": [
+                {
+                    "name": "Montant hors taxes",
+                    "amount": 2579.2299999999996,
+                    "formatted_amount": "2 579,23 €"
+                }
+            ],
+            "subtotals_order": [
+                "Montant hors taxes"
+            ],
+            "display_tax_base": false
+        },
+        "amount_tax": 0.0,
+        "amount_total": 2579.23,
+        "fiscal_position_id": [
+            17,
+            "Import/Export Outside Europe + DOM-TOM"
+        ],
+        "tax_country_id": [
+            75,
+            "France"
+        ],
+        "tax_calculation_rounding_method": "round_per_line",
+        "payment_term_id": false,
+        "incoterm_id": false,
+        "product_id": [
+            54896,
+            "[1135387] PATTE POULET 150G"
+        ],
+        "user_id": [
+            2,
+            "ADMINISTRATOR"
+        ],
+        "company_id": [
+            19,
+            "SICALAIT"
+        ],
+        "country_code": "FR",
+        "currency_rate": 1.0,
+        "mail_reminder_confirmed": false,
+        "mail_reception_confirmed": false,
+        "receipt_reminder_email": false,
+        "reminder_date_before_receipt": 1,
+        "display_name": "P0001137",
+        "create_uid": [
+            2,
+            "ADMINISTRATOR"
+        ],
+        "create_date": "2025-09-25 13:36:35",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ],
+        "write_date": "2025-09-29 14:15:32",
+        "requisition_id": false,
+        "is_quantity_copy": false,
+        "purchase_group_id": false,
+        "alternative_po_ids": [],
+        "has_alternatives": false,
+        "incoterm_location": false,
+        "incoming_picking_count": 1,
+        "picking_ids": [
+            4019
+        ],
+        "picking_type_id": [
+            355,
+            "SICALAIT - SLS: IMP-EN"
+        ],
+        "default_location_dest_id_usage": "supplier",
+        "group_id": false,
+        "is_shipped": true,
+        "effective_date": false,
+        "on_time_rate": 100.0,
+        "receipt_status": "full",
+        "mto_reference_reflex": false,
+        "mrp_production_count": 0,
+        "on_time_rate_perc": 1.0,
+        "sale_order_count": 0,
+        "sum_franco": false,
+        "qty_franco": false,
+        "auto_generated": false,
+        "auto_sale_order_id": false,
+        "transfert_magasin": false,
+        "departure_freight_forwarder": false,
+        "import_folder_ids": [
+            7
+        ],
+        "button_transit_reception_visibility": false,
+        "freight_forwarder_reception_confirmed": true,
+        "import_priority": "0",
+        "is_importation_complete": false,
+        "import_estimated_arrival": "2025-11-24",
+        "folder_import_estimated_arrival": "2025-11-24",
+        "tags": [],
+        "import_incoterm_ids": [],
+        "is_an_import_order": true,
+        "palets": 15,
+        "quality_alert_count": 0,
+        "quality_alert_ids": [],
+        "available_incoterm_ids": [],
+        "purchase_order_type_id": [
+            2
+        ],
+        "purchase_tag_ids": [
+            2
+        ],
+        "purchase_input_mask_id": false,
+        "dropship_picking_count": 0,
+        "edi_legacy_reference": false,
+        "destination_company_id": [
+            19,
+            "SICALAIT"
+        ],
+        "x_studio_transfert_magasin": false,
+        "x_studio_comptabiliser": false
+    },
+    {
+        "id": 1138,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_user_id": false,
+        "activity_type_id": false,
+        "activity_type_icon": false,
+        "activity_date_deadline": false,
+        "my_activity_date_deadline": false,
+        "activity_summary": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_calendar_event_id": false,
+        "message_is_follower": false,
+        "message_follower_ids": [
+            18108,
+            18110
+        ],
+        "message_partner_ids": [
+            3,
+            7351
+        ],
+        "message_ids": [
+            40328,
+            40324,
+            40323,
+            40322,
+            40320,
+            40317,
+            40316
+        ],
+        "has_message": true,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_attachment_count": 0,
+        "rating_ids": [],
+        "website_message_ids": [],
+        "message_has_sms_error": false,
+        "access_url": "/my/purchase/1138",
+        "access_token": false,
+        "access_warning": "",
+        "name": "P0001138",
+        "priority": "0",
+        "origin": false,
+        "partner_ref": false,
+        "date_order": "2025-09-25 13:57:51",
+        "date_approve": "2025-09-25 13:58:30",
+        "partner_id": [
+            7351,
+            "ZOLUX SAS"
+        ],
+        "dest_address_id": false,
+        "currency_id": [
+            125,
+            "EUR"
+        ],
+        "state": "purchase",
+        "order_line": [
+            46494
+        ],
+        "notes": false,
+        "invoice_count": 1,
+        "invoice_ids": [
+            2821
+        ],
+        "invoice_status": "invoiced",
+        "date_planned": "2025-10-15 13:57:51",
+        "date_calendar_start": "2025-09-25 13:58:30",
+        "amount_untaxed": 11.88,
+        "tax_totals": {
+            "amount_untaxed": 11.88,
+            "amount_total": 11.88,
+            "formatted_amount_total": "11,88 €",
+            "formatted_amount_untaxed": "11,88 €",
+            "groups_by_subtotal": {
+                "Montant hors taxes": [
+                    {
+                        "group_key": 25,
+                        "tax_group_id": 25,
+                        "tax_group_name": "VAT 8.5%",
+                        "tax_group_amount": 0.0,
+                        "tax_group_base_amount": 11.88,
+                        "formatted_tax_group_amount": "0,00 €",
+                        "formatted_tax_group_base_amount": "11,88 €",
+                        "hide_base_amount": false
+                    }
+                ]
+            },
+            "subtotals": [
+                {
+                    "name": "Montant hors taxes",
+                    "amount": 11.88,
+                    "formatted_amount": "11,88 €"
+                }
+            ],
+            "subtotals_order": [
+                "Montant hors taxes"
+            ],
+            "display_tax_base": false
+        },
+        "amount_tax": 0.0,
+        "amount_total": 11.88,
+        "fiscal_position_id": [
+            17,
+            "Import/Export Outside Europe + DOM-TOM"
+        ],
+        "tax_country_id": [
+            75,
+            "France"
+        ],
+        "tax_calculation_rounding_method": "round_per_line",
+        "payment_term_id": false,
+        "incoterm_id": false,
+        "product_id": [
+            54896,
+            "[1135387] PATTE POULET 150G"
+        ],
+        "user_id": [
+            2,
+            "ADMINISTRATOR"
+        ],
+        "company_id": [
+            19,
+            "SICALAIT"
+        ],
+        "country_code": "FR",
+        "currency_rate": 1.0,
+        "mail_reminder_confirmed": false,
+        "mail_reception_confirmed": false,
+        "receipt_reminder_email": false,
+        "reminder_date_before_receipt": 1,
+        "display_name": "P0001138",
+        "create_uid": [
+            2,
+            "ADMINISTRATOR"
+        ],
+        "create_date": "2025-09-25 13:57:57",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ],
+        "write_date": "2025-09-29 14:15:32",
+        "requisition_id": false,
+        "is_quantity_copy": false,
+        "purchase_group_id": false,
+        "alternative_po_ids": [],
+        "has_alternatives": false,
+        "incoterm_location": false,
+        "incoming_picking_count": 2,
+        "picking_ids": [
+            4025,
+            4024
+        ],
+        "picking_type_id": [
+            355,
+            "SICALAIT - SLS: IMP-EN"
+        ],
+        "default_location_dest_id_usage": "supplier",
+        "group_id": [
+            8,
+            "P0001138"
+        ],
+        "is_shipped": true,
+        "effective_date": false,
+        "on_time_rate": 100.0,
+        "receipt_status": "full",
+        "mto_reference_reflex": false,
+        "mrp_production_count": 0,
+        "on_time_rate_perc": 1.0,
+        "sale_order_count": 0,
+        "sum_franco": false,
+        "qty_franco": false,
+        "auto_generated": false,
+        "auto_sale_order_id": false,
+        "transfert_magasin": false,
+        "departure_freight_forwarder": false,
+        "import_folder_ids": [
+            9
+        ],
+        "button_transit_reception_visibility": false,
+        "freight_forwarder_reception_confirmed": true,
+        "import_priority": "0",
+        "is_importation_complete": false,
+        "import_estimated_arrival": "2025-11-24",
+        "folder_import_estimated_arrival": "2025-11-24",
+        "tags": [],
+        "import_incoterm_ids": [],
+        "is_an_import_order": true,
+        "palets": 0,
+        "quality_alert_count": 0,
+        "quality_alert_ids": [],
+        "available_incoterm_ids": [],
+        "purchase_order_type_id": [],
+        "purchase_tag_ids": [],
+        "purchase_input_mask_id": false,
+        "dropship_picking_count": 0,
+        "edi_legacy_reference": false,
+        "destination_company_id": [
+            19,
+            "SICALAIT"
+        ],
+        "x_studio_transfert_magasin": false,
+        "x_studio_comptabiliser": false
+    },
+    {
+        "id": 1139,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_user_id": false,
+        "activity_type_id": false,
+        "activity_type_icon": false,
+        "activity_date_deadline": false,
+        "my_activity_date_deadline": false,
+        "activity_summary": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_calendar_event_id": false,
+        "message_is_follower": true,
+        "message_follower_ids": [
+            18125,
+            18140
+        ],
+        "message_partner_ids": [
+            143,
+            5081
+        ],
+        "message_ids": [
+            40425,
+            40393,
+            40392,
+            40391,
+            40390,
+            40389,
+            40388,
+            40387,
+            40386,
+            40385,
+            40384,
+            40383,
+            40382,
+            40381,
+            40380,
+            40379,
+            40378,
+            40377
+        ],
+        "has_message": true,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_attachment_count": 0,
+        "rating_ids": [],
+        "website_message_ids": [],
+        "message_has_sms_error": false,
+        "access_url": "/my/purchase/1139",
+        "access_token": false,
+        "access_warning": "",
+        "name": "P0001139",
+        "priority": "0",
+        "origin": false,
+        "partner_ref": false,
+        "date_order": "2025-09-29 04:25:44",
+        "date_approve": "2025-09-29 06:28:16",
+        "partner_id": [
+            5081,
+            "URCOOPA"
+        ],
+        "dest_address_id": false,
+        "currency_id": [
+            125,
+            "EUR"
+        ],
+        "state": "purchase",
+        "order_line": [
+            46495,
+            46496,
+            46497,
+            46498,
+            46499
+        ],
+        "notes": false,
+        "invoice_count": 0,
+        "invoice_ids": [],
+        "invoice_status": "no",
+        "date_planned": "2025-09-29 04:25:44",
+        "date_calendar_start": "2025-09-29 06:28:16",
+        "amount_untaxed": 447.02,
+        "tax_totals": {
+            "amount_untaxed": 447.02,
+            "amount_total": 456.42,
+            "formatted_amount_total": "456,42 €",
+            "formatted_amount_untaxed": "447,02 €",
+            "groups_by_subtotal": {
+                "Montant hors taxes": [
+                    {
+                        "group_key": 28,
+                        "tax_group_id": 28,
+                        "tax_group_name": "VAT 2.1%",
+                        "tax_group_amount": 9.4,
+                        "tax_group_base_amount": 447.02,
+                        "formatted_tax_group_amount": "9,40 €",
+                        "formatted_tax_group_base_amount": "447,02 €",
+                        "hide_base_amount": false
+                    }
+                ]
+            },
+            "subtotals": [
+                {
+                    "name": "Montant hors taxes",
+                    "amount": 447.02,
+                    "formatted_amount": "447,02 €"
+                }
+            ],
+            "subtotals_order": [
+                "Montant hors taxes"
+            ],
+            "display_tax_base": false
+        },
+        "amount_tax": 9.4,
+        "amount_total": 456.42,
+        "fiscal_position_id": [
+            20,
+            "Réunion 2"
+        ],
+        "tax_country_id": [
+            75,
+            "France"
+        ],
+        "tax_calculation_rounding_method": "round_per_line",
+        "payment_term_id": false,
+        "incoterm_id": false,
+        "product_id": [
+            18194,
+            "[0711201] BV20 GR TIBOEUF 25KG"
+        ],
+        "user_id": [
+            47,
+            "JIMMY CHABOT"
+        ],
+        "company_id": [
+            19,
+            "SICALAIT"
+        ],
+        "country_code": "FR",
+        "currency_rate": 1.0,
+        "mail_reminder_confirmed": false,
+        "mail_reception_confirmed": false,
+        "receipt_reminder_email": false,
+        "reminder_date_before_receipt": 1,
+        "display_name": "P0001139",
+        "create_uid": [
+            47,
+            "JIMMY CHABOT"
+        ],
+        "create_date": "2025-09-29 04:26:26",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ],
+        "write_date": "2025-09-29 14:15:32",
+        "requisition_id": false,
+        "is_quantity_copy": false,
+        "purchase_group_id": false,
+        "alternative_po_ids": [],
+        "has_alternatives": false,
+        "incoterm_location": false,
+        "incoming_picking_count": 1,
+        "picking_ids": [
+            4030
+        ],
+        "picking_type_id": [
+            109,
+            "SICALAIT - SLS: Réceptions"
+        ],
+        "default_location_dest_id_usage": "internal",
+        "group_id": [
+            9,
+            "P0001139"
+        ],
+        "is_shipped": false,
+        "effective_date": false,
+        "on_time_rate": -1.0,
+        "receipt_status": "pending",
+        "mto_reference_reflex": false,
+        "mrp_production_count": 0,
+        "on_time_rate_perc": -1.0,
+        "sale_order_count": 0,
+        "sum_franco": false,
+        "qty_franco": false,
+        "auto_generated": false,
+        "auto_sale_order_id": false,
+        "transfert_magasin": false,
+        "departure_freight_forwarder": false,
+        "import_folder_ids": [],
+        "button_transit_reception_visibility": false,
+        "freight_forwarder_reception_confirmed": false,
+        "import_priority": "0",
+        "is_importation_complete": false,
+        "import_estimated_arrival": false,
+        "folder_import_estimated_arrival": false,
+        "tags": [],
+        "import_incoterm_ids": [],
+        "is_an_import_order": false,
+        "palets": 0,
+        "quality_alert_count": 0,
+        "quality_alert_ids": [],
+        "available_incoterm_ids": [],
+        "purchase_order_type_id": [],
+        "purchase_tag_ids": [],
+        "purchase_input_mask_id": false,
+        "dropship_picking_count": 0,
+        "edi_legacy_reference": false,
+        "destination_company_id": [
+            19,
+            "SICALAIT"
+        ],
+        "x_studio_transfert_magasin": false,
+        "x_studio_comptabiliser": false
+    },
+    {
+        "id": 1653,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_user_id": false,
+        "activity_type_id": false,
+        "activity_type_icon": false,
+        "activity_date_deadline": false,
+        "my_activity_date_deadline": false,
+        "activity_summary": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_calendar_event_id": false,
+        "message_is_follower": true,
+        "message_follower_ids": [
+            19763,
+            19767
+        ],
+        "message_partner_ids": [
+            143,
+            8164
+        ],
+        "message_ids": [
+            46991,
+            46990,
+            46983,
+            46982
+        ],
+        "has_message": true,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_attachment_count": 0,
+        "rating_ids": [],
+        "website_message_ids": [],
+        "message_has_sms_error": false,
+        "access_url": "/my/purchase/1653",
+        "access_token": false,
+        "access_warning": "",
+        "name": "P0001653",
+        "priority": "0",
+        "origin": false,
+        "partner_ref": "S0000290",
+        "date_order": "2025-09-29 08:37:23",
+        "date_approve": "2025-09-29 08:39:30",
+        "partner_id": [
+            8164,
+            "SICALAIT, SICALAIT - ALIMENT"
+        ],
+        "dest_address_id": false,
+        "currency_id": [
+            125,
+            "EUR"
+        ],
+        "state": "purchase",
+        "order_line": [
+            51414
+        ],
+        "notes": false,
+        "invoice_count": 0,
+        "invoice_ids": [],
+        "invoice_status": "no",
+        "date_planned": "2025-09-30 08:37:23",
+        "date_calendar_start": "2025-09-29 08:39:30",
+        "amount_untaxed": 2.6,
+        "tax_totals": {
+            "amount_untaxed": 2.6,
+            "amount_total": 2.82,
+            "formatted_amount_total": "2,82 €",
+            "formatted_amount_untaxed": "2,60 €",
+            "groups_by_subtotal": {
+                "Montant hors taxes": [
+                    {
+                        "group_key": 19,
+                        "tax_group_id": 19,
+                        "tax_group_name": "VAT 8.5%",
+                        "tax_group_amount": 0.22,
+                        "tax_group_base_amount": 2.6,
+                        "formatted_tax_group_amount": "0,22 €",
+                        "formatted_tax_group_base_amount": "2,60 €",
+                        "hide_base_amount": false
+                    }
+                ]
+            },
+            "subtotals": [
+                {
+                    "name": "Montant hors taxes",
+                    "amount": 2.6,
+                    "formatted_amount": "2,60 €"
+                }
+            ],
+            "subtotals_order": [
+                "Montant hors taxes"
+            ],
+            "display_tax_base": false
+        },
+        "amount_tax": 0.22,
+        "amount_total": 2.82,
+        "fiscal_position_id": [
+            42,
+            "INTERCO"
+        ],
+        "tax_country_id": [
+            75,
+            "France"
+        ],
+        "tax_calculation_rounding_method": "round_per_line",
+        "payment_term_id": false,
+        "incoterm_id": false,
+        "product_id": [
+            54896,
+            "[1135387] PATTE POULET 150G"
+        ],
+        "user_id": [
+            47,
+            "JIMMY CHABOT"
+        ],
+        "company_id": [
+            55,
+            "29 - ST LOUIS - F&J"
+        ],
+        "country_code": "FR",
+        "currency_rate": 1.0,
+        "mail_reminder_confirmed": false,
+        "mail_reception_confirmed": false,
+        "receipt_reminder_email": false,
+        "reminder_date_before_receipt": 1,
+        "display_name": "P0001653 (S0000290)",
+        "create_uid": [
+            47,
+            "JIMMY CHABOT"
+        ],
+        "create_date": "2025-09-29 08:37:58",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ],
+        "write_date": "2025-09-29 14:15:32",
+        "requisition_id": false,
+        "is_quantity_copy": false,
+        "purchase_group_id": false,
+        "alternative_po_ids": [],
+        "has_alternatives": false,
+        "incoterm_location": false,
+        "incoming_picking_count": 1,
+        "picking_ids": [
+            4667
+        ],
+        "picking_type_id": [
+            307,
+            "FERMES ET JARDINS - 29 ST LOUIS: Réceptions"
+        ],
+        "default_location_dest_id_usage": "internal",
+        "group_id": [
+            644,
+            "P0001653"
+        ],
+        "is_shipped": false,
+        "effective_date": false,
+        "on_time_rate": 0.052356020942408384,
+        "receipt_status": "pending",
+        "mto_reference_reflex": false,
+        "mrp_production_count": 0,
+        "on_time_rate_perc": 0.0005235602094240838,
+        "sale_order_count": 0,
+        "sum_franco": false,
+        "qty_franco": false,
+        "auto_generated": false,
+        "auto_sale_order_id": false,
+        "transfert_magasin": false,
+        "departure_freight_forwarder": false,
+        "import_folder_ids": [],
+        "button_transit_reception_visibility": false,
+        "freight_forwarder_reception_confirmed": false,
+        "import_priority": "0",
+        "is_importation_complete": false,
+        "import_estimated_arrival": false,
+        "folder_import_estimated_arrival": false,
+        "tags": [],
+        "import_incoterm_ids": [],
+        "is_an_import_order": false,
+        "palets": 0,
+        "quality_alert_count": 0,
+        "quality_alert_ids": [],
+        "available_incoterm_ids": [],
+        "purchase_order_type_id": [],
+        "purchase_tag_ids": [],
+        "purchase_input_mask_id": false,
+        "dropship_picking_count": 0,
+        "edi_legacy_reference": false,
+        "destination_company_id": [
+            55,
+            "29 - ST LOUIS - F&J"
+        ],
+        "x_studio_transfert_magasin": false,
+        "x_studio_comptabiliser": false
+    },
+    {
+        "id": 1722,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_user_id": false,
+        "activity_type_id": false,
+        "activity_type_icon": false,
+        "activity_date_deadline": false,
+        "my_activity_date_deadline": false,
+        "activity_summary": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_calendar_event_id": false,
+        "message_is_follower": false,
+        "message_follower_ids": [
+            19955,
+            20016
+        ],
+        "message_partner_ids": [
+            133,
+            8164
+        ],
+        "message_ids": [
+            48224,
+            47991,
+            47965,
+            47679
+        ],
+        "has_message": true,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_attachment_count": 0,
+        "rating_ids": [],
+        "website_message_ids": [],
+        "message_has_sms_error": false,
+        "access_url": "/my/purchase/1722",
+        "access_token": false,
+        "access_warning": "",
+        "name": "P0001722",
+        "priority": "0",
+        "origin": false,
+        "partner_ref": "S0000330",
+        "date_order": "2025-09-29 09:27:03",
+        "date_approve": "2025-09-29 09:32:35",
+        "partner_id": [
+            8164,
+            "SICALAIT, SICALAIT - ALIMENT"
+        ],
+        "dest_address_id": false,
+        "currency_id": [
+            125,
+            "EUR"
+        ],
+        "state": "purchase",
+        "order_line": [
+            52306
+        ],
+        "notes": false,
+        "invoice_count": 0,
+        "invoice_ids": [],
+        "invoice_status": "to invoice",
+        "date_planned": "2025-09-29 09:27:03",
+        "date_calendar_start": "2025-09-29 09:32:35",
+        "amount_untaxed": 13.05,
+        "tax_totals": {
+            "amount_untaxed": 13.05,
+            "amount_total": 13.32,
+            "formatted_amount_total": "13,32 €",
+            "formatted_amount_untaxed": "13,05 €",
+            "groups_by_subtotal": {
+                "Montant hors taxes": [
+                    {
+                        "group_key": 22,
+                        "tax_group_id": 22,
+                        "tax_group_name": "VAT 2.1%",
+                        "tax_group_amount": 0.27,
+                        "tax_group_base_amount": 13.05,
+                        "formatted_tax_group_amount": "0,27 €",
+                        "formatted_tax_group_base_amount": "13,05 €",
+                        "hide_base_amount": false
+                    }
+                ]
+            },
+            "subtotals": [
+                {
+                    "name": "Montant hors taxes",
+                    "amount": 13.05,
+                    "formatted_amount": "13,05 €"
+                }
+            ],
+            "subtotals_order": [
+                "Montant hors taxes"
+            ],
+            "display_tax_base": false
+        },
+        "amount_tax": 0.27,
+        "amount_total": 13.32,
+        "fiscal_position_id": [
+            42,
+            "INTERCO"
+        ],
+        "tax_country_id": [
+            75,
+            "France"
+        ],
+        "tax_calculation_rounding_method": "round_per_line",
+        "payment_term_id": false,
+        "incoterm_id": false,
+        "product_id": [
+            18194,
+            "[0711201] BV20 GR TIBOEUF 25KG"
+        ],
+        "user_id": [
+            44,
+            "JEAN MICHEL ADELIN"
+        ],
+        "company_id": [
+            51,
+            "24 - 14EME KM - F&J"
+        ],
+        "country_code": "FR",
+        "currency_rate": 1.0,
+        "mail_reminder_confirmed": false,
+        "mail_reception_confirmed": false,
+        "receipt_reminder_email": false,
+        "reminder_date_before_receipt": 1,
+        "display_name": "P0001722 (S0000330)",
+        "create_uid": [
+            44,
+            "JEAN MICHEL ADELIN"
+        ],
+        "create_date": "2025-09-29 09:27:32",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ],
+        "write_date": "2025-09-29 14:15:32",
+        "requisition_id": false,
+        "is_quantity_copy": false,
+        "purchase_group_id": false,
+        "alternative_po_ids": [],
+        "has_alternatives": false,
+        "incoterm_location": false,
+        "incoming_picking_count": 1,
+        "picking_ids": [
+            4763
+        ],
+        "picking_type_id": [
+            283,
+            "FERMES ET JARDINS - 24 T400: Réceptions"
+        ],
+        "default_location_dest_id_usage": "internal",
+        "group_id": [
+            736,
+            "P0001722"
+        ],
+        "is_shipped": true,
+        "effective_date": "2025-09-29 09:35:45",
+        "on_time_rate": 0.052356020942408384,
+        "receipt_status": "full",
+        "mto_reference_reflex": false,
+        "mrp_production_count": 0,
+        "on_time_rate_perc": 0.0005235602094240838,
+        "sale_order_count": 0,
+        "sum_franco": false,
+        "qty_franco": false,
+        "auto_generated": false,
+        "auto_sale_order_id": false,
+        "transfert_magasin": false,
+        "departure_freight_forwarder": false,
+        "import_folder_ids": [],
+        "button_transit_reception_visibility": false,
+        "freight_forwarder_reception_confirmed": false,
+        "import_priority": "0",
+        "is_importation_complete": false,
+        "import_estimated_arrival": false,
+        "folder_import_estimated_arrival": false,
+        "tags": [],
+        "import_incoterm_ids": [],
+        "is_an_import_order": false,
+        "palets": 0,
+        "quality_alert_count": 0,
+        "quality_alert_ids": [],
+        "available_incoterm_ids": [],
+        "purchase_order_type_id": [],
+        "purchase_tag_ids": [],
+        "purchase_input_mask_id": false,
+        "dropship_picking_count": 0,
+        "edi_legacy_reference": false,
+        "destination_company_id": [
+            51,
+            "24 - 14EME KM - F&J"
+        ],
+        "x_studio_transfert_magasin": false,
+        "x_studio_comptabiliser": false
+    },
+    {
+        "id": 1746,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_user_id": false,
+        "activity_type_id": false,
+        "activity_type_icon": false,
+        "activity_date_deadline": false,
+        "my_activity_date_deadline": false,
+        "activity_summary": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_calendar_event_id": false,
+        "message_is_follower": false,
+        "message_follower_ids": [
+            20112
+        ],
+        "message_partner_ids": [
+            5081
+        ],
+        "message_ids": [
+            48371,
+            47987
+        ],
+        "has_message": true,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_attachment_count": 0,
+        "rating_ids": [],
+        "website_message_ids": [],
+        "message_has_sms_error": false,
+        "access_url": "/my/purchase/1746",
+        "access_token": false,
+        "access_warning": "",
+        "name": "P0001746",
+        "priority": "0",
+        "origin": "S0000330",
+        "partner_ref": false,
+        "date_order": "2025-09-29 09:27:03",
+        "date_approve": "2025-09-29 09:37:57",
+        "partner_id": [
+            5081,
+            "URCOOPA"
+        ],
+        "dest_address_id": false,
+        "currency_id": [
+            125,
+            "EUR"
+        ],
+        "state": "purchase",
+        "order_line": [
+            52324
+        ],
+        "notes": false,
+        "invoice_count": 0,
+        "invoice_ids": [],
+        "invoice_status": "no",
+        "date_planned": "2025-09-29 09:27:03",
+        "date_calendar_start": "2025-09-29 09:37:57",
+        "amount_untaxed": 12.57,
+        "tax_totals": {
+            "amount_untaxed": 12.57,
+            "amount_total": 12.83,
+            "formatted_amount_total": "12,83 €",
+            "formatted_amount_untaxed": "12,57 €",
+            "groups_by_subtotal": {
+                "Montant hors taxes": [
+                    {
+                        "group_key": 28,
+                        "tax_group_id": 28,
+                        "tax_group_name": "VAT 2.1%",
+                        "tax_group_amount": 0.26,
+                        "tax_group_base_amount": 12.57,
+                        "formatted_tax_group_amount": "0,26 €",
+                        "formatted_tax_group_base_amount": "12,57 €",
+                        "hide_base_amount": false
+                    }
+                ]
+            },
+            "subtotals": [
+                {
+                    "name": "Montant hors taxes",
+                    "amount": 12.57,
+                    "formatted_amount": "12,57 €"
+                }
+            ],
+            "subtotals_order": [
+                "Montant hors taxes"
+            ],
+            "display_tax_base": false
+        },
+        "amount_tax": 0.26,
+        "amount_total": 12.83,
+        "fiscal_position_id": [
+            20,
+            "Réunion 2"
+        ],
+        "tax_country_id": [
+            75,
+            "France"
+        ],
+        "tax_calculation_rounding_method": "round_per_line",
+        "payment_term_id": false,
+        "incoterm_id": false,
+        "product_id": [
+            18194,
+            "[0711201] BV20 GR TIBOEUF 25KG"
+        ],
+        "user_id": false,
+        "company_id": [
+            19,
+            "SICALAIT"
+        ],
+        "country_code": "FR",
+        "currency_rate": 1.0,
+        "mail_reminder_confirmed": false,
+        "mail_reception_confirmed": false,
+        "receipt_reminder_email": false,
+        "reminder_date_before_receipt": 1,
+        "display_name": "P0001746",
+        "create_uid": [
+            1,
+            "OdooBot"
+        ],
+        "create_date": "2025-09-29 09:32:35",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ],
+        "write_date": "2025-09-29 14:15:32",
+        "requisition_id": false,
+        "is_quantity_copy": false,
+        "purchase_group_id": false,
+        "alternative_po_ids": [],
+        "has_alternatives": false,
+        "incoterm_location": false,
+        "incoming_picking_count": 1,
+        "picking_ids": [
+            4801
+        ],
+        "picking_type_id": [
+            109,
+            "SICALAIT - SLS: Réceptions"
+        ],
+        "default_location_dest_id_usage": "internal",
+        "group_id": [
+            737,
+            "S0000330"
+        ],
+        "is_shipped": false,
+        "effective_date": false,
+        "on_time_rate": -1.0,
+        "receipt_status": "pending",
+        "mto_reference_reflex": "S0000330",
+        "mrp_production_count": 0,
+        "on_time_rate_perc": -1.0,
+        "sale_order_count": 1,
+        "sum_franco": false,
+        "qty_franco": false,
+        "auto_generated": false,
+        "auto_sale_order_id": false,
+        "transfert_magasin": false,
+        "departure_freight_forwarder": false,
+        "import_folder_ids": [],
+        "button_transit_reception_visibility": false,
+        "freight_forwarder_reception_confirmed": false,
+        "import_priority": "0",
+        "is_importation_complete": false,
+        "import_estimated_arrival": false,
+        "folder_import_estimated_arrival": false,
+        "tags": [],
+        "import_incoterm_ids": [],
+        "is_an_import_order": false,
+        "palets": 0,
+        "quality_alert_count": 0,
+        "quality_alert_ids": [],
+        "available_incoterm_ids": [],
+        "purchase_order_type_id": [],
+        "purchase_tag_ids": [],
+        "purchase_input_mask_id": false,
+        "dropship_picking_count": 0,
+        "edi_legacy_reference": false,
+        "destination_company_id": false,
+        "x_studio_transfert_magasin": false,
+        "x_studio_comptabiliser": false
+    },
+    {
+        "id": 2007,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_user_id": false,
+        "activity_type_id": false,
+        "activity_type_icon": false,
+        "activity_date_deadline": false,
+        "my_activity_date_deadline": false,
+        "activity_summary": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_calendar_event_id": false,
+        "message_is_follower": false,
+        "message_follower_ids": [
+            20697,
+            20701
+        ],
+        "message_partner_ids": [
+            133,
+            8164
+        ],
+        "message_ids": [
+            50677,
+            50668,
+            50667,
+            50666,
+            50665,
+            50664,
+            50663,
+            50662,
+            50661,
+            50660,
+            50659,
+            50658,
+            50657,
+            50656,
+            50655
+        ],
+        "has_message": true,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_attachment_count": 0,
+        "rating_ids": [],
+        "website_message_ids": [],
+        "message_has_sms_error": false,
+        "access_url": "/my/purchase/2007",
+        "access_token": false,
+        "access_warning": "",
+        "name": "P0002007",
+        "priority": "0",
+        "origin": false,
+        "partner_ref": "GESICA706681",
+        "date_order": "2025-08-30 00:00:00",
+        "date_approve": "2025-09-29 10:11:29",
+        "partner_id": [
+            8164,
+            "SICALAIT, SICALAIT - ALIMENT"
+        ],
+        "dest_address_id": false,
+        "currency_id": [
+            125,
+            "EUR"
+        ],
+        "state": "purchase",
+        "order_line": [
+            54919,
+            54920,
+            54921,
+            54922,
+            54923,
+            54924,
+            54925,
+            54926,
+            54927,
+            54928,
+            54929,
+            54930,
+            54931,
+            54932
+        ],
+        "notes": false,
+        "invoice_count": 0,
+        "invoice_ids": [],
+        "invoice_status": "no",
+        "date_planned": "2025-08-30 00:00:00",
+        "date_calendar_start": "2025-09-29 10:11:29",
+        "amount_untaxed": 8028.14,
+        "tax_totals": {
+            "amount_untaxed": 8028.14,
+            "amount_total": 8196.73,
+            "formatted_amount_total": "8 196,73 €",
+            "formatted_amount_untaxed": "8 028,14 €",
+            "groups_by_subtotal": {
+                "Montant hors taxes": [
+                    {
+                        "group_key": 22,
+                        "tax_group_id": 22,
+                        "tax_group_name": "VAT 2.1%",
+                        "tax_group_amount": 168.59,
+                        "tax_group_base_amount": 8028.140000000001,
+                        "formatted_tax_group_amount": "168,59 €",
+                        "formatted_tax_group_base_amount": "8 028,14 €",
+                        "hide_base_amount": false
+                    }
+                ]
+            },
+            "subtotals": [
+                {
+                    "name": "Montant hors taxes",
+                    "amount": 8028.140000000001,
+                    "formatted_amount": "8 028,14 €"
+                }
+            ],
+            "subtotals_order": [
+                "Montant hors taxes"
+            ],
+            "display_tax_base": false
+        },
+        "amount_tax": 168.59,
+        "amount_total": 8196.73,
+        "fiscal_position_id": false,
+        "tax_country_id": [
+            75,
+            "France"
+        ],
+        "tax_calculation_rounding_method": "round_per_line",
+        "payment_term_id": false,
+        "incoterm_id": false,
+        "product_id": [
+            73010,
+            "[0713208] V28 GR POULET SAC 25KG"
+        ],
+        "user_id": [
+            44,
+            "JEAN MICHEL ADELIN"
+        ],
+        "company_id": [
+            48,
+            "21 - T600 - F&J"
+        ],
+        "country_code": "FR",
+        "currency_rate": 1.0,
+        "mail_reminder_confirmed": false,
+        "mail_reception_confirmed": false,
+        "receipt_reminder_email": false,
+        "reminder_date_before_receipt": 1,
+        "display_name": "P0002007 (GESICA706681)",
+        "create_uid": [
+            44,
+            "JEAN MICHEL ADELIN"
+        ],
+        "create_date": "2025-09-29 10:11:12",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ],
+        "write_date": "2025-09-29 14:15:32",
+        "requisition_id": false,
+        "is_quantity_copy": false,
+        "purchase_group_id": false,
+        "alternative_po_ids": [],
+        "has_alternatives": false,
+        "incoterm_location": false,
+        "incoming_picking_count": 1,
+        "picking_ids": [
+            5029
+        ],
+        "picking_type_id": [
+            265,
+            "FERMES ET JARDINS - 21 T600: Réceptions"
+        ],
+        "default_location_dest_id_usage": "internal",
+        "group_id": [
+            999,
+            "P0002007"
+        ],
+        "is_shipped": false,
+        "effective_date": false,
+        "on_time_rate": 0.052356020942408384,
+        "receipt_status": "pending",
+        "mto_reference_reflex": false,
+        "mrp_production_count": 0,
+        "on_time_rate_perc": 0.0005235602094240838,
+        "sale_order_count": 0,
+        "sum_franco": false,
+        "qty_franco": false,
+        "auto_generated": false,
+        "auto_sale_order_id": false,
+        "transfert_magasin": false,
+        "departure_freight_forwarder": false,
+        "import_folder_ids": [],
+        "button_transit_reception_visibility": false,
+        "freight_forwarder_reception_confirmed": false,
+        "import_priority": "0",
+        "is_importation_complete": false,
+        "import_estimated_arrival": false,
+        "folder_import_estimated_arrival": false,
+        "tags": [],
+        "import_incoterm_ids": [],
+        "is_an_import_order": false,
+        "palets": 0,
+        "quality_alert_count": 0,
+        "quality_alert_ids": [],
+        "available_incoterm_ids": [],
+        "purchase_order_type_id": [],
+        "purchase_tag_ids": [],
+        "purchase_input_mask_id": false,
+        "dropship_picking_count": 0,
+        "edi_legacy_reference": false,
+        "destination_company_id": false,
+        "x_studio_transfert_magasin": false,
+        "x_studio_comptabiliser": false
+    },
+    {
+        "id": 2008,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_user_id": false,
+        "activity_type_id": false,
+        "activity_type_icon": false,
+        "activity_date_deadline": false,
+        "my_activity_date_deadline": false,
+        "activity_summary": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_calendar_event_id": false,
+        "message_is_follower": false,
+        "message_follower_ids": [],
+        "message_partner_ids": [],
+        "message_ids": [
+            50673
+        ],
+        "has_message": true,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_attachment_count": 0,
+        "rating_ids": [],
+        "website_message_ids": [],
+        "message_has_sms_error": false,
+        "access_url": "/my/purchase/2008",
+        "access_token": false,
+        "access_warning": "",
+        "name": "P0002008",
+        "priority": "0",
+        "origin": "S0000441",
+        "partner_ref": false,
+        "date_order": "2025-08-30 00:00:00",
+        "date_approve": false,
+        "partner_id": [
+            5081,
+            "URCOOPA"
+        ],
+        "dest_address_id": false,
+        "currency_id": [
+            125,
+            "EUR"
+        ],
+        "state": "draft",
+        "order_line": [
+            54933,
+            54934,
+            54935,
+            54936,
+            54937,
+            54938,
+            54939,
+            54940,
+            54941,
+            54942,
+            54943,
+            54944,
+            54945
+        ],
+        "notes": false,
+        "invoice_count": 0,
+        "invoice_ids": [],
+        "invoice_status": "no",
+        "date_planned": "2025-08-30 00:00:00",
+        "date_calendar_start": "2025-08-30 00:00:00",
+        "amount_untaxed": 8028.14,
+        "tax_totals": {
+            "amount_untaxed": 8028.14,
+            "amount_total": 8196.73,
+            "formatted_amount_total": "8 196,73 €",
+            "formatted_amount_untaxed": "8 028,14 €",
+            "groups_by_subtotal": {
+                "Montant hors taxes": [
+                    {
+                        "group_key": 28,
+                        "tax_group_id": 28,
+                        "tax_group_name": "VAT 2.1%",
+                        "tax_group_amount": 168.59,
+                        "tax_group_base_amount": 8028.140000000001,
+                        "formatted_tax_group_amount": "168,59 €",
+                        "formatted_tax_group_base_amount": "8 028,14 €",
+                        "hide_base_amount": false
+                    }
+                ]
+            },
+            "subtotals": [
+                {
+                    "name": "Montant hors taxes",
+                    "amount": 8028.140000000001,
+                    "formatted_amount": "8 028,14 €"
+                }
+            ],
+            "subtotals_order": [
+                "Montant hors taxes"
+            ],
+            "display_tax_base": false
+        },
+        "amount_tax": 168.59,
+        "amount_total": 8196.73,
+        "fiscal_position_id": [
+            20,
+            "Réunion 2"
+        ],
+        "tax_country_id": [
+            75,
+            "France"
+        ],
+        "tax_calculation_rounding_method": "round_per_line",
+        "payment_term_id": false,
+        "incoterm_id": false,
+        "product_id": [
+            73010,
+            "[0713208] V28 GR POULET SAC 25KG"
+        ],
+        "user_id": false,
+        "company_id": [
+            19,
+            "SICALAIT"
+        ],
+        "country_code": "FR",
+        "currency_rate": 1.0,
+        "mail_reminder_confirmed": false,
+        "mail_reception_confirmed": false,
+        "receipt_reminder_email": false,
+        "reminder_date_before_receipt": 1,
+        "display_name": "P0002008",
+        "create_uid": [
+            1,
+            "OdooBot"
+        ],
+        "create_date": "2025-09-29 10:11:29",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ],
+        "write_date": "2025-09-29 14:15:32",
+        "requisition_id": false,
+        "is_quantity_copy": false,
+        "purchase_group_id": false,
+        "alternative_po_ids": [],
+        "has_alternatives": false,
+        "incoterm_location": false,
+        "incoming_picking_count": 0,
+        "picking_ids": [],
+        "picking_type_id": [
+            109,
+            "SICALAIT - SLS: Réceptions"
+        ],
+        "default_location_dest_id_usage": "internal",
+        "group_id": [
+            1000,
+            "S0000441"
+        ],
+        "is_shipped": false,
+        "effective_date": false,
+        "on_time_rate": -1.0,
+        "receipt_status": false,
+        "mto_reference_reflex": "S0000441",
+        "mrp_production_count": 0,
+        "on_time_rate_perc": -1.0,
+        "sale_order_count": 1,
+        "sum_franco": false,
+        "qty_franco": false,
+        "auto_generated": false,
+        "auto_sale_order_id": false,
+        "transfert_magasin": false,
+        "departure_freight_forwarder": false,
+        "import_folder_ids": [],
+        "button_transit_reception_visibility": false,
+        "freight_forwarder_reception_confirmed": false,
+        "import_priority": "0",
+        "is_importation_complete": false,
+        "import_estimated_arrival": false,
+        "folder_import_estimated_arrival": false,
+        "tags": [],
+        "import_incoterm_ids": [],
+        "is_an_import_order": false,
+        "palets": 0,
+        "quality_alert_count": 0,
+        "quality_alert_ids": [],
+        "available_incoterm_ids": [],
+        "purchase_order_type_id": [],
+        "purchase_tag_ids": [],
+        "purchase_input_mask_id": false,
+        "dropship_picking_count": 0,
+        "edi_legacy_reference": false,
+        "destination_company_id": false,
+        "x_studio_transfert_magasin": false,
+        "x_studio_comptabiliser": false
+    },
+    {
+        "id": 2009,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_user_id": false,
+        "activity_type_id": false,
+        "activity_type_icon": false,
+        "activity_date_deadline": false,
+        "my_activity_date_deadline": false,
+        "activity_summary": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_calendar_event_id": false,
+        "message_is_follower": false,
+        "message_follower_ids": [
+            20702,
+            20706
+        ],
+        "message_partner_ids": [
+            133,
+            8164
+        ],
+        "message_ids": [
+            50692,
+            50684,
+            50683,
+            50682,
+            50681,
+            50680,
+            50679,
+            50678
+        ],
+        "has_message": true,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_attachment_count": 0,
+        "rating_ids": [],
+        "website_message_ids": [],
+        "message_has_sms_error": false,
+        "access_url": "/my/purchase/2009",
+        "access_token": false,
+        "access_warning": "",
+        "name": "P0002009",
+        "priority": "0",
+        "origin": false,
+        "partner_ref": "GESICA706697",
+        "date_order": "2025-08-30 00:00:00",
+        "date_approve": "2025-09-29 10:11:40",
+        "partner_id": [
+            8164,
+            "SICALAIT, SICALAIT - ALIMENT"
+        ],
+        "dest_address_id": false,
+        "currency_id": [
+            125,
+            "EUR"
+        ],
+        "state": "done",
+        "order_line": [
+            54946,
+            54947,
+            54948,
+            54949,
+            54950,
+            54951
+        ],
+        "notes": false,
+        "invoice_count": 0,
+        "invoice_ids": [],
+        "invoice_status": "no",
+        "date_planned": "2025-08-30 00:00:00",
+        "date_calendar_start": "2025-09-29 10:11:40",
+        "amount_untaxed": 2442.9,
+        "tax_totals": {
+            "amount_untaxed": 2442.9,
+            "amount_total": 2574.05,
+            "formatted_amount_total": "2 574,05 €",
+            "formatted_amount_untaxed": "2 442,90 €",
+            "groups_by_subtotal": {
+                "Montant hors taxes": [
+                    {
+                        "group_key": 19,
+                        "tax_group_id": 19,
+                        "tax_group_name": "VAT 8.5%",
+                        "tax_group_amount": 131.15,
+                        "tax_group_base_amount": 1542.9,
+                        "formatted_tax_group_amount": "131,15 €",
+                        "formatted_tax_group_base_amount": "1 542,90 €",
+                        "hide_base_amount": false
+                    }
+                ]
+            },
+            "subtotals": [
+                {
+                    "name": "Montant hors taxes",
+                    "amount": 2442.9,
+                    "formatted_amount": "2 442,90 €"
+                }
+            ],
+            "subtotals_order": [
+                "Montant hors taxes"
+            ],
+            "display_tax_base": true
+        },
+        "amount_tax": 131.15,
+        "amount_total": 2574.05,
+        "fiscal_position_id": false,
+        "tax_country_id": [
+            75,
+            "France"
+        ],
+        "tax_calculation_rounding_method": "round_per_line",
+        "payment_term_id": false,
+        "incoterm_id": false,
+        "product_id": [
+            53882,
+            "[51118006] PALETTE NOIR PL ORANGE 100*120"
+        ],
+        "user_id": [
+            44,
+            "JEAN MICHEL ADELIN"
+        ],
+        "company_id": [
+            55,
+            "29 - ST LOUIS - F&J"
+        ],
+        "country_code": "FR",
+        "currency_rate": 1.0,
+        "mail_reminder_confirmed": false,
+        "mail_reception_confirmed": false,
+        "receipt_reminder_email": false,
+        "reminder_date_before_receipt": 1,
+        "display_name": "P0002009 (GESICA706697)",
+        "create_uid": [
+            44,
+            "JEAN MICHEL ADELIN"
+        ],
+        "create_date": "2025-09-29 10:11:32",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ],
+        "write_date": "2025-09-29 14:15:32",
+        "requisition_id": false,
+        "is_quantity_copy": false,
+        "purchase_group_id": false,
+        "alternative_po_ids": [],
+        "has_alternatives": false,
+        "incoterm_location": false,
+        "incoming_picking_count": 1,
+        "picking_ids": [
+            5031
+        ],
+        "picking_type_id": [
+            307,
+            "FERMES ET JARDINS - 29 ST LOUIS: Réceptions"
+        ],
+        "default_location_dest_id_usage": "internal",
+        "group_id": [
+            1001,
+            "P0002009"
+        ],
+        "is_shipped": false,
+        "effective_date": false,
+        "on_time_rate": 0.052356020942408384,
+        "receipt_status": "pending",
+        "mto_reference_reflex": false,
+        "mrp_production_count": 0,
+        "on_time_rate_perc": 0.0005235602094240838,
+        "sale_order_count": 0,
+        "sum_franco": false,
+        "qty_franco": false,
+        "auto_generated": false,
+        "auto_sale_order_id": false,
+        "transfert_magasin": false,
+        "departure_freight_forwarder": false,
+        "import_folder_ids": [],
+        "button_transit_reception_visibility": false,
+        "freight_forwarder_reception_confirmed": false,
+        "import_priority": "0",
+        "is_importation_complete": false,
+        "import_estimated_arrival": false,
+        "folder_import_estimated_arrival": false,
+        "tags": [],
+        "import_incoterm_ids": [],
+        "is_an_import_order": false,
+        "palets": 0,
+        "quality_alert_count": 0,
+        "quality_alert_ids": [],
+        "available_incoterm_ids": [],
+        "purchase_order_type_id": [],
+        "purchase_tag_ids": [],
+        "purchase_input_mask_id": false,
+        "dropship_picking_count": 0,
+        "edi_legacy_reference": false,
+        "destination_company_id": false,
+        "x_studio_transfert_magasin": false,
+        "x_studio_comptabiliser": false
+    },
+    {
+        "id": 2010,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_user_id": false,
+        "activity_type_id": false,
+        "activity_type_icon": false,
+        "activity_date_deadline": false,
+        "my_activity_date_deadline": false,
+        "activity_summary": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_calendar_event_id": false,
+        "message_is_follower": false,
+        "message_follower_ids": [],
+        "message_partner_ids": [],
+        "message_ids": [
+            50689
+        ],
+        "has_message": true,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_attachment_count": 0,
+        "rating_ids": [],
+        "website_message_ids": [],
+        "message_has_sms_error": false,
+        "access_url": "/my/purchase/2010",
+        "access_token": false,
+        "access_warning": "",
+        "name": "P0002010",
+        "priority": "0",
+        "origin": "S0000442",
+        "partner_ref": false,
+        "date_order": "2025-08-30 00:00:00",
+        "date_approve": false,
+        "partner_id": [
+            5081,
+            "URCOOPA"
+        ],
+        "dest_address_id": false,
+        "currency_id": [
+            125,
+            "EUR"
+        ],
+        "state": "draft",
+        "order_line": [
+            54952,
+            54953,
+            54954,
+            54955,
+            54956,
+            54957
+        ],
+        "notes": false,
+        "invoice_count": 0,
+        "invoice_ids": [],
+        "invoice_status": "no",
+        "date_planned": "2025-08-30 00:00:00",
+        "date_calendar_start": "2025-08-30 00:00:00",
+        "amount_untaxed": 2442.9,
+        "tax_totals": {
+            "amount_untaxed": 2442.9,
+            "amount_total": 2574.05,
+            "formatted_amount_total": "2 574,05 €",
+            "formatted_amount_untaxed": "2 442,90 €",
+            "groups_by_subtotal": {
+                "Montant hors taxes": [
+                    {
+                        "group_key": 25,
+                        "tax_group_id": 25,
+                        "tax_group_name": "VAT 8.5%",
+                        "tax_group_amount": 131.15,
+                        "tax_group_base_amount": 1542.9,
+                        "formatted_tax_group_amount": "131,15 €",
+                        "formatted_tax_group_base_amount": "1 542,90 €",
+                        "hide_base_amount": false
+                    }
+                ]
+            },
+            "subtotals": [
+                {
+                    "name": "Montant hors taxes",
+                    "amount": 2442.9,
+                    "formatted_amount": "2 442,90 €"
+                }
+            ],
+            "subtotals_order": [
+                "Montant hors taxes"
+            ],
+            "display_tax_base": true
+        },
+        "amount_tax": 131.15,
+        "amount_total": 2574.05,
+        "fiscal_position_id": [
+            20,
+            "Réunion 2"
+        ],
+        "tax_country_id": [
+            75,
+            "France"
+        ],
+        "tax_calculation_rounding_method": "round_per_line",
+        "payment_term_id": false,
+        "incoterm_id": false,
+        "product_id": [
+            53882,
+            "[51118006] PALETTE NOIR PL ORANGE 100*120"
+        ],
+        "user_id": false,
+        "company_id": [
+            19,
+            "SICALAIT"
+        ],
+        "country_code": "FR",
+        "currency_rate": 1.0,
+        "mail_reminder_confirmed": false,
+        "mail_reception_confirmed": false,
+        "receipt_reminder_email": false,
+        "reminder_date_before_receipt": 1,
+        "display_name": "P0002010",
+        "create_uid": [
+            1,
+            "OdooBot"
+        ],
+        "create_date": "2025-09-29 10:11:40",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ],
+        "write_date": "2025-09-29 14:15:32",
+        "requisition_id": false,
+        "is_quantity_copy": false,
+        "purchase_group_id": false,
+        "alternative_po_ids": [],
+        "has_alternatives": false,
+        "incoterm_location": false,
+        "incoming_picking_count": 0,
+        "picking_ids": [],
+        "picking_type_id": [
+            109,
+            "SICALAIT - SLS: Réceptions"
+        ],
+        "default_location_dest_id_usage": "internal",
+        "group_id": [
+            1002,
+            "S0000442"
+        ],
+        "is_shipped": false,
+        "effective_date": false,
+        "on_time_rate": -1.0,
+        "receipt_status": false,
+        "mto_reference_reflex": "S0000442",
+        "mrp_production_count": 0,
+        "on_time_rate_perc": -1.0,
+        "sale_order_count": 1,
+        "sum_franco": false,
+        "qty_franco": false,
+        "auto_generated": false,
+        "auto_sale_order_id": false,
+        "transfert_magasin": false,
+        "departure_freight_forwarder": false,
+        "import_folder_ids": [],
+        "button_transit_reception_visibility": false,
+        "freight_forwarder_reception_confirmed": false,
+        "import_priority": "0",
+        "is_importation_complete": false,
+        "import_estimated_arrival": false,
+        "folder_import_estimated_arrival": false,
+        "tags": [],
+        "import_incoterm_ids": [],
+        "is_an_import_order": false,
+        "palets": 0,
+        "quality_alert_count": 0,
+        "quality_alert_ids": [],
+        "available_incoterm_ids": [],
+        "purchase_order_type_id": [],
+        "purchase_tag_ids": [],
+        "purchase_input_mask_id": false,
+        "dropship_picking_count": 0,
+        "edi_legacy_reference": false,
+        "destination_company_id": false,
+        "x_studio_transfert_magasin": false,
+        "x_studio_comptabiliser": false
+    },
+    {
+        "id": 2011,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_user_id": false,
+        "activity_type_id": false,
+        "activity_type_icon": false,
+        "activity_date_deadline": false,
+        "my_activity_date_deadline": false,
+        "activity_summary": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_calendar_event_id": false,
+        "message_is_follower": false,
+        "message_follower_ids": [
+            20707,
+            20711
+        ],
+        "message_partner_ids": [
+            133,
+            8164
+        ],
+        "message_ids": [
+            50707,
+            50699,
+            50698,
+            50697,
+            50696,
+            50695,
+            50694,
+            50693
+        ],
+        "has_message": true,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_attachment_count": 0,
+        "rating_ids": [],
+        "website_message_ids": [],
+        "message_has_sms_error": false,
+        "access_url": "/my/purchase/2011",
+        "access_token": false,
+        "access_warning": "",
+        "name": "P0002011",
+        "priority": "0",
+        "origin": false,
+        "partner_ref": "GESICA706699",
+        "date_order": "2025-08-30 00:00:00",
+        "date_approve": "2025-09-29 10:11:49",
+        "partner_id": [
+            8164,
+            "SICALAIT, SICALAIT - ALIMENT"
+        ],
+        "dest_address_id": false,
+        "currency_id": [
+            125,
+            "EUR"
+        ],
+        "state": "done",
+        "order_line": [
+            54958,
+            54959,
+            54960,
+            54961,
+            54962,
+            54963
+        ],
+        "notes": false,
+        "invoice_count": 0,
+        "invoice_ids": [],
+        "invoice_status": "no",
+        "date_planned": "2025-08-30 00:00:00",
+        "date_calendar_start": "2025-09-29 10:11:49",
+        "amount_untaxed": 2477.2,
+        "tax_totals": {
+            "amount_untaxed": 2477.2000000000003,
+            "amount_total": 2573.01,
+            "formatted_amount_total": "2 573,01 €",
+            "formatted_amount_untaxed": "2 477,20 €",
+            "groups_by_subtotal": {
+                "Montant hors taxes": [
+                    {
+                        "group_key": 19,
+                        "tax_group_id": 19,
+                        "tax_group_name": "VAT 8.5%",
+                        "tax_group_amount": 95.81,
+                        "tax_group_base_amount": 1127.2,
+                        "formatted_tax_group_amount": "95,81 €",
+                        "formatted_tax_group_base_amount": "1 127,20 €",
+                        "hide_base_amount": false
+                    }
+                ]
+            },
+            "subtotals": [
+                {
+                    "name": "Montant hors taxes",
+                    "amount": 2477.2,
+                    "formatted_amount": "2 477,20 €"
+                }
+            ],
+            "subtotals_order": [
+                "Montant hors taxes"
+            ],
+            "display_tax_base": true
+        },
+        "amount_tax": 95.81,
+        "amount_total": 2573.01,
+        "fiscal_position_id": false,
+        "tax_country_id": [
+            75,
+            "France"
+        ],
+        "tax_calculation_rounding_method": "round_per_line",
+        "payment_term_id": false,
+        "incoterm_id": false,
+        "product_id": [
+            53876,
+            "[51013011] PALETTE 80*120 A RETOURNER"
+        ],
+        "user_id": [
+            44,
+            "JEAN MICHEL ADELIN"
+        ],
+        "company_id": [
+            55,
+            "29 - ST LOUIS - F&J"
+        ],
+        "country_code": "FR",
+        "currency_rate": 1.0,
+        "mail_reminder_confirmed": false,
+        "mail_reception_confirmed": false,
+        "receipt_reminder_email": false,
+        "reminder_date_before_receipt": 1,
+        "display_name": "P0002011 (GESICA706699)",
+        "create_uid": [
+            44,
+            "JEAN MICHEL ADELIN"
+        ],
+        "create_date": "2025-09-29 10:11:42",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ],
+        "write_date": "2025-09-29 14:15:32",
+        "requisition_id": false,
+        "is_quantity_copy": false,
+        "purchase_group_id": false,
+        "alternative_po_ids": [],
+        "has_alternatives": false,
+        "incoterm_location": false,
+        "incoming_picking_count": 1,
+        "picking_ids": [
+            5033
+        ],
+        "picking_type_id": [
+            307,
+            "FERMES ET JARDINS - 29 ST LOUIS: Réceptions"
+        ],
+        "default_location_dest_id_usage": "internal",
+        "group_id": [
+            1003,
+            "P0002011"
+        ],
+        "is_shipped": false,
+        "effective_date": false,
+        "on_time_rate": 0.052356020942408384,
+        "receipt_status": "pending",
+        "mto_reference_reflex": false,
+        "mrp_production_count": 0,
+        "on_time_rate_perc": 0.0005235602094240838,
+        "sale_order_count": 0,
+        "sum_franco": false,
+        "qty_franco": false,
+        "auto_generated": false,
+        "auto_sale_order_id": false,
+        "transfert_magasin": false,
+        "departure_freight_forwarder": false,
+        "import_folder_ids": [],
+        "button_transit_reception_visibility": false,
+        "freight_forwarder_reception_confirmed": false,
+        "import_priority": "0",
+        "is_importation_complete": false,
+        "import_estimated_arrival": false,
+        "folder_import_estimated_arrival": false,
+        "tags": [],
+        "import_incoterm_ids": [],
+        "is_an_import_order": false,
+        "palets": 0,
+        "quality_alert_count": 0,
+        "quality_alert_ids": [],
+        "available_incoterm_ids": [],
+        "purchase_order_type_id": [],
+        "purchase_tag_ids": [],
+        "purchase_input_mask_id": false,
+        "dropship_picking_count": 0,
+        "edi_legacy_reference": false,
+        "destination_company_id": false,
+        "x_studio_transfert_magasin": false,
+        "x_studio_comptabiliser": false
+    },
+    {
+        "id": 2012,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_user_id": false,
+        "activity_type_id": false,
+        "activity_type_icon": false,
+        "activity_date_deadline": false,
+        "my_activity_date_deadline": false,
+        "activity_summary": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_calendar_event_id": false,
+        "message_is_follower": false,
+        "message_follower_ids": [],
+        "message_partner_ids": [],
+        "message_ids": [
+            50704
+        ],
+        "has_message": true,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_attachment_count": 0,
+        "rating_ids": [],
+        "website_message_ids": [],
+        "message_has_sms_error": false,
+        "access_url": "/my/purchase/2012",
+        "access_token": false,
+        "access_warning": "",
+        "name": "P0002012",
+        "priority": "0",
+        "origin": "S0000443",
+        "partner_ref": false,
+        "date_order": "2025-08-30 00:00:00",
+        "date_approve": false,
+        "partner_id": [
+            5081,
+            "URCOOPA"
+        ],
+        "dest_address_id": false,
+        "currency_id": [
+            125,
+            "EUR"
+        ],
+        "state": "draft",
+        "order_line": [
+            54964,
+            54965,
+            54966,
+            54967,
+            54968,
+            54969
+        ],
+        "notes": false,
+        "invoice_count": 0,
+        "invoice_ids": [],
+        "invoice_status": "no",
+        "date_planned": "2025-08-30 00:00:00",
+        "date_calendar_start": "2025-08-30 00:00:00",
+        "amount_untaxed": 2477.2,
+        "tax_totals": {
+            "amount_untaxed": 2477.2000000000003,
+            "amount_total": 2573.01,
+            "formatted_amount_total": "2 573,01 €",
+            "formatted_amount_untaxed": "2 477,20 €",
+            "groups_by_subtotal": {
+                "Montant hors taxes": [
+                    {
+                        "group_key": 25,
+                        "tax_group_id": 25,
+                        "tax_group_name": "VAT 8.5%",
+                        "tax_group_amount": 95.81,
+                        "tax_group_base_amount": 1127.2,
+                        "formatted_tax_group_amount": "95,81 €",
+                        "formatted_tax_group_base_amount": "1 127,20 €",
+                        "hide_base_amount": false
+                    }
+                ]
+            },
+            "subtotals": [
+                {
+                    "name": "Montant hors taxes",
+                    "amount": 2477.2,
+                    "formatted_amount": "2 477,20 €"
+                }
+            ],
+            "subtotals_order": [
+                "Montant hors taxes"
+            ],
+            "display_tax_base": true
+        },
+        "amount_tax": 95.81,
+        "amount_total": 2573.01,
+        "fiscal_position_id": [
+            20,
+            "Réunion 2"
+        ],
+        "tax_country_id": [
+            75,
+            "France"
+        ],
+        "tax_calculation_rounding_method": "round_per_line",
+        "payment_term_id": false,
+        "incoterm_id": false,
+        "product_id": [
+            53876,
+            "[51013011] PALETTE 80*120 A RETOURNER"
+        ],
+        "user_id": false,
+        "company_id": [
+            19,
+            "SICALAIT"
+        ],
+        "country_code": "FR",
+        "currency_rate": 1.0,
+        "mail_reminder_confirmed": false,
+        "mail_reception_confirmed": false,
+        "receipt_reminder_email": false,
+        "reminder_date_before_receipt": 1,
+        "display_name": "P0002012",
+        "create_uid": [
+            1,
+            "OdooBot"
+        ],
+        "create_date": "2025-09-29 10:11:49",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ],
+        "write_date": "2025-09-29 14:15:32",
+        "requisition_id": false,
+        "is_quantity_copy": false,
+        "purchase_group_id": false,
+        "alternative_po_ids": [],
+        "has_alternatives": false,
+        "incoterm_location": false,
+        "incoming_picking_count": 0,
+        "picking_ids": [],
+        "picking_type_id": [
+            109,
+            "SICALAIT - SLS: Réceptions"
+        ],
+        "default_location_dest_id_usage": "internal",
+        "group_id": [
+            1004,
+            "S0000443"
+        ],
+        "is_shipped": false,
+        "effective_date": false,
+        "on_time_rate": -1.0,
+        "receipt_status": false,
+        "mto_reference_reflex": "S0000443",
+        "mrp_production_count": 0,
+        "on_time_rate_perc": -1.0,
+        "sale_order_count": 1,
+        "sum_franco": false,
+        "qty_franco": false,
+        "auto_generated": false,
+        "auto_sale_order_id": false,
+        "transfert_magasin": false,
+        "departure_freight_forwarder": false,
+        "import_folder_ids": [],
+        "button_transit_reception_visibility": false,
+        "freight_forwarder_reception_confirmed": false,
+        "import_priority": "0",
+        "is_importation_complete": false,
+        "import_estimated_arrival": false,
+        "folder_import_estimated_arrival": false,
+        "tags": [],
+        "import_incoterm_ids": [],
+        "is_an_import_order": false,
+        "palets": 0,
+        "quality_alert_count": 0,
+        "quality_alert_ids": [],
+        "available_incoterm_ids": [],
+        "purchase_order_type_id": [],
+        "purchase_tag_ids": [],
+        "purchase_input_mask_id": false,
+        "dropship_picking_count": 0,
+        "edi_legacy_reference": false,
+        "destination_company_id": false,
+        "x_studio_transfert_magasin": false,
+        "x_studio_comptabiliser": false
+    },
+    {
+        "id": 2013,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_user_id": false,
+        "activity_type_id": false,
+        "activity_type_icon": false,
+        "activity_date_deadline": false,
+        "my_activity_date_deadline": false,
+        "activity_summary": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_calendar_event_id": false,
+        "message_is_follower": false,
+        "message_follower_ids": [
+            20712,
+            20716
+        ],
+        "message_partner_ids": [
+            133,
+            8164
+        ],
+        "message_ids": [
+            50722,
+            50714,
+            50713,
+            50712,
+            50711,
+            50710,
+            50709,
+            50708
+        ],
+        "has_message": true,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_attachment_count": 0,
+        "rating_ids": [],
+        "website_message_ids": [],
+        "message_has_sms_error": false,
+        "access_url": "/my/purchase/2013",
+        "access_token": false,
+        "access_warning": "",
+        "name": "P0002013",
+        "priority": "0",
+        "origin": false,
+        "partner_ref": "GESICA706700",
+        "date_order": "2025-08-30 00:00:00",
+        "date_approve": "2025-09-29 10:11:59",
+        "partner_id": [
+            8164,
+            "SICALAIT, SICALAIT - ALIMENT"
+        ],
+        "dest_address_id": false,
+        "currency_id": [
+            125,
+            "EUR"
+        ],
+        "state": "done",
+        "order_line": [
+            54970,
+            54971,
+            54972,
+            54973,
+            54974,
+            54975
+        ],
+        "notes": false,
+        "invoice_count": 0,
+        "invoice_ids": [],
+        "invoice_status": "no",
+        "date_planned": "2025-08-30 00:00:00",
+        "date_calendar_start": "2025-09-29 10:11:59",
+        "amount_untaxed": 2498.6,
+        "tax_totals": {
+            "amount_untaxed": 2498.6,
+            "amount_total": 2588.58,
+            "formatted_amount_total": "2 588,58 €",
+            "formatted_amount_untaxed": "2 498,60 €",
+            "groups_by_subtotal": {
+                "Montant hors taxes": [
+                    {
+                        "group_key": 19,
+                        "tax_group_id": 19,
+                        "tax_group_name": "VAT 8.5%",
+                        "tax_group_amount": 89.98,
+                        "tax_group_base_amount": 1058.6,
+                        "formatted_tax_group_amount": "89,98 €",
+                        "formatted_tax_group_base_amount": "1 058,60 €",
+                        "hide_base_amount": false
+                    }
+                ]
+            },
+            "subtotals": [
+                {
+                    "name": "Montant hors taxes",
+                    "amount": 2498.6,
+                    "formatted_amount": "2 498,60 €"
+                }
+            ],
+            "subtotals_order": [
+                "Montant hors taxes"
+            ],
+            "display_tax_base": true
+        },
+        "amount_tax": 89.98,
+        "amount_total": 2588.58,
+        "fiscal_position_id": false,
+        "tax_country_id": [
+            75,
+            "France"
+        ],
+        "tax_calculation_rounding_method": "round_per_line",
+        "payment_term_id": false,
+        "incoterm_id": false,
+        "product_id": [
+            53876,
+            "[51013011] PALETTE 80*120 A RETOURNER"
+        ],
+        "user_id": [
+            44,
+            "JEAN MICHEL ADELIN"
+        ],
+        "company_id": [
+            55,
+            "29 - ST LOUIS - F&J"
+        ],
+        "country_code": "FR",
+        "currency_rate": 1.0,
+        "mail_reminder_confirmed": false,
+        "mail_reception_confirmed": false,
+        "receipt_reminder_email": false,
+        "reminder_date_before_receipt": 1,
+        "display_name": "P0002013 (GESICA706700)",
+        "create_uid": [
+            44,
+            "JEAN MICHEL ADELIN"
+        ],
+        "create_date": "2025-09-29 10:11:52",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ],
+        "write_date": "2025-09-29 14:15:32",
+        "requisition_id": false,
+        "is_quantity_copy": false,
+        "purchase_group_id": false,
+        "alternative_po_ids": [],
+        "has_alternatives": false,
+        "incoterm_location": false,
+        "incoming_picking_count": 1,
+        "picking_ids": [
+            5035
+        ],
+        "picking_type_id": [
+            307,
+            "FERMES ET JARDINS - 29 ST LOUIS: Réceptions"
+        ],
+        "default_location_dest_id_usage": "internal",
+        "group_id": [
+            1005,
+            "P0002013"
+        ],
+        "is_shipped": false,
+        "effective_date": false,
+        "on_time_rate": 0.052356020942408384,
+        "receipt_status": "pending",
+        "mto_reference_reflex": false,
+        "mrp_production_count": 0,
+        "on_time_rate_perc": 0.0005235602094240838,
+        "sale_order_count": 0,
+        "sum_franco": false,
+        "qty_franco": false,
+        "auto_generated": false,
+        "auto_sale_order_id": false,
+        "transfert_magasin": false,
+        "departure_freight_forwarder": false,
+        "import_folder_ids": [],
+        "button_transit_reception_visibility": false,
+        "freight_forwarder_reception_confirmed": false,
+        "import_priority": "0",
+        "is_importation_complete": false,
+        "import_estimated_arrival": false,
+        "folder_import_estimated_arrival": false,
+        "tags": [],
+        "import_incoterm_ids": [],
+        "is_an_import_order": false,
+        "palets": 0,
+        "quality_alert_count": 0,
+        "quality_alert_ids": [],
+        "available_incoterm_ids": [],
+        "purchase_order_type_id": [],
+        "purchase_tag_ids": [],
+        "purchase_input_mask_id": false,
+        "dropship_picking_count": 0,
+        "edi_legacy_reference": false,
+        "destination_company_id": false,
+        "x_studio_transfert_magasin": false,
+        "x_studio_comptabiliser": false
+    },
+    {
+        "id": 2014,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_user_id": false,
+        "activity_type_id": false,
+        "activity_type_icon": false,
+        "activity_date_deadline": false,
+        "my_activity_date_deadline": false,
+        "activity_summary": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_calendar_event_id": false,
+        "message_is_follower": false,
+        "message_follower_ids": [],
+        "message_partner_ids": [],
+        "message_ids": [
+            50719
+        ],
+        "has_message": true,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_attachment_count": 0,
+        "rating_ids": [],
+        "website_message_ids": [],
+        "message_has_sms_error": false,
+        "access_url": "/my/purchase/2014",
+        "access_token": false,
+        "access_warning": "",
+        "name": "P0002014",
+        "priority": "0",
+        "origin": "S0000444",
+        "partner_ref": false,
+        "date_order": "2025-08-30 00:00:00",
+        "date_approve": false,
+        "partner_id": [
+            5081,
+            "URCOOPA"
+        ],
+        "dest_address_id": false,
+        "currency_id": [
+            125,
+            "EUR"
+        ],
+        "state": "draft",
+        "order_line": [
+            54976,
+            54977,
+            54978,
+            54979,
+            54980,
+            54981
+        ],
+        "notes": false,
+        "invoice_count": 0,
+        "invoice_ids": [],
+        "invoice_status": "no",
+        "date_planned": "2025-08-30 00:00:00",
+        "date_calendar_start": "2025-08-30 00:00:00",
+        "amount_untaxed": 2498.6,
+        "tax_totals": {
+            "amount_untaxed": 2498.6,
+            "amount_total": 2588.58,
+            "formatted_amount_total": "2 588,58 €",
+            "formatted_amount_untaxed": "2 498,60 €",
+            "groups_by_subtotal": {
+                "Montant hors taxes": [
+                    {
+                        "group_key": 25,
+                        "tax_group_id": 25,
+                        "tax_group_name": "VAT 8.5%",
+                        "tax_group_amount": 89.98,
+                        "tax_group_base_amount": 1058.6,
+                        "formatted_tax_group_amount": "89,98 €",
+                        "formatted_tax_group_base_amount": "1 058,60 €",
+                        "hide_base_amount": false
+                    }
+                ]
+            },
+            "subtotals": [
+                {
+                    "name": "Montant hors taxes",
+                    "amount": 2498.6,
+                    "formatted_amount": "2 498,60 €"
+                }
+            ],
+            "subtotals_order": [
+                "Montant hors taxes"
+            ],
+            "display_tax_base": true
+        },
+        "amount_tax": 89.98,
+        "amount_total": 2588.58,
+        "fiscal_position_id": [
+            20,
+            "Réunion 2"
+        ],
+        "tax_country_id": [
+            75,
+            "France"
+        ],
+        "tax_calculation_rounding_method": "round_per_line",
+        "payment_term_id": false,
+        "incoterm_id": false,
+        "product_id": [
+            53876,
+            "[51013011] PALETTE 80*120 A RETOURNER"
+        ],
+        "user_id": false,
+        "company_id": [
+            19,
+            "SICALAIT"
+        ],
+        "country_code": "FR",
+        "currency_rate": 1.0,
+        "mail_reminder_confirmed": false,
+        "mail_reception_confirmed": false,
+        "receipt_reminder_email": false,
+        "reminder_date_before_receipt": 1,
+        "display_name": "P0002014",
+        "create_uid": [
+            1,
+            "OdooBot"
+        ],
+        "create_date": "2025-09-29 10:11:59",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ],
+        "write_date": "2025-09-29 14:15:32",
+        "requisition_id": false,
+        "is_quantity_copy": false,
+        "purchase_group_id": false,
+        "alternative_po_ids": [],
+        "has_alternatives": false,
+        "incoterm_location": false,
+        "incoming_picking_count": 0,
+        "picking_ids": [],
+        "picking_type_id": [
+            109,
+            "SICALAIT - SLS: Réceptions"
+        ],
+        "default_location_dest_id_usage": "internal",
+        "group_id": [
+            1006,
+            "S0000444"
+        ],
+        "is_shipped": false,
+        "effective_date": false,
+        "on_time_rate": -1.0,
+        "receipt_status": false,
+        "mto_reference_reflex": "S0000444",
+        "mrp_production_count": 0,
+        "on_time_rate_perc": -1.0,
+        "sale_order_count": 1,
+        "sum_franco": false,
+        "qty_franco": false,
+        "auto_generated": false,
+        "auto_sale_order_id": false,
+        "transfert_magasin": false,
+        "departure_freight_forwarder": false,
+        "import_folder_ids": [],
+        "button_transit_reception_visibility": false,
+        "freight_forwarder_reception_confirmed": false,
+        "import_priority": "0",
+        "is_importation_complete": false,
+        "import_estimated_arrival": false,
+        "folder_import_estimated_arrival": false,
+        "tags": [],
+        "import_incoterm_ids": [],
+        "is_an_import_order": false,
+        "palets": 0,
+        "quality_alert_count": 0,
+        "quality_alert_ids": [],
+        "available_incoterm_ids": [],
+        "purchase_order_type_id": [],
+        "purchase_tag_ids": [],
+        "purchase_input_mask_id": false,
+        "dropship_picking_count": 0,
+        "edi_legacy_reference": false,
+        "destination_company_id": false,
+        "x_studio_transfert_magasin": false,
+        "x_studio_comptabiliser": false
+    },
+    {
+        "id": 2015,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_user_id": false,
+        "activity_type_id": false,
+        "activity_type_icon": false,
+        "activity_date_deadline": false,
+        "my_activity_date_deadline": false,
+        "activity_summary": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_calendar_event_id": false,
+        "message_is_follower": false,
+        "message_follower_ids": [
+            20717,
+            20719
+        ],
+        "message_partner_ids": [
+            133,
+            5081
+        ],
+        "message_ids": [
+            50733,
+            50730,
+            50729,
+            50728,
+            50727,
+            50726,
+            50725,
+            50724,
+            50723
+        ],
+        "has_message": true,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_attachment_count": 0,
+        "rating_ids": [],
+        "website_message_ids": [],
+        "message_has_sms_error": false,
+        "access_url": "/my/purchase/2015",
+        "access_token": false,
+        "access_warning": "",
+        "name": "P0002015",
+        "priority": "0",
+        "origin": false,
+        "partner_ref": "GESICA706731",
+        "date_order": "2025-08-30 00:00:00",
+        "date_approve": "2025-09-29 10:12:12",
+        "partner_id": [
+            5081,
+            "URCOOPA"
+        ],
+        "dest_address_id": false,
+        "currency_id": [
+            125,
+            "EUR"
+        ],
+        "state": "purchase",
+        "order_line": [
+            54982,
+            54983,
+            54984,
+            54985,
+            54986,
+            54987,
+            54988,
+            54989
+        ],
+        "notes": false,
+        "invoice_count": 0,
+        "invoice_ids": [],
+        "invoice_status": "no",
+        "date_planned": "2025-08-30 00:00:00",
+        "date_calendar_start": "2025-09-29 10:12:12",
+        "amount_untaxed": 3116.72,
+        "tax_totals": {
+            "amount_untaxed": 3116.7200000000003,
+            "amount_total": 3182.17,
+            "formatted_amount_total": "3 182,17 €",
+            "formatted_amount_untaxed": "3 116,72 €",
+            "groups_by_subtotal": {
+                "Montant hors taxes": [
+                    {
+                        "group_key": 28,
+                        "tax_group_id": 28,
+                        "tax_group_name": "VAT 2.1%",
+                        "tax_group_amount": 65.44999999999999,
+                        "tax_group_base_amount": 3116.7200000000003,
+                        "formatted_tax_group_amount": "65,45 €",
+                        "formatted_tax_group_base_amount": "3 116,72 €",
+                        "hide_base_amount": false
+                    }
+                ]
+            },
+            "subtotals": [
+                {
+                    "name": "Montant hors taxes",
+                    "amount": 3116.7200000000003,
+                    "formatted_amount": "3 116,72 €"
+                }
+            ],
+            "subtotals_order": [
+                "Montant hors taxes"
+            ],
+            "display_tax_base": false
+        },
+        "amount_tax": 65.45,
+        "amount_total": 3182.17,
+        "fiscal_position_id": false,
+        "tax_country_id": [
+            75,
+            "France"
+        ],
+        "tax_calculation_rounding_method": "round_per_line",
+        "payment_term_id": false,
+        "incoterm_id": false,
+        "product_id": [
+            45924,
+            "[0715205] MAIS GRAIN NETTOYE 25KG"
+        ],
+        "user_id": [
+            44,
+            "JEAN MICHEL ADELIN"
+        ],
+        "company_id": [
+            46,
+            "14 - JEAN PETIT - F&J VILLAGE"
+        ],
+        "country_code": "FR",
+        "currency_rate": 1.0,
+        "mail_reminder_confirmed": false,
+        "mail_reception_confirmed": false,
+        "receipt_reminder_email": false,
+        "reminder_date_before_receipt": 1,
+        "display_name": "P0002015 (GESICA706731)",
+        "create_uid": [
+            44,
+            "JEAN MICHEL ADELIN"
+        ],
+        "create_date": "2025-09-29 10:12:01",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ],
+        "write_date": "2025-09-29 14:15:32",
+        "requisition_id": false,
+        "is_quantity_copy": false,
+        "purchase_group_id": false,
+        "alternative_po_ids": [],
+        "has_alternatives": false,
+        "incoterm_location": false,
+        "incoming_picking_count": 1,
+        "picking_ids": [
+            5037
+        ],
+        "picking_type_id": [
+            253,
+            "14 - JEAN PETIT: Réceptions"
+        ],
+        "default_location_dest_id_usage": "internal",
+        "group_id": [
+            1007,
+            "P0002015"
+        ],
+        "is_shipped": false,
+        "effective_date": false,
+        "on_time_rate": -1.0,
+        "receipt_status": "pending",
+        "mto_reference_reflex": false,
+        "mrp_production_count": 0,
+        "on_time_rate_perc": -1.0,
+        "sale_order_count": 0,
+        "sum_franco": false,
+        "qty_franco": false,
+        "auto_generated": false,
+        "auto_sale_order_id": false,
+        "transfert_magasin": false,
+        "departure_freight_forwarder": false,
+        "import_folder_ids": [],
+        "button_transit_reception_visibility": false,
+        "freight_forwarder_reception_confirmed": false,
+        "import_priority": "0",
+        "is_importation_complete": false,
+        "import_estimated_arrival": false,
+        "folder_import_estimated_arrival": false,
+        "tags": [],
+        "import_incoterm_ids": [],
+        "is_an_import_order": false,
+        "palets": 0,
+        "quality_alert_count": 0,
+        "quality_alert_ids": [],
+        "available_incoterm_ids": [],
+        "purchase_order_type_id": [],
+        "purchase_tag_ids": [],
+        "purchase_input_mask_id": false,
+        "dropship_picking_count": 0,
+        "edi_legacy_reference": false,
+        "destination_company_id": false,
+        "x_studio_transfert_magasin": false,
+        "x_studio_comptabiliser": false
+    },
+    {
+        "id": 2017,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_user_id": false,
+        "activity_type_id": false,
+        "activity_type_icon": false,
+        "activity_date_deadline": false,
+        "my_activity_date_deadline": false,
+        "activity_summary": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_calendar_event_id": false,
+        "message_is_follower": false,
+        "message_follower_ids": [
+            20720
+        ],
+        "message_partner_ids": [
+            6762
+        ],
+        "message_ids": [
+            50769,
+            50768,
+            50767,
+            50766,
+            50765,
+            50764,
+            50763,
+            50762,
+            50761,
+            50760,
+            50759,
+            50758,
+            50757,
+            50756,
+            50755,
+            50754,
+            50753,
+            50752,
+            50751,
+            50750,
+            50749,
+            50748,
+            50747,
+            50746,
+            50745,
+            50744,
+            50743,
+            50742,
+            50741,
+            50740,
+            50739,
+            50738,
+            50737,
+            50736,
+            50734
+        ],
+        "has_message": true,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_attachment_count": 0,
+        "rating_ids": [],
+        "website_message_ids": [],
+        "message_has_sms_error": false,
+        "access_url": "/my/purchase/2017",
+        "access_token": false,
+        "access_warning": "",
+        "name": "P0002017",
+        "priority": "0",
+        "origin": false,
+        "partner_ref": "CDE701996",
+        "date_order": "2025-09-29 10:32:08",
+        "date_approve": "2025-09-29 10:32:35",
+        "partner_id": [
+            6762,
+            "HOZELOCK- EXEL"
+        ],
+        "dest_address_id": false,
+        "currency_id": [
+            125,
+            "EUR"
+        ],
+        "state": "purchase",
+        "order_line": [
+            55024,
+            55025,
+            55026,
+            55027,
+            55028,
+            55029,
+            55030,
+            55031,
+            55032,
+            55033,
+            55034,
+            55035,
+            55036,
+            55037,
+            55038,
+            55039,
+            55040,
+            55041,
+            55042,
+            55043,
+            55044,
+            55045,
+            55046,
+            55047,
+            55048,
+            55049,
+            55050,
+            55051,
+            55052,
+            55053,
+            55054,
+            55055,
+            55056,
+            55057
+        ],
+        "notes": false,
+        "invoice_count": 0,
+        "invoice_ids": [],
+        "invoice_status": "to invoice",
+        "date_planned": "2025-10-19 10:32:08",
+        "date_calendar_start": "2025-09-29 10:32:35",
+        "amount_untaxed": 9874.32,
+        "tax_totals": {
+            "amount_untaxed": 9874.32,
+            "amount_total": 9874.32,
+            "formatted_amount_total": "9 874,32 €",
+            "formatted_amount_untaxed": "9 874,32 €",
+            "groups_by_subtotal": {
+                "Montant hors taxes": [
+                    {
+                        "group_key": 25,
+                        "tax_group_id": 25,
+                        "tax_group_name": "VAT 8.5%",
+                        "tax_group_amount": 0.0,
+                        "tax_group_base_amount": 9874.320000000002,
+                        "formatted_tax_group_amount": "0,00 €",
+                        "formatted_tax_group_base_amount": "9 874,32 €",
+                        "hide_base_amount": false
+                    }
+                ]
+            },
+            "subtotals": [
+                {
+                    "name": "Montant hors taxes",
+                    "amount": 9874.320000000002,
+                    "formatted_amount": "9 874,32 €"
+                }
+            ],
+            "subtotals_order": [
+                "Montant hors taxes"
+            ],
+            "display_tax_base": false
+        },
+        "amount_tax": 0.0,
+        "amount_total": 9874.32,
+        "fiscal_position_id": false,
+        "tax_country_id": [
+            75,
+            "France"
+        ],
+        "tax_calculation_rounding_method": "round_per_line",
+        "payment_term_id": false,
+        "incoterm_id": false,
+        "product_id": [
+            83101,
+            "[0201914] DEVID MICRO REEL MUR+TUYAU 10M"
+        ],
+        "user_id": [
+            365,
+            "GAËLLE MAGUET"
+        ],
+        "company_id": [
+            19,
+            "SICALAIT"
+        ],
+        "country_code": "FR",
+        "currency_rate": 1.0,
+        "mail_reminder_confirmed": false,
+        "mail_reception_confirmed": false,
+        "receipt_reminder_email": false,
+        "reminder_date_before_receipt": 1,
+        "display_name": "P0002017 (CDE701996)",
+        "create_uid": [
+            365,
+            "GAËLLE MAGUET"
+        ],
+        "create_date": "2025-09-29 10:32:08",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ],
+        "write_date": "2025-09-29 14:15:32",
+        "requisition_id": false,
+        "is_quantity_copy": false,
+        "purchase_group_id": false,
+        "alternative_po_ids": [],
+        "has_alternatives": false,
+        "incoterm_location": false,
+        "incoming_picking_count": 1,
+        "picking_ids": [
+            5038
+        ],
+        "picking_type_id": [
+            356,
+            "SICALAIT - SLS: IMP-ES"
+        ],
+        "default_location_dest_id_usage": "supplier",
+        "group_id": false,
+        "is_shipped": true,
+        "effective_date": false,
+        "on_time_rate": 100.0,
+        "receipt_status": "full",
+        "mto_reference_reflex": false,
+        "mrp_production_count": 0,
+        "on_time_rate_perc": 1.0,
+        "sale_order_count": 0,
+        "sum_franco": false,
+        "qty_franco": false,
+        "auto_generated": false,
+        "auto_sale_order_id": false,
+        "transfert_magasin": false,
+        "departure_freight_forwarder": false,
+        "import_folder_ids": [
+            10
+        ],
+        "button_transit_reception_visibility": false,
+        "freight_forwarder_reception_confirmed": true,
+        "import_priority": "0",
+        "is_importation_complete": false,
+        "import_estimated_arrival": "2025-09-30",
+        "folder_import_estimated_arrival": "2025-09-30",
+        "tags": [],
+        "import_incoterm_ids": [],
+        "is_an_import_order": true,
+        "palets": 0,
+        "quality_alert_count": 0,
+        "quality_alert_ids": [],
+        "available_incoterm_ids": [],
+        "purchase_order_type_id": [],
+        "purchase_tag_ids": [],
+        "purchase_input_mask_id": false,
+        "dropship_picking_count": 0,
+        "edi_legacy_reference": false,
+        "destination_company_id": false,
+        "x_studio_transfert_magasin": false,
+        "x_studio_comptabiliser": false
+    },
+    {
+        "id": 2019,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_user_id": false,
+        "activity_type_id": false,
+        "activity_type_icon": false,
+        "activity_date_deadline": false,
+        "my_activity_date_deadline": false,
+        "activity_summary": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_calendar_event_id": false,
+        "message_is_follower": false,
+        "message_follower_ids": [
+            20723
+        ],
+        "message_partner_ids": [
+            6762
+        ],
+        "message_ids": [
+            50803,
+            50802,
+            50801,
+            50800,
+            50799,
+            50798,
+            50797,
+            50796,
+            50795,
+            50794,
+            50793,
+            50792,
+            50791,
+            50790,
+            50789,
+            50788,
+            50787,
+            50786,
+            50785,
+            50784,
+            50783,
+            50782,
+            50781,
+            50780,
+            50779,
+            50778,
+            50777,
+            50776,
+            50775,
+            50774,
+            50773,
+            50772,
+            50770
+        ],
+        "has_message": true,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_attachment_count": 0,
+        "rating_ids": [],
+        "website_message_ids": [],
+        "message_has_sms_error": false,
+        "access_url": "/my/purchase/2019",
+        "access_token": false,
+        "access_warning": "",
+        "name": "P0002019",
+        "priority": "0",
+        "origin": false,
+        "partner_ref": "CDE704720",
+        "date_order": "2025-09-29 10:34:07",
+        "date_approve": "2025-09-29 10:34:20",
+        "partner_id": [
+            6762,
+            "HOZELOCK- EXEL"
+        ],
+        "dest_address_id": false,
+        "currency_id": [
+            125,
+            "EUR"
+        ],
+        "state": "purchase",
+        "order_line": [
+            55090,
+            55091,
+            55092,
+            55093,
+            55094,
+            55095,
+            55096,
+            55097,
+            55098,
+            55099,
+            55100,
+            55101,
+            55102,
+            55103,
+            55104,
+            55105,
+            55106,
+            55107,
+            55108,
+            55109,
+            55110,
+            55111,
+            55112,
+            55113,
+            55114,
+            55115,
+            55116,
+            55117,
+            55118,
+            55119,
+            55120,
+            55121
+        ],
+        "notes": false,
+        "invoice_count": 0,
+        "invoice_ids": [],
+        "invoice_status": "to invoice",
+        "date_planned": "2025-10-19 10:34:07",
+        "date_calendar_start": "2025-09-29 10:34:20",
+        "amount_untaxed": 18901.56,
+        "tax_totals": {
+            "amount_untaxed": 18901.56,
+            "amount_total": 18901.56,
+            "formatted_amount_total": "18 901,56 €",
+            "formatted_amount_untaxed": "18 901,56 €",
+            "groups_by_subtotal": {
+                "Montant hors taxes": [
+                    {
+                        "group_key": 25,
+                        "tax_group_id": 25,
+                        "tax_group_name": "VAT 8.5%",
+                        "tax_group_amount": 0.0,
+                        "tax_group_base_amount": 18901.56,
+                        "formatted_tax_group_amount": "0,00 €",
+                        "formatted_tax_group_base_amount": "18 901,56 €",
+                        "hide_base_amount": false
+                    }
+                ]
+            },
+            "subtotals": [
+                {
+                    "name": "Montant hors taxes",
+                    "amount": 18901.56,
+                    "formatted_amount": "18 901,56 €"
+                }
+            ],
+            "subtotals_order": [
+                "Montant hors taxes"
+            ],
+            "display_tax_base": false
+        },
+        "amount_tax": 0.0,
+        "amount_total": 18901.56,
+        "fiscal_position_id": false,
+        "tax_country_id": [
+            75,
+            "France"
+        ],
+        "tax_calculation_rounding_method": "round_per_line",
+        "payment_term_id": false,
+        "incoterm_id": false,
+        "product_id": [
+            83101,
+            "[0201914] DEVID MICRO REEL MUR+TUYAU 10M"
+        ],
+        "user_id": [
+            365,
+            "GAËLLE MAGUET"
+        ],
+        "company_id": [
+            19,
+            "SICALAIT"
+        ],
+        "country_code": "FR",
+        "currency_rate": 1.0,
+        "mail_reminder_confirmed": false,
+        "mail_reception_confirmed": false,
+        "receipt_reminder_email": false,
+        "reminder_date_before_receipt": 1,
+        "display_name": "P0002019 (CDE704720)",
+        "create_uid": [
+            365,
+            "GAËLLE MAGUET"
+        ],
+        "create_date": "2025-09-29 10:34:07",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ],
+        "write_date": "2025-09-29 14:15:32",
+        "requisition_id": false,
+        "is_quantity_copy": false,
+        "purchase_group_id": false,
+        "alternative_po_ids": [],
+        "has_alternatives": false,
+        "incoterm_location": false,
+        "incoming_picking_count": 1,
+        "picking_ids": [
+            5039
+        ],
+        "picking_type_id": [
+            356,
+            "SICALAIT - SLS: IMP-ES"
+        ],
+        "default_location_dest_id_usage": "supplier",
+        "group_id": false,
+        "is_shipped": true,
+        "effective_date": false,
+        "on_time_rate": 100.0,
+        "receipt_status": "full",
+        "mto_reference_reflex": false,
+        "mrp_production_count": 0,
+        "on_time_rate_perc": 1.0,
+        "sale_order_count": 0,
+        "sum_franco": false,
+        "qty_franco": false,
+        "auto_generated": false,
+        "auto_sale_order_id": false,
+        "transfert_magasin": false,
+        "departure_freight_forwarder": false,
+        "import_folder_ids": [
+            11
+        ],
+        "button_transit_reception_visibility": false,
+        "freight_forwarder_reception_confirmed": true,
+        "import_priority": "0",
+        "is_importation_complete": false,
+        "import_estimated_arrival": "2025-11-01",
+        "folder_import_estimated_arrival": "2025-11-01",
+        "tags": [],
+        "import_incoterm_ids": [],
+        "is_an_import_order": true,
+        "palets": 0,
+        "quality_alert_count": 0,
+        "quality_alert_ids": [],
+        "available_incoterm_ids": [],
+        "purchase_order_type_id": [],
+        "purchase_tag_ids": [],
+        "purchase_input_mask_id": false,
+        "dropship_picking_count": 0,
+        "edi_legacy_reference": false,
+        "destination_company_id": false,
+        "x_studio_transfert_magasin": false,
+        "x_studio_comptabiliser": false
+    },
+    {
+        "id": 2021,
+        "activity_ids": [],
+        "activity_state": false,
+        "activity_user_id": false,
+        "activity_type_id": false,
+        "activity_type_icon": false,
+        "activity_date_deadline": false,
+        "my_activity_date_deadline": false,
+        "activity_summary": false,
+        "activity_exception_decoration": false,
+        "activity_exception_icon": false,
+        "activity_calendar_event_id": false,
+        "message_is_follower": false,
+        "message_follower_ids": [
+            20726
+        ],
+        "message_partner_ids": [
+            6762
+        ],
+        "message_ids": [
+            50831,
+            50830,
+            50829,
+            50828,
+            50827,
+            50826,
+            50825,
+            50824,
+            50823,
+            50822,
+            50821,
+            50820,
+            50819,
+            50818,
+            50817,
+            50816,
+            50815,
+            50814,
+            50813,
+            50812,
+            50811,
+            50810,
+            50809,
+            50808,
+            50807,
+            50806,
+            50804
+        ],
+        "has_message": true,
+        "message_needaction": false,
+        "message_needaction_counter": 0,
+        "message_has_error": false,
+        "message_has_error_counter": 0,
+        "message_attachment_count": 0,
+        "rating_ids": [],
+        "website_message_ids": [],
+        "message_has_sms_error": false,
+        "access_url": "/my/purchase/2021",
+        "access_token": false,
+        "access_warning": "",
+        "name": "P0002021",
+        "priority": "0",
+        "origin": false,
+        "partner_ref": "CDE707085",
+        "date_order": "2025-09-29 10:36:17",
+        "date_approve": "2025-09-29 10:36:34",
+        "partner_id": [
+            6762,
+            "HOZELOCK- EXEL"
+        ],
+        "dest_address_id": false,
+        "currency_id": [
+            125,
+            "EUR"
+        ],
+        "state": "purchase",
+        "order_line": [
+            55148,
+            55149,
+            55150,
+            55151,
+            55152,
+            55153,
+            55154,
+            55155,
+            55156,
+            55157,
+            55158,
+            55159,
+            55160,
+            55161,
+            55162,
+            55163,
+            55164,
+            55165,
+            55166,
+            55167,
+            55168,
+            55169,
+            55170,
+            55171,
+            55172,
+            55173
+        ],
+        "notes": false,
+        "invoice_count": 0,
+        "invoice_ids": [],
+        "invoice_status": "to invoice",
+        "date_planned": "2025-10-19 10:36:17",
+        "date_calendar_start": "2025-09-29 10:36:34",
+        "amount_untaxed": 11543.09,
+        "tax_totals": {
+            "amount_untaxed": 11543.09,
+            "amount_total": 11543.09,
+            "formatted_amount_total": "11 543,09 €",
+            "formatted_amount_untaxed": "11 543,09 €",
+            "groups_by_subtotal": {
+                "Montant hors taxes": [
+                    {
+                        "group_key": 25,
+                        "tax_group_id": 25,
+                        "tax_group_name": "VAT 8.5%",
+                        "tax_group_amount": 0.0,
+                        "tax_group_base_amount": 11543.090000000004,
+                        "formatted_tax_group_amount": "0,00 €",
+                        "formatted_tax_group_base_amount": "11 543,09 €",
+                        "hide_base_amount": false
+                    }
+                ]
+            },
+            "subtotals": [
+                {
+                    "name": "Montant hors taxes",
+                    "amount": 11543.090000000004,
+                    "formatted_amount": "11 543,09 €"
+                }
+            ],
+            "subtotals_order": [
+                "Montant hors taxes"
+            ],
+            "display_tax_base": false
+        },
+        "amount_tax": 0.0,
+        "amount_total": 11543.09,
+        "fiscal_position_id": false,
+        "tax_country_id": [
+            75,
+            "France"
+        ],
+        "tax_calculation_rounding_method": "round_per_line",
+        "payment_term_id": false,
+        "incoterm_id": false,
+        "product_id": [
+            83101,
+            "[0201914] DEVID MICRO REEL MUR+TUYAU 10M"
+        ],
+        "user_id": [
+            365,
+            "GAËLLE MAGUET"
+        ],
+        "company_id": [
+            19,
+            "SICALAIT"
+        ],
+        "country_code": "FR",
+        "currency_rate": 1.0,
+        "mail_reminder_confirmed": false,
+        "mail_reception_confirmed": false,
+        "receipt_reminder_email": false,
+        "reminder_date_before_receipt": 1,
+        "display_name": "P0002021 (CDE707085)",
+        "create_uid": [
+            365,
+            "GAËLLE MAGUET"
+        ],
+        "create_date": "2025-09-29 10:36:17",
+        "write_uid": [
+            1,
+            "OdooBot"
+        ],
+        "write_date": "2025-09-29 14:15:32",
+        "requisition_id": false,
+        "is_quantity_copy": false,
+        "purchase_group_id": false,
+        "alternative_po_ids": [],
+        "has_alternatives": false,
+        "incoterm_location": false,
+        "incoming_picking_count": 1,
+        "picking_ids": [
+            5040
+        ],
+        "picking_type_id": [
+            356,
+            "SICALAIT - SLS: IMP-ES"
+        ],
+        "default_location_dest_id_usage": "supplier",
+        "group_id": false,
+        "is_shipped": true,
+        "effective_date": false,
+        "on_time_rate": 100.0,
+        "receipt_status": "full",
+        "mto_reference_reflex": false,
+        "mrp_production_count": 0,
+        "on_time_rate_perc": 1.0,
+        "sale_order_count": 0,
+        "sum_franco": false,
+        "qty_franco": false,
+        "auto_generated": false,
+        "auto_sale_order_id": false,
+        "transfert_magasin": false,
+        "departure_freight_forwarder": false,
+        "import_folder_ids": [
+            12
+        ],
+        "button_transit_reception_visibility": false,
+        "freight_forwarder_reception_confirmed": true,
+        "import_priority": "0",
+        "is_importation_complete": false,
+        "import_estimated_arrival": "2025-12-15",
+        "folder_import_estimated_arrival": "2025-12-15",
+        "tags": [],
+        "import_incoterm_ids": [],
+        "is_an_import_order": true,
+        "palets": 0,
+        "quality_alert_count": 0,
+        "quality_alert_ids": [],
+        "available_incoterm_ids": [],
+        "purchase_order_type_id": [],
+        "purchase_tag_ids": [],
+        "purchase_input_mask_id": false,
+        "dropship_picking_count": 0,
+        "edi_legacy_reference": false,
+        "destination_company_id": false,
+        "x_studio_transfert_magasin": false,
+        "x_studio_comptabiliser": false
+    }
+]

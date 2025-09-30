@@ -5,20 +5,20 @@
 [![MySQL](https://img.shields.io/badge/MySQL-5.7+-orange.svg)](https://mysql.com)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
 
-> **Interface de synchronisation entre Urcoopa, Gesica et Odoo pour la gestion automatisée des factures et commandes.**
+**Interface de synchronisation entre Urcoopa, Gesica et Odoo pour la gestion automatisée des factures et commandes.**
 
 ## 🎯 Vue d'ensemble
 
 Cette API FastAPI automatise la synchronisation des données entre trois systèmes critiques :
 
 - **🏢 Urcoopa** - Système de facturation externe (SOAP)
-- **📦 Gesica** - Gestion des commandes  
+- **📦 Gesica** - Gestion des commandes
 - **⚙️ Odoo** - ERP principal (XML-RPC)
 
 ### ✨ Fonctionnalités clés
 
 - 🔄 **Synchronisation automatique** des factures Urcoopa → Odoo
-- 📋 **Import des commandes** Gesica → Odoo  
+- 📋 **Import des commandes** Gesica → Odoo
 - 📤 **Envoi des commandes** Odoo → Urcoopa
 - 🌐 **Interface web** pour la gestion des factures adhérents
 - ⏰ **Automatisation CRON** programmable
@@ -33,7 +33,7 @@ graph LR
     B --> D[MySQL]
     B --> E[Odoo XML-RPC]
     B --> F[Interface Web]
-    
+
     style B fill:#e1f5fe
     style E fill:#c8e6c9
     style D fill:#fff3e0
@@ -286,11 +286,13 @@ CMD service cron start && \
 ```
 
 ```bash
+
 # Build push et run
 docker build -t urcoopa-api .
 docker tag urcoopa-api:0.1 {your_account}/urcoopa-api:latest
 docker push {your_account}/urcoopa-api:latest
 docker run -p 9898:9898 urcoopa-api
+
 ```
 
 ### 🔄 Production
