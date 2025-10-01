@@ -212,7 +212,8 @@ function tableTbody(lignes, index, etat) {
     /*
     const cell4 = document.createElement('td');
     cell4.textContent = Number.parseFloat(facture.Montant_HT).toFixed(2) + ' €';
-    row.appendChild(cell4);*/
+    row.appendChild(cell4);
+    */
 
     const cell5 = document.createElement('td');
     cell5.textContent = Number.parseFloat(facture.Montant_TTC).toFixed(2) + ' €';
@@ -251,7 +252,7 @@ function tableauAdherent(facturesParNumero, etat) {
         }
     })
 
-      // Affichage du total
+    //Affichage du total
     document.getElementById('nombreFacture').textContent = `📦 ${compteur} factures trouvées`;
 
     
@@ -286,7 +287,7 @@ function tableauAdherentAvoirs(facturesParNumero, etat) {
 
     })
 
-     // Affichage du total
+    //Affichage du total
     document.getElementById('nombreFacture').textContent = `📦 ${compteur} factures trouvées`;
 
 }
@@ -314,7 +315,7 @@ function tableauAdherentFactureValider(facturesParNumero, etat) {
         }
     })
 
-     // Affichage du total
+    //Affichage du total
     document.getElementById('nombreFacture').textContent = `📦 ${compteur} factures trouvées`;
 
 }
@@ -429,7 +430,6 @@ function validerFacture(numeroFacture) {
         // Appel pour mise à jour facture
         xhttp.open("POST", `/valider-facture/${encodeURIComponent(numeroFacture)}`, true);
         xhttp.send();
-
 
     }
 
@@ -662,4 +662,69 @@ function showLoader() {
 
 function hideLoader() {
         document.getElementById('loader').setAttribute('class', 'hideloader');
+}
+
+
+// Placeholder actions
+async function ouverturePageInconnu() {
+    
+    console.log('OUVERTURE PAGE DONNES INCONNUS')
+    // Étape 1 : appel backend pour mise à jour
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function () {
+        document.querySelector('#bloc_principal').style.display = 'none';
+        document.getElementById("data_inconnu").style.display = 'block';
+        document.getElementById("data_inconnu").innerHTML = this.responseText;
+    
+        // Maintenant seulement on peut récupérer l'élément
+        const filtreSelect = document.getElementById("filtreSelect");
+        const btnExport = document.getElementById("btnExport")
+        if (filtreSelect) {
+            filtreSelect.addEventListener("change", function () {
+                let value = this.value;
+
+                document.getElementById("tableAll").style.display = (value === "all") ? "block" : "none";
+                document.getElementById("tableClients").style.display = (value === "clients") ? "block" : "none";
+                document.getElementById("tableArticles").style.display = (value === "articles") ? "block" : "none";
+            });
+        } else {
+            console.warn("⚠️ #filtreSelect introuvable dans la réponse HTML !");
+        }
+    
+        // import excel
+        btnExport.addEventListener("click", async function () {
+        // Récupère la valeur du select
+        const filtre = filtreSelect.value;
+
+        if (filtre) {
+                const response = await fetch(`/export_inconnus/${filtre}`);
+                if (!response.ok) throw new Error("Erreur lors de l'export Excel");
+
+                // Fichier blob
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+
+                // Téléchargement auto
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `data_${filtre}.xlsx`;
+                document.body.appendChild(a);
+                a.click();
+
+                // Nettoyage
+                a.remove();
+                window.URL.revokeObjectURL(url);
+        } else{
+                console.error("❌ Erreur export ");
+                alert("Impossible d’exporter le fichier Excel.");
+            }
+        });
+    
+    
+    }
+
+    // Appel pour mise à jour facture
+    xhttp.open("GET", `/les_inconnus`, true);
+    xhttp.send();
+
 }

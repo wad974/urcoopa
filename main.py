@@ -965,7 +965,7 @@ async def post_commande():
     
     date_end = datetime.now() # on recupere la date maintenant (int)
     #date_start = date_end - timedelta(days=5) # on soustrait 2jours (int)
-    date_start = date_end - timedelta(days=int(os.getenv('DATE_JOUR'))) # on soustrait 2jours (int)
+    date_start = date_end - timedelta(days=int(os.getenv('DATE_JOUR'))) #On soustrait 2jours (int)
 
     date_start_new = date_start.strftime('%Y-%m-%d 00:00:00') # date de départ strftime
     date_end_new = date_end.strftime('%Y-%m-%d 23:59:59') # date fin str
@@ -1052,15 +1052,22 @@ async def post_commande():
 @app.get('/', response_class=HTMLResponse)
 def home(request : Request):
     try: 
-        print('🌐 init home')
         
+        print('🌐 init home')
         crud = CRUD()
         
         factures = crud.readFiltreAdherent()
+        print('FACTURE')
         avoirs = crud.readFiltreAdherentAvoir()
+        print('AVOIRS')
         
         # Récupération des données comptables pour le mois en cours
         donnees_comptables_ht  = crud.readDonneesComptables()
+        print('DATA COMPTABLE')
+        
+        #print('facture', factures)
+        #print('avoirs', avoirs)
+        print('donnees_comptables_ht', donnees_comptables_ht)
         
         # Convert date objects to strings
         def convert_dates(data_list):
@@ -1103,10 +1110,11 @@ def home(request : Request):
                                             "year": datetime.now().year,
                                             'donnees_comptables': donnees_comptables_ht
                                         })
-        
+            
     except mysql.connector.Error as erreur:
         print(f'Erreur lors de la connexion à la base de données : {erreur}')
         return {"Erreur connexion Base de données : {erreur}"}
+    
     '''
     return templates.TemplateResponse(
         'index.html', 
@@ -1241,8 +1249,8 @@ async def getFactureAdherentUrcoopa( request : Request ):
     except mysql.connector.Error as erreur:
         print(f'Erreur lors de la connexion à la base de données : {erreur}')
         return {"Erreur connexion Base de données : {erreur}"}
-    
-    
+
+
 # POST HOME SITE RACINE BOUTON VALID
 @app.post("/valider-facture/{numero_facture}", response_class=HTMLResponse)
 async def valider_facture(
@@ -1301,6 +1309,7 @@ async def valider_facture(
         "montant_ht": montant_ht
     })
 
+
 #POST HOME SITE RACINE VERS ODOO
 @app.post('/create_facture_adherent_odoo', response_class=JSONResponse)
 async def create_facture_adherent_odoo(request: Request):
@@ -1339,7 +1348,6 @@ async def create_facture_adherent_odoo(request: Request):
 
     # tu peux ensuite utiliser facture_adherent['Numero_Facture'], etc.
     return JSONResponse(content={"message": "Facture adhérent créée dans Odoo"})
-
 
 
 # Modèle Pydantic pour la validation des données
@@ -1416,6 +1424,76 @@ async def valider_toutes_factures(request: Request):
         if 'db' in locals():
             db.close()
 
+
+@app.get('/les_inconnus', response_class=HTMLResponse)
+async def get_les_inconnus( request: Request ):
+    
+    crud = CRUD()
+    lesInconnus = crud.readInconnu()
+    client_non_reconnu = crud.readClientNonReconnu()
+    article_non_reconnu = crud.readArticleNonReconnu()
+    
+    articles = []
+    clients = []
+
+    for row in lesInconnus:
+        
+        article = row['Code_Produit']
+        if article in articles :
+            print('article déjà present : ', article)
+        else:
+            articles.append(article)
+        
+        client = row["Nom_Client"]
+        if client not in clients:   # comme JS includes()
+            clients.append(client)
+
+    NbreArticles = len(articles)
+    NbreClients = len(clients)
+
+    print("Nombre d'articles :", NbreArticles)
+    print("Nombre d'articles :", articles)
+    print("Nombre de clients :", NbreClients)
+        
+    return templates.TemplateResponse(
+        'inconnu.html', 
+        {
+            'request' : request,
+            'lesInconnus' : lesInconnus,
+            'NbreArticles' : NbreArticles,
+            'NbreClients' : NbreClients,
+            'clients' : client_non_reconnu,
+            'articles' : article_non_reconnu
+        })
+
+
+import pandas as pd
+from fastapi.responses import StreamingResponse
+import io
+
+@app.get("/export_inconnus/{type}")
+async def export_inconnus(type: str):
+    crud = CRUD()
+    datas = crud.readInconnu()
+
+    df = pd.DataFrame(datas)
+
+    if type == "clients":
+        df = df[["Nom_Client"]].drop_duplicates()
+    elif type == "articles":
+        df = df[["Code_Produit"]].drop_duplicates()
+    else:
+        df = df[["Code_Produit", "Nom_Client", "Type_Facture", "Code_Client"]]
+
+    output = io.StringIO()
+    df.to_csv(output, index=False)
+    output.seek(0)
+
+    return StreamingResponse(
+        io.BytesIO(output.getvalue().encode("utf-8")),
+        media_type="text/csv",
+        headers={"Content-Disposition": f"attachment; filename=inconnus_{type}.csv"}
+    )
 
 from crontab import CronTab
 def init_cron():

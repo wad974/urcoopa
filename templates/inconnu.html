@@ -1,0 +1,106 @@
+
+
+    <div class="container mb-4">
+
+        <!-- Titre -->
+        <h4 class="mb-3 text-primary">🔎 Résumé des données inconnues</h4>
+
+        <div class="row">
+
+            <!-- Col 1 : compteur -->
+            <div class="col-md-4 mb-3">
+                <div class="alert alert-info h-100">
+                    <strong>📦 Nombre de produits inconnus :</strong> {{ NbreArticles }} <br>
+                    <strong>👥 Nombre de clients inconnus :</strong> {{ NbreClients }}
+                </div>
+            </div>
+
+            <!-- Col 2 : filtre -->
+            <div class="col-md-4 mb-3">
+                <div class="alert alert-secondary h-100">
+                    <h6 class="mb-3">⚙️ Filtrer les données</h6>
+                    <select class="form-select w-auto" id="filtreSelect">
+                        <option value="all" selected>Toutes les données</option>
+                        <option value="clients">Par Clients</option>
+                        <option value="articles">Par Articles</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="mb-3 alert alert-warning h-100 d-flex justify-content-center">
+                    <button id="btnExport" class="btn btn-success">
+                        📂 Exporter en Excel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tableaux -->
+        <div id="tableAll">
+            <h5>📋 Toutes les données</h5>
+            <table class="table table-striped table-hover">
+                <thead class="table-primary">
+                    <tr>
+                        <th>#</th>
+                        <th>Code Produit</th>
+                        <th>Nom Client</th>
+                        <th>Type Facture</th>
+                        <th>Code Client</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in lesInconnus %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ row.Code_Produit }}</td>
+                        <td>{{ row.Nom_Client }}</td>
+                        <td>{{ row.Type_Facture }}</td>
+                        <td>{{ row.Code_Client }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div id="tableClients" style="display:none;">
+            <h5>👥 Liste des clients uniques</h5>
+            <table class="table table-striped table-hover">
+                <thead class="table-primary">
+                    <tr>
+                        <th>#</th>
+                        <th>Nom Client</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for client in clients %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ client.Nom_Adherent_Urcoopa }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div id="tableArticles" style="display:none;">
+            <h5>📦 Liste des articles uniques</h5>
+            <table class="table table-striped table-hover">
+                <thead class="table-primary">
+                    <tr>
+                        <th>#</th>
+                        <th>Code Produit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for article in articles %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ article.Numero_Article_Urcoopa }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+

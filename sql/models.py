@@ -123,7 +123,7 @@ class CRUD:
             cursor.close()
             cnx.close()
             
-            print('VRAC => ', resultatHT)
+            #print('VRAC => ', resultatHT)
             
             cnx = recupere_connexion_db()
             cursor = cnx.cursor(dictionary=True)
@@ -515,6 +515,7 @@ class CRUD:
     '''
         à faire si besoin pour la partie UPDATE
     '''
+    
     def est_meme_facture(self, db_facture: dict, new_facture: dict) -> bool:
         # Comparer les champs importants
         # ce que qu'on veut vérifier
@@ -584,10 +585,11 @@ class CRUD:
     #METHODE INSERT CORRESPONDANCE ADHERENT
     def insertAdherentCorrespondance(self, nom_adherent):
         
+        #code produit qui ne sont pas matcher avec Urcoopa<->Odoo envoyer dans Base de données
+        cnx = self.connexion
+        cursor = cnx.cursor()
+        
         try:
-            #code produit qui ne sont pas matcher avec Urcoopa<->Odoo envoyer dans Base de données
-            cnx = self.connexion
-            cursor = cnx.cursor()
             
             #on controle d'abord qu'il y a pas la meme donnees
             ctrl = '''
@@ -661,3 +663,172 @@ class CRUD:
             return print(f"✅📤 [SUCCESS] Facture Mise à jour dans base de données \n\n")
         except:
             print(f"❌ [ERREUR] {Numero_Facture} UDAPTE DANS DATABASE")
+            
+            
+    #METHODE INSERT COMMANDE URCOOPA PASSER PAR LES MAGASINS
+    def insertCommandeUrcoopaOdoo(self, 
+                                Code_Client, 
+                                Nom_Client, 
+                                Email, 
+                                date_commande, 
+                                Numero_Commande, 
+                                Nombre_Commande):
+        
+        try:
+            #code produit qui ne sont pas matcher avec Urcoopa<->Odoo envoyer dans Base de données
+            cnx = self.connexion
+            cursor = cnx.cursor()
+            
+            #on controle d'abord qu'il y a pas les memes donnees
+            req_ctrl = '''
+            SELECT Numero_Commande
+            FROM exportodoo.sic_urcoopa_commande_odoo
+            WHERE Numero_Commande = %s
+            '''
+            req_ctrl_commande = (Numero_Commande,)
+            cursor.execute(req_ctrl, req_ctrl_commande)
+            response = cursor.fetchone()
+            
+            if response is None:
+                
+                print('[INFO] Aucun Numero de commande trouvé')
+                requete = '''
+                    insert into exportodoo.sic_urcoopa_non_correspondance_adherent (Code_Client, Nom_Client, Email, date_commande, Numero_Commande, Nombre_Commande)
+                    values (%s,%s,%s,%s,%s,%s)
+                '''
+                valeurs = ( Code_Client, Nom_Client, Email, date_commande, Numero_Commande, Nombre_Commande, )
+                cursor.execute(requete, valeurs)
+                cnx.commit()
+                
+                cursor.close()
+                cnx.close()
+                
+                print(f'✅ [SUCCESS] Commande inséré dans database')
+            
+            else :
+                print(f"❌ [ERREUR] {Numero_Commande} DEJA DANS DATABASE")
+        except :
+            print(f"❌ [ERREUR] {Numero_Commande} COMMIT DANS DATABASE")
+    
+    #METHODE INSERT COMMANDE URCOOPA PASSER PAR LES MAGASINS
+    def readInconnu(self, ):
+        
+        cnx = None
+        cursor = None
+        
+        try:
+            
+            cnx = self.connexion
+            cursor = cnx.cursor(dictionary=True)
+            
+            print('ETAPE DEMARRAGE')
+            #code produit qui ne sont pas matcher avec Urcoopa<->Odoo envoyer dans Base de données
+            
+            print('ETAPE 1')
+            #on controle d'abord qu'il y a pas les memes donnees
+            
+            requete_client = '''
+                select Nom_Adherent_Urcoopa from  exportodoo.sic_urcoopa_non_correspondance_adherent
+            '''
+            
+            requete = '''
+                SELECT distinct Code_Produit ,Nom_Client, Type_Facture , Code_Client 
+                FROM exportodoo.sic_urcoopa_facture
+                where Nom_Client in (select Nom_Adherent_Urcoopa from  exportodoo.sic_urcoopa_non_correspondance_adherent )
+                and Code_Produit in (select Numero_Article_Urcoopa  from exportodoo.sic_urcoopa_non_correspondance_article sunca )
+            '''
+            
+            cursor.execute(requete)
+            print('ETAPE 2')
+            
+            datas  = cursor.fetchall()
+            print('DATAS READINCONNU : ', datas)
+            
+            cursor.close()
+            
+            print(f'✅ [SUCCESS] LISTE RECUPERER DANS DATABASE')
+            
+            if datas is None:
+                return []
+            else:
+                return datas
+        except :
+            print(f"❌ [ERREUR] LORS DE LA RECUPERATION DES DATAS")
+        
+    #METHODE CLIENT NON RECONNU URCOOPA PASSER PAR LES MAGASINS
+    def readClientNonReconnu(self, ):
+        
+        cnx = None
+        cursor = None
+        
+        try:
+            
+            cnx = self.connexion
+            cursor = cnx.cursor(dictionary=True)
+            
+            print('ETAPE DEMARRAGE')
+            #code produit qui ne sont pas matcher avec Urcoopa<->Odoo envoyer dans Base de données
+            
+            print('ETAPE 1')
+            #on controle d'abord qu'il y a pas les memes donnees
+            
+            requete_client = '''
+                select Nom_Adherent_Urcoopa from  exportodoo.sic_urcoopa_non_correspondance_adherent
+            '''
+            
+            
+            cursor.execute(requete_client)
+            print('ETAPE 2')
+            
+            datas  = cursor.fetchall()
+            print('DATAS READINCONNU : ', datas)
+            
+            cursor.close()
+            
+            print(f'✅ [SUCCESS] LISTE RECUPERER DANS DATABASE')
+            
+            if datas is None:
+                return []
+            else:
+                return datas
+        except :
+            print(f"❌ [ERREUR] LORS DE LA RECUPERATION DES DATAS")
+            
+    #METHODE INSERT COMMANDE URCOOPA PASSER PAR LES MAGASINS
+    def readArticleNonReconnu(self, ):
+        
+        cnx = None
+        cursor = None
+        
+        try:
+            
+            cnx = self.connexion
+            cursor = cnx.cursor(dictionary=True)
+            
+            print('ETAPE DEMARRAGE')
+            #code produit qui ne sont pas matcher avec Urcoopa<->Odoo envoyer dans Base de données
+            
+            print('ETAPE 1')
+            #on controle d'abord qu'il y a pas les memes donnees
+            
+            requete_client = '''
+                select Numero_Article_Urcoopa from  exportodoo.sic_urcoopa_non_correspondance_article
+            '''
+            
+            
+            cursor.execute(requete_client)
+            print('ETAPE 2')
+            
+            datas  = cursor.fetchall()
+            print('DATAS READINCONNU : ', datas)
+            
+            cursor.close()
+            
+            print(f'✅ [SUCCESS] LISTE RECUPERER DANS DATABASE')
+            
+            if datas is None:
+                return []
+            else:
+                return datas
+        except :
+            print(f"❌ [ERREUR] LORS DE LA RECUPERATION DES DATAS")

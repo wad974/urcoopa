@@ -180,6 +180,17 @@ def send_soap(WSDL_URL, API_KEY_URCOOPA, commande_data):
     if resultat['success']:
         print('✅ SUCCÈS !')
         print(f'Message: {resultat["message"]}')
+        
+        #CREER ENVOI CMD BASE DE DONNEES
+        from sql.models import CRUD
+        crud = CRUD()
+        crud.insertCommandeUrcoopaOdoo(commande_data.Code_Client, 
+                                    commande_data.Nom_Client, 
+                                    commande_data.Email, 
+                                    datetime.datetime.now().strftime('%Y/%m/%d'), 
+                                    commande_data.Numero_Commande, 
+                                    len(commande_data.Ligne_Commande))
+        
     else:
         print('❌ ÉCHEC')
         print(f'Type d\'erreur: {resultat.get("type", "Unknown")}')

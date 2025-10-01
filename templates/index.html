@@ -239,6 +239,11 @@
     .document-table tbody tr:hover {
         background-color: #f8f9fa;
     }
+
+    #data_inconnu{
+        display: none;
+    }
+
 </style>
 
 <body>
@@ -267,6 +272,9 @@
 
             <a id="documentComptable" class="nav-link d-inline link-underline-hover" title="Affiche le document comptable"
                 href="#">📊 VRAC</a>
+
+            <a id="documentInconnu" class="nav-link d-inline link-underline-hover" title="Affiche les inconnus"
+                href="#">❌ Données inconnus</a>
         </div>
         <div>
             <a type="button" class="btn btn-primary btn-sm"
@@ -471,7 +479,11 @@
         </div>
     </div>
 
-    <div class="container-fluid mt-4">
+    <!--DATA INCONNU-->
+    <div id="data_inconnu" class="container-fluid mt-4"></div>
+
+    <div id="bloc_principal" class="container-fluid mt-4">
+
         <!--PAGE VALIDATION-->
         <div id="validationPage"></div>
         <div class="d-flex justify-content-between mb-3">
@@ -561,15 +573,17 @@
             </tfoot>
         </table>
     </div>
+
     <script src="{{ url_for( 'static', path='/js/script.js' ) }}"></script>
     <script src="{{ url_for( 'static', path='/js/donneesComptables.js' ) }}"></script>
+
     <script>
+
         //on recupere tous les données depuis python en convertissant en json pour JAVASCRIPT
         let factures = {{ FACTURES | tojson | safe }};
-        console.log('DANS FACTURES : ', factures);
-
+        //console.log('DANS FACTURES : ', factures);
         let donneesComptables = {{ donnees_comptables | tojson | safe }};
-        console.log('Données Comptable: ', donneesComptables)
+        //console.log('Données Comptable: ', donneesComptables)
 
         // je recupere mes boutons
         let bouton_facture = document.querySelector('#touslesfactures');
@@ -579,6 +593,7 @@
         let bouton_Factures_Client_Adherent = document.querySelector('#clientAdherent');
         let bouton_Factures_Client_Non_Adherent = document.querySelector('#clientNonAdherent');
         let bouton_Factures_Client_Inconnu = document.querySelector('#clientInconnu');
+        let bouton_donnees_inconnu = document.querySelector('#documentInconnu');
 
         let etat_facture_valider = 0
 
@@ -595,6 +610,7 @@
         //TABLEAU 
         const tbody = document.getElementById('TableauValeur');
         const tcaption = document.getElementById('tableCaption');
+
         if (factures) {
 
             const facturesParNumero = {}; // clé = Numero_Facture
@@ -744,7 +760,6 @@
                     const dateFacturation = new Date(lignes[0].Date_Facture);
                     const moisAnnee = `${dateFacturation.getFullYear()}-${(dateFacturation.getMonth() + 1).toString().padStart(2, '0')}`;
 
-
                     //console.log('lignes -> ', lignes )
                     //console.log('dateFacturation -> ', dateFacturation )
                     //console.log('mmoisAnnée -> ', moisAnnee )
@@ -754,16 +769,12 @@
                         facturesFiltrées[numero] = lignes;
                     }
                 }
+
                 //console.log('factures filtrés -> ', facturesFiltrées) 
                 tableauAdherent(facturesFiltrées, etat_facture_valider);
+
             });
 
-        }
-
-        if (bouton_facture) {
-            bouton_facture.addEventListener('click', (event) => {
-                //alert('BOUTON FACTURES CLICKER')
-            });
         }
 
         // function recherche tableau
@@ -795,6 +806,7 @@
 
         // Ajouter l'événement au bouton "Valider tout"
         document.addEventListener('DOMContentLoaded', function () {
+
             const boutonValiderTout = document.getElementById('ValiderTotal');
             if (boutonValiderTout) {
                 boutonValiderTout.addEventListener('click', validerToutesFactures);
@@ -837,6 +849,23 @@
             });
         });
         
+
+
+        console.log('DATA INCONNU = ', bouton_donnees_inconnu)
+            
+        bouton_donnees_inconnu.addEventListener('click', (event) => {
+            
+            //alert('BOUTON FACTURES CLICKER')
+            console.log('Bouton cliqué')
+            event.preventDefault();
+            event.stopPropagation();
+
+            showLoader();
+            ouverturePageInconnu();
+            hideLoader()
+            
+        });
+
     </script>
 
 </body>
