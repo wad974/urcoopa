@@ -26,6 +26,7 @@ from sql.models import CRUD
 import mysql.connector
 import numpy as np
 import pandas as pd
+from odoo.models import METHODE
 
 from datetime import datetime
 
@@ -104,6 +105,7 @@ if not uid:
     
 if uid:   
     print(f"✅ Authentification réussie. UID: {uid} - {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} \n\n")
+
 models = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/object')
 
 date_end = datetime.now() # on recupere la date maintenant (int)
@@ -112,11 +114,87 @@ date_start = date_end - timedelta(days=int(os.getenv('DATE_JOUR_FACTURES'))) # o
 #dateReferenceFacture = date_start.strftime('%Y-%m-%d')
 dateReferenceFacture = date_end.strftime('%Y-%m-%d')
 
+
+
+
 class DateTimeEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, (date, datetime)):
             return obj.isoformat()
         return super().default(obj)
+
+
+########API POUR VOIR FACTURE EN ATTENTE DANS ACHAT ET TRANSFORMER EN FACTURE
+@app.get('/switch-facture-apres-reception')
+def get_switch_facture_apres_reception():
+    
+    #creer une fonction pour boucler sur la recuperation des facture en attente
+    #filtre par date
+    
+    date_end = datetime.now() # on recupere la date maintenant (int)
+    #date_start = date_end - timedelta(days=5) # on soustrait 2jours (int)
+    date_start = date_end - timedelta(days=int(os.getenv('DATE_JOUR'))) #On soustrait 2jours (int)
+
+    date_start_new = date_start.strftime('%Y-%m-%d 00:00:00') # date de départ strftime
+    date_end_new = date_end.strftime('%Y-%m-%d 23:59:59') # date fin str
+
+    commandes = models.execute_kw(
+        db, uid, password,
+        'purchase.order',
+        #'search',
+        'search_read',
+        #'search_count',
+        [[
+            ['date_order', '>=', date_start_new], #depart Jours - 2
+            ['date_order', '<=', date_end_new] # fin jours present
+        ]],
+        {
+            #'limit' : 10,
+            'order': 'id asc'
+        }
+    )
+    
+    # account move 
+    db = recupere_connexion_db()
+    cursor = db.cursor(dictionary=True)
+    requete = '''
+        SELECT id, name, partner_id, date_order, state, amount_total, create_date, write_date
+        FROM purchase_order
+        WHERE date_order >= %s
+        AND date_order <= %s
+        AND 
+        ORDER BY id ASC;'''
+    cursor.execute(requete,)
+    datas = cursor.fetchall()
+    
+    
+    data_commande = []
+
+    for commande in commandes:
+        if commande['partner_id'][1] == "SICALAIT, SICALAIT - ALIMENT" and commande["invoice_status"] == "to invoice":
+            
+            data_commande.append(commande)
+            
+            #FUNCTION SWTICH
+            from odoo.controller.statutSwitchDropShipping import switchStatutFacturationUrcoopa
+            switchStatutFacturationUrcoopa(commande, models, db, uid, password)
+    
+    '''    
+    # a controler facture dans compta si exist action bouton dans achat
+    for account in datas:
+        if account['id'] == '5081' and account['Numero_Facture'] == data_commande['']:
+    '''          
+        
+                
+    #Méthodes import json
+    with open('log-res_partner.json', 'w', encoding='utf-8') as f:
+        json.dump(data_commande, f, ensure_ascii=False, indent=4)
+    
+
+    return{
+        'STATUS' : 'SUCCESS',
+        'MESSAGE' : f'Nombre de commande facture {len(data_commande)} créé'
+    }
 
 ######## API pour données comptables par mois
 @app.get('/api/donnees-comptables/{annee}/{mois}')
@@ -994,6 +1072,7 @@ async def post_commande():
     
     #PREMIER BOUCLE POUR CONTROLER COMMANDE EN DEMANDE DE PRIX
     #filtres 
+    print('[info] DEBUT DU FILTRES POUR SWITCH COMMANDE')
     for commande in commandes:
     
         #### ON PASSE TOUS LES COMMANDES 
@@ -1004,6 +1083,7 @@ async def post_commande():
             switchStatutUrcoopa(commande, models, db, uid, password)
             
     #On appel de nouveau commandes apres que les status on etait mise de demande de prix en bon de commande
+    print('[info] MISE A JOUR APRES SWITCH COMMANDE')
     commandes = models.execute_kw(
         db, uid, password,
         'purchase.order',
@@ -1022,6 +1102,7 @@ async def post_commande():
     
     #DEUXIEME BOUCLE POUR ENVOYER LES COMMANDE EN BON DE FOURNISSEUR
     #filtres 
+    print('[info] DEBUT SEND COMMANDE')
     for commande in commandes:
         
         from odoo.controller.boucleCommandeUrcoopa import boucleCommandeUrcoopa
@@ -1448,8 +1529,8 @@ async def get_les_inconnus( request: Request ):
         if client not in clients:   # comme JS includes()
             clients.append(client)
 
-    NbreArticles = len(articles)
-    NbreClients = len(clients)
+    NbreArticles = len(article_non_reconnu)
+    NbreClients = len(client_non_reconnu)
 
     print("Nombre d'articles :", NbreArticles)
     print("Nombre d'articles :", articles)
@@ -1494,6 +1575,57 @@ async def export_inconnus(type: str):
         media_type="text/csv",
         headers={"Content-Disposition": f"attachment; filename=inconnus_{type}.csv"}
     )
+    
+#######
+#DASHBOARD STATS
+#######
+    
+@app.get('/tableaudebord', response_class=HTMLResponse)
+async def tableauDeBord(request: Request):
+    
+    crud = CRUD()
+    method = METHODE(models=models, db=db, uid=uid, password=password)
+    
+    stats = {
+        "nb_commandes_odoo": crud.countCommandesEnvoyees(),
+        "nb_factures_urcoopa": crud.countFacturesRecuperees(),
+        "nb_avoirs_urcoopa": crud.countAvoirsRecuperees(),
+        "nb_clients_inconnus": len(set([row["Nom_Client"] for row in crud.readInconnu()])),
+        "nb_articles_inconnus": len(set([row["Code_Produit"] for row in crud.readInconnu()])),
+        "nb_adherents_odoo": crud.countAdherentsOdoo(),
+        "nb_clients_vrac": crud.countClientsVrac(),
+        "nb_livraisons": crud.countLivraisons(),
+        "donnees_comptables": crud.readDonneesComptables(),
+        #"commandeQuiDoisEtreEnvoye" : method.CommandeOdooPourEnvoiUrcoopa(date_start, date_end)
+    }
+
+    return templates.TemplateResponse(
+        #"dashboard/index.html",
+        "tableaudebord.html",
+        {"request": request, "stats": stats},
+    )
+
+
+#TABLE DASHBOARD
+@app.get('/charts', response_class=HTMLResponse)
+def get_charts( request : Request ):
+    
+    return templates.TemplateResponse(
+        'dashboard/charts.html', 
+        {
+        'request' : request
+        })
+
+
+@app.get('/tables', response_class=HTMLResponse)
+def get_table( request : Request ):
+    
+    return templates.TemplateResponse(
+        'dashboard/tables.html', 
+        {
+        'request' : request
+        })
+
 
 from crontab import CronTab
 def init_cron():

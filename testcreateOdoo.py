@@ -27,7 +27,7 @@ async def testcreateOdoo(rows: list, models, db, uid, password):
             'purchase.order', 'search_read',
             [],
             {
-                'fields': ['id','partner_id', 'name', 'partner_ref', 'invoice_status']
+                'fields': ['id','partner_id', 'name', 'partner_ref', 'invoice_status', 'origin']
             }
         )
         
@@ -48,9 +48,23 @@ async def testcreateOdoo(rows: list, models, db, uid, password):
                     numero_reference_gesica= ''
                     
                 # condition pour vrai ou faux dans continue_integration_facture_commande
-                if numero_reference_gesica == rows[0].get('Numero_Commande_Client') or ligne.get('name') == rows[0].get('Numero_Commande_Client'):
+                #if numero_reference_gesica == rows[0].get('Numero_Commande_Client') or ligne.get('name') == rows[0].get('Numero_Commande_ODOO'):
+                if ligne.get('name') == rows[0].get('Numero_Commande_ODOO'):
                     name_purchase_order = ligne.get('name')
+                    #name_purchase_order = rows[0].get('Numero_Commande_ODOO')
                     id_purchase_order = ligne.get('id')
+                    
+                    #conditions pour origin document si origine trouver dans achat sinon Numero facture
+                    if ligne.get('origin') == '' or ligne.get('origin') is None or ligne.get('origin') == False:
+                        ref_facture = rows[0]['Numero_Facture']
+                        
+                    else:
+                        ref_facture = ligne.get('origin')
+                        #ref_facture = rows[0]['Numero_Facture']
+                        
+                    invoice_date = rows[0]['Date_Facture']
+                    invoice_date_due = rows[0]['Date_Echeance']
+                    
                     continue_integration_facture = True
                     
                     print('✅[SUCCESS] : Numeros facture et/ou name ok!')
@@ -93,9 +107,6 @@ async def testcreateOdoo(rows: list, models, db, uid, password):
             import json
             #print(f"✅ Contenu de Rows avant injection. Rows: {json.dumps(rows, indent=2)}")
             #numero_facture = f"URCOOPA/{str(datetime.datetime.now().strftime('%Y/%m'))}/{str(rows[0]['Numero_Facture'])}"
-            ref_facture = rows[0]['Numero_Facture']
-            invoice_date = rows[0]['Date_Facture']
-            invoice_date_due = rows[0]['Date_Echeance']
             
             invoice_lines = []
             
@@ -264,7 +275,7 @@ async def testcreateOdoo(rows: list, models, db, uid, password):
                         # Debug JSON
                         #import json
                         print(f"\n📦 Facture creer pour Odoo : {rows[0]['Numero_Facture']}")
-                        #print(json.dumps(sendAccountMove, indent=2))
+                        print(json.dumps(sendAccountMove, indent=2))
                         
                         # Envoi
                         try:

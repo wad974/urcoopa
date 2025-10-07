@@ -154,7 +154,7 @@ def boucleCommandeUrcoopa(commande, models, db, uid, password, WSDL_URL, API_KEY
                     "Code_Produit": product_code,
                     "Libelle_Produit": ligne['name'],
                     "Quantite_Commandee": ligne['product_qty'],
-                    "Unite_Commande": "UN",
+                    "Unite_Commande": "UN"
                     #Quantite_Commandee
                     #Unite_Commande (valeurs attendues : "UN", "KG" ou "TO")
                 })
@@ -165,11 +165,19 @@ def boucleCommandeUrcoopa(commande, models, db, uid, password, WSDL_URL, API_KEY
             #on enleve gesica
             reference_partenaire = commande.get('partner_ref')
             
+            if reference_partenaire == '' or reference_partenaire is None or reference_partenaire == False:
+                reference = commande.get('name').strip()
+                
+            else : 
+                reference = reference_partenaire.replace('GESICA', "").strip()
+                
+            '''
             if reference_partenaire:
                 reference = reference_partenaire.replace('GESICA', "").strip()
             else :
                 reference = commande.get('name').strip()
-                
+            '''
+            
             #requete code client
             if not commande['company_id']:
                 return

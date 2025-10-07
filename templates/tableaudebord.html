@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Tableau de bord</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+    <div class="container py-5">
+        <h2 class="mb-4 text-center text-primary">📊 Tableau de bord - Odoo ⇄ Urcoopa</h2>
+
+        <div class="row g-4">
+            <!-- Commandes envoyées -->
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">🛒 Commandes envoyées à Odoo</h5>
+                        <p class="display-5 text-success fw-bold">{{ commandeQuiDoisEtreEnvoye }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Factures récupérées -->
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">📄 Factures récupérées d’Urcoopa</h5>
+                        <p class="display-5 text-primary fw-bold">{{ stats.nb_factures_urcoopa }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Avoirs récupérés -->
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">💸 Avoirs récupérés d’Urcoopa</h5>
+                        <p class="display-5 text-warning fw-bold">{{ stats.nb_avoirs_urcoopa }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clients inconnus -->
+            <div class="col-md-6">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">👥 Clients inconnus</h5>
+                        <p class="display-5 text-danger fw-bold">{{ stats.nb_clients_inconnus }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Articles inconnus -->
+            <div class="col-md-6">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">📦 Articles inconnus</h5>
+                        <p class="display-5 text-danger fw-bold">{{ stats.nb_articles_inconnus }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row g-4 mt-4">
+
+            <!-- Adhérents à intégrer -->
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">👨‍🌾 Adhérents à intégrer (≠ 5000)</h5>
+                        <p class="display-5 text-info fw-bold">{{ stats.nb_adherents_odoo }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clients vrac -->
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">🧺 Clients vrac (5000)</h5>
+                        <p class="display-5 text-secondary fw-bold">{{ stats.nb_clients_vrac }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Livraisons -->
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">🚚 Livraisons</h5>
+                        <p class="display-5 text-success fw-bold">{{ stats.nb_livraisons }}</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Données comptables -->
+        <div class="row g-4 mt-4">
+            <div class="col-md-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">💰 Données comptables</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p><strong>HT :</strong> {{ stats.donnees_comptables.ht | default("0") }} €</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p><strong>TVA :</strong> {{ stats.donnees_comptables.tva | default("0") }} €</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p><strong>TTC :</strong> {{ stats.donnees_comptables.ttc | default("0") }} €</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- TEST GOOGLE VIZUALISATION -->
+    <div id="chart_div2" style="width: 900px; height: 500px;"></div>
+
+    <!-- SCRIPT -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['Generation', 'Descendants'],
+                [0, 1], [1, 33], [2, 269], [3, 2013]
+            ]);
+
+            var options = {
+                title: 'Descendants by Generation',
+                hAxis: { title: 'Generation', minValue: 0, maxValue: 3 },
+                vAxis: { title: 'Descendants', minValue: 0, maxValue: 2100 },
+                trendlines: {
+                    0: {
+                        type: 'exponential',
+                        visibleInLegend: true,
+                    }
+                }
+            };
+
+            var chart = new google.visualization.ScatterChart(document.getElementById('chart_div2'));
+            chart.draw(data, options);
+        }
+    </script>
+
+</body>
+
+</html>

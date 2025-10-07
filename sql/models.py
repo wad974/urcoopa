@@ -6,6 +6,7 @@ import json
 class CRUD:
     
     def __init__(self):
+        
         # Initialiser la connexion à la base de données
         self.connexion = recupere_connexion_db()
         
@@ -721,10 +722,10 @@ class CRUD:
             cnx = self.connexion
             cursor = cnx.cursor(dictionary=True)
             
-            print('ETAPE DEMARRAGE')
+            #print('ETAPE DEMARRAGE')
             #code produit qui ne sont pas matcher avec Urcoopa<->Odoo envoyer dans Base de données
             
-            print('ETAPE 1')
+            #print('ETAPE 1')
             #on controle d'abord qu'il y a pas les memes donnees
             
             requete_client = '''
@@ -739,10 +740,10 @@ class CRUD:
             '''
             
             cursor.execute(requete)
-            print('ETAPE 2')
+            #print('ETAPE 2')
             
             datas  = cursor.fetchall()
-            print('DATAS READINCONNU : ', datas)
+            #print('DATAS READINCONNU : ', datas)
             
             cursor.close()
             
@@ -766,10 +767,10 @@ class CRUD:
             cnx = self.connexion
             cursor = cnx.cursor(dictionary=True)
             
-            print('ETAPE DEMARRAGE')
+            #print('ETAPE DEMARRAGE')
             #code produit qui ne sont pas matcher avec Urcoopa<->Odoo envoyer dans Base de données
             
-            print('ETAPE 1')
+            #print('ETAPE 1')
             #on controle d'abord qu'il y a pas les memes donnees
             
             requete_client = '''
@@ -778,10 +779,10 @@ class CRUD:
             
             
             cursor.execute(requete_client)
-            print('ETAPE 2')
+            #print('ETAPE 2')
             
             datas  = cursor.fetchall()
-            print('DATAS READINCONNU : ', datas)
+            #print('DATAS READINCONNU : ', datas)
             
             cursor.close()
             
@@ -805,10 +806,10 @@ class CRUD:
             cnx = self.connexion
             cursor = cnx.cursor(dictionary=True)
             
-            print('ETAPE DEMARRAGE')
+            #print('ETAPE DEMARRAGE')
             #code produit qui ne sont pas matcher avec Urcoopa<->Odoo envoyer dans Base de données
             
-            print('ETAPE 1')
+            #print('ETAPE 1')
             #on controle d'abord qu'il y a pas les memes donnees
             
             requete_client = '''
@@ -817,10 +818,10 @@ class CRUD:
             
             
             cursor.execute(requete_client)
-            print('ETAPE 2')
+            #print('ETAPE 2')
             
             datas  = cursor.fetchall()
-            print('DATAS READINCONNU : ', datas)
+            #print('DATAS READINCONNU : ', datas)
             
             cursor.close()
             
@@ -830,5 +831,200 @@ class CRUD:
                 return []
             else:
                 return datas
+        except :
+            print(f"❌ [ERREUR] LORS DE LA RECUPERATION DES DATAS")
+    
+    ######################################################
+    ######################################################
+    #STATISTIQUE - PARTIE
+    #METHODE COUNT COMMANDE URCOOPA PASSER PAR LES MAGASINS
+    def countCommandesEnvoyees(self, ):
+        
+        cnx = None
+        cursor = None
+        
+        try:
+            
+            cnx = self.connexion
+            cursor = cnx.cursor(dictionary=True)
+            
+            requete_client = '''
+                SELECT count(id) as commande
+                FROM exportodoo.sic_urcoopa_commande_odoo;
+            '''
+            
+            cursor.execute(requete_client)
+            
+            datas  = cursor.fetchall()
+            
+            cursor.close()
+            
+            print(f'✅ [SUCCESS] LISTE RECUPERER DANS DATABASE')
+            
+            if datas is None:
+                return []
+            else:
+                return datas[0]
+        except :
+            print(f"❌ [ERREUR] LORS DE LA RECUPERATION DES DATAS")
+            
+    #METHODE COUNT COMMANDE URCOOPA PASSER PAR LES MAGASINS
+    def countFacturesRecuperees(self, ):
+        
+        cnx = None
+        cursor = None
+        
+        try:
+            
+            cnx = self.connexion
+            cursor = cnx.cursor()
+            
+            requete_client = '''
+                SELECT COUNT(DISTINCT Numero_Facture) as numero_facture
+                FROM exportodoo.sic_urcoopa_facture
+                WHERE Type_Facture = 'F';
+            '''
+            
+            cursor.execute(requete_client)
+            
+            datas  = cursor.fetchall()
+            
+            cursor.close()
+            
+            print(f'✅ [SUCCESS] LISTE RECUPERER DANS DATABASE')
+            
+            if datas is None:
+                return []
+            else:
+                return datas[0]
+        except :
+            print(f"❌ [ERREUR] LORS DE LA RECUPERATION DES DATAS")
+            
+    #METHODE COUNT COMMANDE URCOOPA PASSER PAR LES MAGASINS
+    def countAvoirsRecuperees(self, ):
+        
+        cnx = None
+        cursor = None
+        
+        try:
+            
+            cnx = self.connexion
+            cursor = cnx.cursor(dictionary=True)
+            
+            requete_client = '''
+                SELECT COUNT(DISTINCT Numero_Facture) AS total_avoirs
+                FROM exportodoo.sic_urcoopa_facture
+                WHERE Type_Facture = 'A';
+            '''
+            
+            cursor.execute(requete_client)
+            
+            datas  = cursor.fetchall()
+            
+            cursor.close()
+            
+            print(f'✅ [SUCCESS] LISTE RECUPERER DANS DATABASE')
+            
+            if datas is None:
+                return []
+            else:
+                return datas[0]
+        except :
+            print(f"❌ [ERREUR] LORS DE LA RECUPERATION DES DATAS")
+            
+    #METHODE COUNT COMMANDE URCOOPA PASSER PAR LES MAGASINS
+    def countAdherentsOdoo(self, ):
+        
+        cnx = None
+        cursor = None
+        
+        try:
+            
+            cnx = self.connexion
+            cursor = cnx.cursor(dictionary=True)
+            
+            requete_client = '''
+                SELECT count(distinct Code_Client ) as code_client
+                FROM exportodoo.sic_urcoopa_facture
+                where Societe_Facture = 'VRAC'
+                and left(Code_Client, 1) <> '5'
+            '''
+            
+            cursor.execute(requete_client)
+            
+            datas  = cursor.fetchall()
+            
+            cursor.close()
+            
+            print(f'✅ [SUCCESS] LISTE RECUPERER DANS DATABASE')
+            
+            if datas is None:
+                return []
+            else:
+                return datas[0]
+        except :
+            print(f"❌ [ERREUR] LORS DE LA RECUPERATION DES DATAS")
+            
+    #METHODE COUNT COMMANDE URCOOPA PASSER PAR LES MAGASINS
+    def countClientsVrac(self, ):
+        
+        cnx = None
+        cursor = None
+        
+        try:
+            
+            cnx = self.connexion
+            cursor = cnx.cursor(dictionary=True)
+            
+            requete_client = '''
+                SELECT count(distinct Code_Client ) as code_client
+                FROM exportodoo.sic_urcoopa_facture
+                where Societe_Facture = 'VRAC'
+                and left(Code_Client, 1) = '5'
+            '''
+            
+            cursor.execute(requete_client)
+            
+            datas  = cursor.fetchall()
+            
+            cursor.close()
+            
+            print(f'✅ [SUCCESS] LISTE RECUPERER DANS DATABASE')
+            
+            if datas is None:
+                return []
+            else:
+                return datas[0]
+        except :
+            print(f"❌ [ERREUR] LORS DE LA RECUPERATION DES DATAS")
+            
+    #METHODE COUNT COMMANDE URCOOPA PASSER PAR LES MAGASINS
+    def countLivraisons(self, ):
+        
+        cnx = None
+        cursor = None
+        
+        try:
+            
+            cnx = self.connexion
+            cursor = cnx.cursor(dictionary=True)
+            
+            requete_client = '''
+                select count(distinct Numero_BL) as numero_bl
+                FROM exportodoo.sic_urcoopa_livraison;
+            '''
+            
+            cursor.execute(requete_client)
+            
+            datas  = cursor.fetchall()
+            
+            cursor.close()
+            
+            print(f'✅ [SUCCESS] LISTE RECUPERER DANS DATABASE')
+            
+            if datas is None:
+                return []
+            else:
+                return datas[0]
         except :
             print(f"❌ [ERREUR] LORS DE LA RECUPERATION DES DATAS")

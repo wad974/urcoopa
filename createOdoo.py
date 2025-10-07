@@ -207,13 +207,13 @@ async def createOdoo(rows: list, models, db, uid, password):
                                 'account.move', 'create',
                                 [sendAccountMove]
                             )
-                                                    
+                            
                             models.execute_kw(
                                 db, uid, password,
                                 'account.move', 'write',
                                 [move_id, {}]  # Un write vide peut déclencher les compute fields
                             )
-                                                    
+                            
                             print(f"✅📤 [SUCCESS] Facture envoyer à Odoo : {rows[0]['Numero_Facture']}")
                             #print(f"✅📤 [SUCCESS] Facture Odoo créée avec ID {move_id} \n\n")
                             
