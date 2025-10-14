@@ -19,6 +19,7 @@
             <p class="mt-3">Traitement en cours...</p>
         </div>
     </div>
+
     <!-- Top Navigation Bar -->
     <nav class="topbar d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
@@ -37,7 +38,7 @@
                 title="Affiche le document comptable" href="#">📊 VRAC</a>
 
             <a id="documentInconnu" class="nav-link d-inline link-underline-hover" title="Affiche les inconnus"
-                href="#">❌ Données inconnus</a>
+                href="#">👥 Données inconnus</a>
 
             <a id="dashboard" class="nav-link d-inline link-underline-hover" title="Affiche le dashboard"
                 href="/tableaudebord" style="color: white;">dashboard</a>
@@ -49,8 +50,8 @@
     </nav>
 
     <!--SWITCH AJAX-->
-    <!--dashboard-->
-    <div id="data_dashboard" style="display: none;"></div>
+    <!--STATS-->
+    <div id="data_dashboard" class="container-fluid mt-4" style="display: none;"></div>
     <!-- Modal Document Comptable -->
     <div id="documentComptableModal">
         <div class="modal-content-custom bg-white rounded shadow-lg">
@@ -343,9 +344,16 @@
         </table>
     </div>
 
+    <!--dashboard-->
+    <div id="data_dashboard" class="container-fluid mt-4" style="display: none;"></div>
+
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    
     <script src="{{ url_for( 'static', path='/js/script.js')}}"></script>
     <script src="{{ url_for( 'static', path='/js/donneesComptables.js')}}"></script>
     <script src="{{ url_for( 'static', path='/js/index.js') }}"></script>
+
 
     <script>
 
@@ -358,11 +366,13 @@
         // montant_ttc
         let montant_total_ttc = {{ total_ttc }};
         montant_total_ttc = Number.parseFloat(montant_total_ttc).toFixed(2);
+
         //montant_ht
         let montant_total_ht = {{ total_ht }};
         montant_total_ht = Number.parseFloat(montant_total_ht).toFixed(2);
         
         recuperationFacture(factures)
+
     </script>
 
 </body>

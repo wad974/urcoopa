@@ -668,14 +668,26 @@ function hideLoader() {
 // Placeholder actions
 async function ouverturePageInconnu() {
     
+    console.clear() ;   
     console.log('OUVERTURE PAGE DONNES INCONNUS')
     // Étape 1 : appel backend pour mise à jour
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function () {
+
         document.querySelector('#bloc_principal').style.display = 'none';
+        document.getElementById("data_dashboard").style.display = 'none';
+        document.querySelector('#loader').style.display = 'none';
+
+
         document.getElementById("data_inconnu").style.display = 'block';
         document.getElementById("data_inconnu").innerHTML = this.responseText;
-    
+
+        // bouton verification
+        actualise_adherent_article()
+        // bouton DELETE
+
+        delete_adherent_article()
+        
         // Maintenant seulement on peut récupérer l'élément
         const filtreSelect = document.getElementById("filtreSelect");
         const btnExport = document.getElementById("btnExport")
@@ -718,9 +730,8 @@ async function ouverturePageInconnu() {
                 console.error("❌ Erreur export ");
                 alert("Impossible d’exporter le fichier Excel.");
             }
+
         });
-    
-    
     }
 
     // Appel pour mise à jour facture
@@ -733,63 +744,142 @@ async function ouverturePageInconnu() {
 // Placeholder actions
 async function ouverturePageDashboard() {
     
+    console.clear() ;   
     console.log('OUVERTURE DASHBOARD')
+
+    
     // Étape 1 : appel backend pour mise à jour
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function () {
+
         document.querySelector('#bloc_principal').style.display = 'none';
+        document.getElementById("data_inconnu").style.display = 'none';
+
         document.getElementById("data_dashboard").style.display = 'block';
         document.getElementById("data_dashboard").innerHTML = this.responseText;
     
         // Maintenant seulement on peut récupérer l'élément
-        const filtreSelect = document.getElementById("filtreSelect");
-        const btnExport = document.getElementById("btnExport")
-        if (filtreSelect) {
-            filtreSelect.addEventListener("change", function () {
-                let value = this.value;
+        console.log('INFO : AJAX OUVERTURE');
 
-                document.getElementById("tableAll").style.display = (value === "all") ? "block" : "none";
-                document.getElementById("tableClients").style.display = (value === "clients") ? "block" : "none";
-                document.getElementById("tableArticles").style.display = (value === "articles") ? "block" : "none";
-            });
-        } else {
-            console.warn("⚠️ #filtreSelect introuvable dans la réponse HTML !");
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawAllCharts);
+
+        function drawAllCharts() {
+
+            // === 1️⃣ Barres : Commandes / Factures / Avoirs ===
+            const dataGlobal = google.visualization.arrayToDataTable([
+                ['Type', 'Nombre'],
+                ['Commandes', 125],
+                ['Factures', 80],
+                ['Avoirs', 14]
+            ]);
+
+            const optionsGlobal = {
+                title: 'Commandes, Factures et Avoirs',
+                legend: { position: 'none' },
+                colors: ['#28a745', '#007bff', '#ffc107'],
+                chartArea: { width: '70%' },
+                hAxis: { title: 'Nombre' },
+                vAxis: { title: 'Type' }
+            };
+
+            new google.visualization.BarChart(document.getElementById('chart_global'))
+                .draw(dataGlobal, optionsGlobal);
+
+
+            // === 2️⃣ Secteurs : répartition des clients ===
+            const dataClients = google.visualization.arrayToDataTable([
+                ['Catégorie', 'Nombre'],
+                ['Adhérents (<5000)', 230],
+                ['Clients Vrac (=5000)', 45],
+                ['Inconnus', 8]
+            ]);
+
+            const optionsClients = {
+                title: 'Répartition des clients',
+                pieHole: 0.4,
+                colors: ['#17a2b8', '#6c757d', '#dc3545'],
+                chartArea: { width: '80%', height: '80%' }
+            };
+
+            new google.visualization.PieChart(document.getElementById('chart_clients'))
+                .draw(dataClients, optionsClients);
+
+
+            // === 3️⃣ Ligne : livraisons par jour ===
+            const dataLivraisons = google.visualization.arrayToDataTable([
+                ['Date', 'Livraisons'],
+                ['2025-10-01', 3],
+                ['2025-10-02', 7],
+                ['2025-10-03', 5],
+                ['2025-10-04', 9],
+                ['2025-10-05', 6],
+                ['2025-10-06', 12],
+                ['2025-10-07', 10]
+            ]);
+
+            const optionsLivraisons = {
+                title: 'Évolution quotidienne des livraisons',
+                curveType: 'function',
+                legend: { position: 'bottom' },
+                colors: ['#28a745'],
+                chartArea: { width: '80%', height: '70%' }
+            };
+
+            new google.visualization.LineChart(document.getElementById('chart_livraisons'))
+                .draw(dataLivraisons, optionsLivraisons);
         }
-    
-        // import excel
-        btnExport.addEventListener("click", async function () {
-        // Récupère la valeur du select
-        const filtre = filtreSelect.value;
 
-        if (filtre) {
-                const response = await fetch(`/export_inconnus/${filtre}`);
-                if (!response.ok) throw new Error("Erreur lors de l'export Excel");
-
-                // Fichier blob
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-
-                // Téléchargement auto
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = `data_${filtre}.xlsx`;
-                document.body.appendChild(a);
-                a.click();
-
-                // Nettoyage
-                a.remove();
-                window.URL.revokeObjectURL(url);
-        } else{
-                console.error("❌ Erreur export ");
-                alert("Impossible d’exporter le fichier Excel.");
-            }
-        });
-    
-    
-    }
+    };
 
     // Appel pour mise à jour facture
     xhttp.open("GET", `/tableaudebord`, true);
     xhttp.send();
 
 }
+
+
+function delete_adherent_article() {
+    // delete table inconnu adherent et article
+    document.getElementById("btnReset").addEventListener("click", async () => {
+        if(confirm("⚠️ Voulez-vous vraiment vider la table ?")) {
+
+            showLoader();
+            const res = await fetch("/reset_table_adherent_article", {
+                method: "DELETE"
+            });
+            const data = await res.json();
+            alert(data.message);
+
+            ouverturePageInconnu()
+            hideLoader();
+            //location.reload(); // recharge la page pour MAJ des compteurs
+
+        }
+    });
+
+}
+
+function actualise_adherent_article(){
+
+    document.getElementById("btnVerify").addEventListener("click", async () => {
+        if(confirm("⚠️ Voulez-vous vraiment actualiser la table ?")) {
+
+            showLoader();
+
+            const res = await fetch("/api/verification-correspondance-adherent");
+            const data = await res.json();
+
+            //alert(data.message);
+            //console.log("Résultat vérification :", data);
+            alert("✅ Vérification terminée !\n" + JSON.stringify(data.message, null, 2));
+            
+            ouverturePageInconnu()
+            hideLoader();
+            //location.reload(); // recharge la page pour MAJ des compteurs
+
+        }
+    });
+}
+
+

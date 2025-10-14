@@ -21,7 +21,7 @@ async def testcreateOdoo(rows: list, models, db, uid, password):
     try :
         
         # 1. Rechercher numero commande existant
-        print('[INFO] : Début Récuperation purchase_order')
+        #print('[INFO] : Début Récuperation purchase_order')
         purchase_order_existant = models.execute_kw(
             db, uid, password,
             'purchase.order', 'search_read',
@@ -36,20 +36,36 @@ async def testcreateOdoo(rows: list, models, db, uid, password):
         name_purchase_order = ''
         id_purchase_order = int()
         
-        #print('[INFO] : Fin récuperation purchase_order')
+        print('[INFO] : Fin récuperation purchase_order')
         for ligne in purchase_order_existant:
             
             if ligne.get('partner_id')[0] == 5081 and ligne.get('invoice_status') == 'no':
                 
-                #print('[SUCCESS] : Filtre partner_id et invoice_status ok!')
+                print('[SUCCESS] : Filtre partner_id et invoice_status ok!')
                 if ligne.get('partner_ref'):
                     numero_reference_gesica = ligne.get('partner_ref').replace('GESICA', '').strip()
+                    
                 else :
                     numero_reference_gesica= ''
                     
                 # condition pour vrai ou faux dans continue_integration_facture_commande
                 #if numero_reference_gesica == rows[0].get('Numero_Commande_Client') or ligne.get('name') == rows[0].get('Numero_Commande_ODOO'):
                 if ligne.get('name') == rows[0].get('Numero_Commande_ODOO'):
+                    
+                    '''
+                    #switch commande urcoopa 
+                    if ligne['partner_id'][1] == 'URCOOPA' and ligne['state'] == 'purchase' and ligne['invoice_status'] == 'no' : 
+                        
+                        print('[INFO] Switch commande urcoopa ceer par le dropshipping')
+                        models.execute_kw(
+                            db, uid, password,
+                            'purchase.order', 'write',
+                            [[ligne['id']], {'invoice_status': 'invoiced'}]
+                        )
+                        print('✅[SUCCESS] : STATUT DE FACTURATION ENTIEREMENT FACTURE')
+                        break
+                    '''
+                    
                     name_purchase_order = ligne.get('name')
                     #name_purchase_order = rows[0].get('Numero_Commande_ODOO')
                     id_purchase_order = ligne.get('id')
@@ -69,12 +85,15 @@ async def testcreateOdoo(rows: list, models, db, uid, password):
                     
                     print('✅[SUCCESS] : Numeros facture et/ou name ok!')
                     break
+                
                 else :
-                    #print('❌[INFO] : ERREUR Numeros facture et/ou name non correspondantes\n\n')
+                    print('❌[INFO] : ERREUR Numeros facture et/ou name non correspondantes\n\n')
                     continue_integration_facture = False
-                    
+            else : 
+                print('[INFO] Non Urcoopa et invoice_status No')
+                break
         # condition si vrai execute create odoo
-        #print('[INFO] ETAT CONDITIONS INTEGRATION FACTURE : ', continue_integration_facture)
+        print('[INFO] ETAT CONDITIONS INTEGRATION FACTURE : ', continue_integration_facture)
         if continue_integration_facture == True : 
             
             # Récupération du fournisseur URCOOPA
@@ -298,6 +317,9 @@ async def testcreateOdoo(rows: list, models, db, uid, password):
                             crud.UpdateStatutIntegrationFactureOdoo(rows[0]['Numero_Facture'])
                             #print(f"✅📤 [SUCCESS] Facture Odoo créée avec ID {move_id} \n\n")
                             
+                            # switch statut facturation
+                            
+                            
                         except xmlrpc.client.Fault as e:
                             #Retourne tous les erreur odoo
                             #Erreur odoo si facture existe sera retrouné
@@ -308,8 +330,10 @@ async def testcreateOdoo(rows: list, models, db, uid, password):
                         continue
             #else : 
             #    print('[INFO] ERREUR TYPE CLIENT :', rows[0]['Type_Client'] )
+        else :
+            print('❌ [INFO] Non continue_integration_facture')
             
     except xmlrpc.client.Fault as e:
-        print(f"❌ Erreur XML-RPC Odoo : {e.faultString}")
+        print(f"Erreur XML-RPC Odoo : {e.faultString}")
     except Exception as e:
         print(f"🔥 Erreur récupération facture : {str(e)}")

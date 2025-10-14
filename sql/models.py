@@ -676,6 +676,7 @@ class CRUD:
                                 Nombre_Commande):
         
         try:
+            print('[INFO] DEBUT INSERTION')
             #code produit qui ne sont pas matcher avec Urcoopa<->Odoo envoyer dans Base de données
             cnx = self.connexion
             cursor = cnx.cursor()
@@ -689,12 +690,14 @@ class CRUD:
             req_ctrl_commande = (Numero_Commande,)
             cursor.execute(req_ctrl, req_ctrl_commande)
             response = cursor.fetchone()
+            print('[INFO] RESPONSE : ', response)
             
             if response is None:
                 
                 print('[INFO] Aucun Numero de commande trouvé')
+                #print('[INFO] code client : ', Code_Client, ' Nom_client : ', Nom_Client, ' email : ', Email, ' date_commande : ', date_commande, ' Numero_commande : ', Numero_Commande , 'nombre de commande : ', Nombre_Commande)
                 requete = '''
-                    insert into exportodoo.sic_urcoopa_non_correspondance_adherent (Code_Client, Nom_Client, Email, date_commande, Numero_Commande, Nombre_Commande)
+                    insert into exportodoo.sic_urcoopa_commande_odoo(Code_Client, Nom_Client, Email, date_envoi_commande, Numero_Commande, Nombre_Article)
                     values (%s,%s,%s,%s,%s,%s)
                 '''
                 valeurs = ( Code_Client, Nom_Client, Email, date_commande, Numero_Commande, Nombre_Commande, )
@@ -859,7 +862,7 @@ class CRUD:
             
             cursor.close()
             
-            print(f'✅ [SUCCESS] LISTE RECUPERER DANS DATABASE')
+            print(f'✅ [SUCCESS] LISTE RECUPERER countCommandesEnvoyees DANS DATABASE')
             
             if datas is None:
                 return []
@@ -891,7 +894,7 @@ class CRUD:
             
             cursor.close()
             
-            print(f'✅ [SUCCESS] LISTE RECUPERER DANS DATABASE')
+            print(f'✅ [SUCCESS] LISTE RECUPERER countFacturesRecuperees DANS DATABASE')
             
             if datas is None:
                 return []
@@ -923,7 +926,7 @@ class CRUD:
             
             cursor.close()
             
-            print(f'✅ [SUCCESS] LISTE RECUPERER DANS DATABASE')
+            print(f'✅ [SUCCESS] LISTE RECUPERER countAvoirsRecuperees DANS DATABASE')
             
             if datas is None:
                 return []
@@ -956,7 +959,7 @@ class CRUD:
             
             cursor.close()
             
-            print(f'✅ [SUCCESS] LISTE RECUPERER DANS DATABASE')
+            print(f'✅ [SUCCESS] LISTE RECUPERER countAdherentsOdoo DANS DATABASE')
             
             if datas is None:
                 return []
@@ -989,7 +992,7 @@ class CRUD:
             
             cursor.close()
             
-            print(f'✅ [SUCCESS] LISTE RECUPERER DANS DATABASE')
+            print(f'✅ [SUCCESS] LISTE RECUPERER countClientsVrac DANS DATABASE')
             
             if datas is None:
                 return []
@@ -1020,7 +1023,7 @@ class CRUD:
             
             cursor.close()
             
-            print(f'✅ [SUCCESS] LISTE RECUPERER DANS DATABASE')
+            print(f'✅ [SUCCESS] LISTE RECUPERER countLivraisons DANS DATABASE')
             
             if datas is None:
                 return []

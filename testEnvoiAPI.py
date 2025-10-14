@@ -97,7 +97,7 @@ def send_soap(WSDL_URL, API_KEY_URCOOPA, commande_data):
                 
                 if debug:
                     print(f'[DEBUG] Status code: {response.status_code}')
-                    print(f'[DEBUG] Raw content: {response.content.decode("utf-8")}')
+                    #print(f'[DEBUG] Raw content: {response.content.decode("utf-8")}')
                 
                 # Parse de la réponse XML pour extraire le résultat
                 if response.status_code == 200:
@@ -180,16 +180,22 @@ def send_soap(WSDL_URL, API_KEY_URCOOPA, commande_data):
     if resultat['success']:
         print('✅ SUCCÈS !')
         print(f'Message: {resultat["message"]}')
+        #print(json.dumps(commande_data, indent=2))
+        
+        #EMail peut être false
+        email = commande_data["commande"][0]["Email"]
+        if not email or email is False:
+            email = "" 
         
         #CREER ENVOI CMD BASE DE DONNEES
         from sql.models import CRUD
         crud = CRUD()
-        crud.insertCommandeUrcoopaOdoo(commande_data[0]['Code_Client'], 
-                                    commande_data[0]['Nom_Client'], 
-                                    commande_data[0]['Email'], 
+        crud.insertCommandeUrcoopaOdoo(commande_data["commande"][0]['Code_Client'], 
+                                    commande_data["commande"][0]['Nom_Client'], 
+                                    email, 
                                     datetime.datetime.now().strftime('%Y/%m/%d'), 
-                                    commande_data[0]['Numero_Commande'], 
-                                    len(commande_data[0]['Ligne_Commande']))
+                                    commande_data["commande"][0]['Numero_Commande'], 
+                                    len(commande_data["commande"][0]['Ligne_Commande']))
         
     else:
         print('❌ ÉCHEC')

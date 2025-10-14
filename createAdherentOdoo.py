@@ -116,8 +116,13 @@ async def createAdherentOdoo(rows: list, models, db, uid, password, status):
             
             if code_produit is None:
                 print('[INFO] Code produit is None recuperation dans ID_Produit_tmpl_ODOO : ',row.get('ID_Produit_tmpl_ODOO') ,' - TypeOf :', type(row.get('ID_Produit_tmpl_ODOO')) )
-                tmpl_id = int(row.get('ID_Produit_tmpl_ODOO'))
-                print('[INFO] Code produit is None tmpl_id = ', tmpl_id)
+                
+                if row.get('ID_Produit_tmpl_ODOO') is None:
+                    print('[INFO] Pas de code produit')
+                    continue
+                else :
+                    tmpl_id = int(row.get('ID_Produit_tmpl_ODOO'))
+                    print('[INFO] Code produit is None tmpl_id = ', tmpl_id)
             
             if code_produit is not None:
                 #time.sleep(1)  # ralentis de 1000ms

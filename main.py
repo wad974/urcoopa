@@ -113,7 +113,7 @@ date_end = datetime.now() # on recupere la date maintenant (int)
 date_start = date_end - timedelta(days=int(os.getenv('DATE_JOUR_FACTURES'))) # on soustrait 2jours (int)
 #dateReferenceFacture = date_start.strftime('%Y-%m-%d')
 dateReferenceFacture = date_end.strftime('%Y-%m-%d')
-
+days = os.getenv('DATE_JOUR')
 
 
 
@@ -126,17 +126,21 @@ class DateTimeEncoder(json.JSONEncoder):
 
 ########API POUR VOIR FACTURE EN ATTENTE DANS ACHAT ET TRANSFORMER EN FACTURE
 @app.get('/switch-facture-apres-reception')
-def get_switch_facture_apres_reception():
+def get_switch_facture_apres_reception(days = os.getenv('DATE_JOUR')):
     
     #creer une fonction pour boucler sur la recuperation des facture en attente
     #filtre par date
     
     date_end = datetime.now() # on recupere la date maintenant (int)
     #date_start = date_end - timedelta(days=5) # on soustrait 2jours (int)
-    date_start = date_end - timedelta(days=int(os.getenv('DATE_JOUR'))) #On soustrait 2jours (int)
+    date_start = date_end - timedelta(days=int(days)) #On soustrait 2jours (int)
 
     date_start_new = date_start.strftime('%Y-%m-%d 00:00:00') # date de départ strftime
     date_end_new = date_end.strftime('%Y-%m-%d 23:59:59') # date fin str
+    
+    #date pour base de donnees
+    date_start_new_db = date_start.strftime('%Y-%m-%d') # date de départ strftime
+    date_end_new_db = date_end.strftime('%Y-%m-%d') # date fin str
 
     commandes = models.execute_kw(
         db, uid, password,
@@ -155,21 +159,29 @@ def get_switch_facture_apres_reception():
     )
     
     # account move 
-    db = recupere_connexion_db()
-    cursor = db.cursor(dictionary=True)
+    database = recupere_connexion_db()
+    cursor = database.cursor(dictionary=True)
     requete = '''
-        SELECT id, name, partner_id, date_order, state, amount_total, create_date, write_date
-        FROM purchase_order
-        WHERE date_order >= %s
-        AND date_order <= %s
-        AND 
-        ORDER BY id ASC;'''
-    cursor.execute(requete,)
+        SELECT Date_Facture, Date_Echeance, Code_Client, Nom_Client, Type_Client, Montant_HT, Montant_TTC, Numero_Ligne_Facture, Code_Produit, Libelle_Produit, Prix_Unitaire, Quantite_Facturee, Unite_Facturee, date_validation, Numero_Commande_ODOO
+        FROM exportodoo.sic_urcoopa_facture
+        WHERE Date_Facture >= %s
+        AND Date_Facture <= %s
+        ORDER BY id ASC;
+        '''
+        
+    valeurs = (date_start_new_db, date_end_new_db,)
+    cursor.execute(requete, valeurs )
+    
     datas = cursor.fetchall()
     
     
     data_commande = []
+    data_drop = []
 
+    database.close()
+    cursor.close()
+    
+    print('[INFO] : RECUPERATION DATABASE ET COMMANDE ODOO OK')
     for commande in commandes:
         if commande['partner_id'][1] == "SICALAIT, SICALAIT - ALIMENT" and commande["invoice_status"] == "to invoice":
             
@@ -178,22 +190,53 @@ def get_switch_facture_apres_reception():
             #FUNCTION SWTICH
             from odoo.controller.statutSwitchDropShipping import switchStatutFacturationUrcoopa
             switchStatutFacturationUrcoopa(commande, models, db, uid, password)
+            
+        #switch commande urcoopa 
+        if commande['partner_id'][1] == 'URCOOPA' and commande['state'] == 'purchase' and commande['invoice_status'] == 'no' : 
+            
+            for data in datas :
+                if data['Numero_Commande_ODOO'] == commande['name']:
+                    
+                    data_drop.append(commande['id'])
+                    print('[INFO] Switch commande urcoopa ceer par le dropshipping')
+                    models.execute_kw(
+                        db, uid, password,
+                        'purchase.order', 'write',
+                        [[commande['id']], {'invoice_status': 'invoiced'}]
+                    )
+                    print('✅[SUCCESS] : STATUT DE FACTURATION ENTIEREMENT FACTURE', commande['name'])
+                                
+                        
     
     '''    
     # a controler facture dans compta si exist action bouton dans achat
     for account in datas:
         if account['id'] == '5081' and account['Numero_Facture'] == data_commande['']:
-    '''          
+        
+    #switch commande urcoopa 
+    if ligne['partner_id'][1] == 'URCOOPA' and ligne['state'] == 'purchase' and ligne['invoice_status'] == 'no' : 
+        
+        print('[INFO] Switch commande urcoopa ceer par le dropshipping')
+        models.execute_kw(
+            db, uid, password,
+            'purchase.order', 'write',
+            [[ligne['id']], {'invoice_status': 'invoiced'}]
+        )
+        print('✅[SUCCESS] : STATUT DE FACTURATION ENTIEREMENT FACTURE')
+                        
+            
         
                 
     #Méthodes import json
     with open('log-res_partner.json', 'w', encoding='utf-8') as f:
         json.dump(data_commande, f, ensure_ascii=False, indent=4)
-    
+                    
+    '''
 
     return{
         'STATUS' : 'SUCCESS',
-        'MESSAGE' : f'Nombre de commande facture {len(data_commande)} créé'
+        'MESSAGE 1' : f'Nombre de commande facture switcher bon livraison {len(data_commande)}',
+        'MESSAGE 2' : f'Nombre de commande facture switcher entierement facturé {len(data_drop)}'
     }
 
 ######## API pour données comptables par mois
@@ -268,7 +311,7 @@ async def get_verification_donnees_adherent():
         if len(datas) == 0:
             return {
                     "success": True,
-                    "Message" : "Aucune facture à traiter"
+                    "message" : "Aucune facture à traiter"
                     #"periode": f"{annee}-{mois:02d}"
                 }
         
@@ -297,6 +340,7 @@ async def get_verification_donnees_adherent():
                             continue
             return {
                 "success": True,
+                "message" : 'Fin mise à jour éffectué'
                 #"periode": f"{annee}-{mois:02d}"
             }
         
@@ -304,6 +348,7 @@ async def get_verification_donnees_adherent():
         print(f"Erreur lors de la récupération des données comptables : {e}")
         return {
             "success": False,
+            "message" : str(e),
             "error": str(e),
             "data": []
         }
@@ -401,55 +446,6 @@ async def get_injection_donnees_adherent():
             "error": str(e),
             "data": []
         }
-
-
-'''
-#GET COMMANDES DEPUIS GESICA
-@app.get('/Commandes_Gesica')
-async def get_commandes_gesica():
-    
-    try:
-        crud = CRUD()
-        resultat = await crud.readAll()
-        purchase = defaultdict(list)
-
-        for index, row in enumerate(resultat):
-            #print(f'\n Boucle => {index + 1} \n')
-            purchase[row["ENOCOM"]].append(row)
-
-        max_factures = 2
-        for i, (numero_facture, lignes) in enumerate(purchase.items()):
-            print(f'📦 Traitement de la facture {numero_facture} contenant {len(lignes)} lignes')
-
-            if i >= max_factures:
-                print(f"🔔 Limite atteinte ({max_factures} factures). Arrêt du traitement.")
-                break
-            
-            # Appel à createOdooGesica pour construire la commande
-            commande_odoo = await createOdooGesica(
-                lignes, models, db, uid, password
-            )
-
-            print('commande odoo', commande_odoo)
-            if commande_odoo:
-                
-                try:
-                    move_id = models.execute_kw(
-                        db, uid, password,
-                        'purchase.order', 'create',
-                        [commande_odoo]
-                    )
-                    print(f"✅📤 Commande Odoo créée avec ID {move_id} pour facture {numero_facture}")
-                except xmlrpc.client.Fault as e:
-                    print(f"❌ Erreur XML-RPC Odoo : {e.faultString}")
-                    
-        #print('RETOUR PURCHASE ', purchase)
-        return JSONResponse(content={"message": "Import terminé avec succès."}, status_code=200)
-
-    except Exception as e:
-        print(f'ERREUR: {e}')
-        raise HTTPException(status_code=500, detail=str(e))
-'''
 
 
 ### GET FACTURES ANCIEN API
@@ -970,6 +966,8 @@ async def get_factures(
 ###############################
 @app.get('/ajout-facture-odoo')
 async def ajout_facture_odoo():
+    from odoo.controller.statutSwitchDropShipping import switchStatutEtapeParEtape
+    
     print('[INFO] 🌐 init ajout facture odoo')
     
     cnx = recupere_connexion_db()
@@ -977,56 +975,138 @@ async def ajout_facture_odoo():
     
     requete = """ 
         SELECT * FROM exportodoo.sic_urcoopa_facture 
-        where Type_Client <> 'ADHERENT'
+        WHERE Type_Client <> 'ADHERENT'
+        AND Numero_Commande_ODOO <> 'NULL'
         AND Statut_Integration_Fac_inOdoo = 'à intégrer'
         """
-    
-    
-    """
-    requete = '''
-        select *
-        from exportodoo.sic_urcoopa_facture suf 
-        where Societe_Facture ='VRAC'
-        and left(Code_Client,1)<>'5'
-        and Nom_Client not in (SELECT Nom_Adherent_Urcoopa FROM exportodoo.sic_urcoopa_non_correspondance_adherent )
-        and Code_Produit not in (SELECT Numero_Article_Urcoopa FROM exportodoo.sic_urcoopa_non_correspondance_article )
-    '''
-    requete = SELECT left(Date_Facture,7) mois_facture, Type_Facture ,
-                (case when Code_Produit='INTR' then 'INTR' else '' end) est_intr,
-                sum(Montant_HT_Ligne) total_HT,
-                sum(Montant_HT_Ligne*Taux_TVA/100) total_TVA                
-                FROM exportodoo.sic_urcoopa_facture
-                where Societe_Facture ='VRAC'
-                and left(Code_Client,1)='5'
-                
-            select *
-            from exportodoo.sic_urcoopa_facture suf 
-            where Societe_Facture ='VRAC'
-            and left(Code_Client,1)<>'5'
-            and Nom_Client not in (SELECT Nom_Adherent_Urcoopa FROM exportodoo.sic_urcoopa_non_correspondance_adherent )
-            and Code_Produit not in (SELECT Numero_Article_Urcoopa FROM exportodoo.sic_urcoopa_non_correspondance_article )
-            
-    """
     
     cursor.execute(requete)
     datas = cursor.fetchall()
     
     factures_groupees = defaultdict(list)
     
-    for row in datas:
-        factures_groupees[row.get('Numero_Facture')].append(row)
-    
-    for numero_facture, lignes in factures_groupees.items():
-        # On filtre : ne traiter que les lignes NON ADHERENT
-        lignes_filtrées = [row for row in lignes if row.get("Type_Client") != "ADHERENT"]
+    # 1. Rechercher numero commande existant dans odoo
+    print('[INFO] : Début Récuperation purchase_order')
 
-        if lignes_filtrées:
-            # Appel unique à createOdoo avec toutes les lignes de cette facture
-            #await createOdoo(lignes_filtrées,models, db, uid, password)
-            from testcreateOdoo import testcreateOdoo
-            await testcreateOdoo(lignes_filtrées,models, db, uid, password)
+    purchase_order_existant = models.execute_kw(
+        db, uid, password,
+        'purchase.order', 'search_read',
+        [[[ 'partner_id', '=', 5081 ]]],
+        {
+            'fields': ['id','partner_id','company_id', 'name', 'partner_ref', 'invoice_status', 'origin', 'state']
+        }
+    )
     
-    return JSONResponse(content='AJOUT FACTURE ODOO OK')
+    
+    #Méthodes import json
+    with open('res_partner_test.json', 'w', encoding='utf-8') as f:
+        json.dump(purchase_order_existant, f, ensure_ascii=False, indent=4)
+    
+    
+    for row in datas:
+        factures_groupees[row.get('Numero_Commande_ODOO')].append(row)
+    
+
+    nombre_facture_receptionner = []
+    nombre_facture_entierement_facturer = []
+    nombre_facture_ajouter = []
+    
+    for i, (numero_facture, lignes) in enumerate(factures_groupees.items()):
+        # On filtre : ne traiter que les lignes NON ADHERENT
+        #lignes_filtrées = [row for row in lignes if row.get("Type_Client") != "ADHERENT"]
+        if lignes:
+            
+            # ✅ Accède au premier élément de la liste
+            numero_commande_odoo = lignes[0].get('Numero_Commande_ODOO')
+            
+            # Cherche si cette commande existe dans purchase_order_existant
+            commande_trouvee = False
+            
+            for purchase in purchase_order_existant:
+                # Récupération sécurisée des valeurs
+                partner_id = purchase.get('partner_id')
+                company_id = purchase.get('company_id')
+                invoice_status = purchase.get('invoice_status')
+                
+                # Vérifications avec gestion des None
+                if company_id:
+                    
+                    # Maintenant on peut accéder aux indices en toute sécurité
+                    if (partner_id[0] == 5081 and 
+                        company_id[0] == 19 and 
+                        invoice_status == 'no'):
+                        
+                        if purchase['name'] == numero_commande_odoo:
+                            
+                            commande_trouvee = True
+                            
+                            print('*'*100)
+                            print(f'[SUCCESS] : BINGO NUMERO COMMANDE ODOO TROUVÉ : {numero_commande_odoo}')
+                            print('*'*100)
+                            
+                            #etape 1 : reception
+                            print('etape 1')
+                            await switchStatutEtapeParEtape(purchase, models, db, uid, password, 'purchase.order', 'action_view_picking', 'purchase' )
+                            #etape 2 : validation reception
+                            print('etape 2')
+                            await switchStatutEtapeParEtape(purchase, models, db, uid, password, 'stock.picking', 'button_validate', 'purchase' )
+                            
+                            nombre_facture_receptionner.append(numero_commande_odoo)
+                            break
+                        
+                        else :
+                            print(f"Commande N° {purchase['name']} AUCUNE FACTURE RECEPTIONNER")
+            
+            #on actualise la commande // on rappel
+            print('[INFO] ACTUALISE PURCHASE ORDER')
+            purchase_order_existant = models.execute_kw(
+                db, uid, password,
+                'purchase.order', 'search_read',
+                [[[ 'partner_id', '=', 5081 ]]],
+                {
+                    'fields': ['id','partner_id', 'name', 'partner_ref', 'invoice_status', 'origin', 'state']
+                }
+            )
+            for purchase in purchase_order_existant:
+                
+                if purchase.get('partner_id')[0] == 5081 and purchase.get('invoice_status') == 'to invoice':
+                    
+                    if purchase['name'] == numero_commande_odoo:
+                        
+                        commande_trouvee = True        
+                        #etape 3 : creation facture
+                        print('etape 3')
+                        await switchStatutEtapeParEtape(purchase, models, db, uid, password, 'purchase.order', 'action_create_invoice', 'purchase' )
+                        nombre_facture_entierement_facturer.append(numero_commande_odoo)
+                        
+                        
+                        # Appel unique à createOdoo avec toutes les lignes de cette facture
+                        #await createOdoo(lignes_filtrées,models, db, uid, password)
+                        #from testcreateOdoo import testcreateOdoo
+                        #await testcreateOdoo(lignes_filtrées,models, db, uid, password)
+                        from odoo.controller.creationFactureDansOdoo import function_creation_facture_dans_odoo
+                        
+                        function_creation_facture_dans_odoo(commande_trouvee ,purchase, lignes, models, db, uid, password)
+                        
+                        print('*'*100)
+                        print('ON CONTINUE LIGNE : ', i+1)
+                        print('*'*100)
+                        
+                        nombre_facture_ajouter.append(numero_commande_odoo)
+                        
+                        break
+                    else :
+                            print(f"Commande N° {purchase['name']} AUCUNE FACTURE EN ATTENTE ")
+            
+            # on continue la boucle principal
+            continue
+            
+    return {
+        'SUCCESS' : 'AJOUTE FACTURE DANS ODOO',
+        'FACTURE AJOUTER' : f'NOMBRE FACTURE AJOUTER {len(nombre_facture_ajouter)} ',
+        'FACTURE RECEPTIONNER' : f'NOMBRE DE FACTURE RECEPTIONNER {len(nombre_facture_receptionner)}',
+        'FACTURE ENTIEREMENT FACTURER'  : f'NOMBRE DE FACTURE ENTIEREMENT FACTURER {len(nombre_facture_entierement_facturer)}'
+    }
 
 
 ###############################
@@ -1075,7 +1155,8 @@ async def post_commande():
     print('[info] DEBUT DU FILTRES POUR SWITCH COMMANDE')
     for commande in commandes:
     
-        #### ON PASSE TOUS LES COMMANDES 
+        #### ON PASSE TOUS LES COMMANDES
+        # Switch commande sicalait aliment
         if commande['partner_id'][1] == 'URCOOPA' and  commande['company_id'][1] == 'SICALAIT' and commande['state'] == 'draft':
         
             from odoo.controller.statutSwitchDropShipping import switchStatutUrcoopa
@@ -1105,9 +1186,37 @@ async def post_commande():
     print('[info] DEBUT SEND COMMANDE')
     for commande in commandes:
         
-        from odoo.controller.boucleCommandeUrcoopa import boucleCommandeUrcoopa
-        boucleCommandeUrcoopa(commande, models, db, uid, password, WSDL_URL, API_KEY_URCOOPA)
+        # on envoi uniquement les nouveau commande
+        # on verifie dans la base si la commande est pas déjà envoyer
+        gesica_commande = ''
         
+        if commande['partner_id'][1] == 'URCOOPA':
+            ref = commande.get('partner_ref') or ''
+            gesica_commande = str(ref).replace('GESICA', '').strip()
+        
+        if gesica_commande and gesica_commande != '':
+            name_commande = gesica_commande
+        else : 
+            name_commande  = commande['name']
+        
+        database = recupere_connexion_db()
+        cursor = database.cursor()
+        requete = '''
+            SELECT Numero_Commande
+            FROM exportodoo.sic_urcoopa_commande_odoo
+            WHERE Numero_Commande = %s
+            '''
+        valeur  = (name_commande,)
+        cursor.execute(requete, valeur)
+        
+        datas = cursor.fetchone()
+        
+        if datas is None :
+            from odoo.controller.boucleCommandeUrcoopa import boucleCommandeUrcoopa
+            boucleCommandeUrcoopa(commande, models, db, uid, password, WSDL_URL, API_KEY_URCOOPA)
+        else:
+            print(f'[INFO] commande {commande["name"]} déjà envoyé ')
+            
     # FIN DE LA BOUCLE PRINCIPAL
     return {
             'STATUS' : 'SUCCESS',
@@ -1626,31 +1735,85 @@ def get_table( request : Request ):
         'request' : request
         })
 
+# delete table adherent inconnu et articles
+@app.delete("/reset_table_adherent_article")
+def reset_table():
+    
+    try:
+        
+        print('[info] debut truncate table adherent et article')
+        db = recupere_connexion_db()
+        conn = db.cursor()
+        
+        requete = '''
+            UPDATE exportodoo.sic_urcoopa_facture 
+            SET Statut_Correspondance_Article = 'à traiter', Statut_Correspondance_Adherent = 'à traiter'
+            WHERE Statut_Correspondance_Article = 'déjà traiter'
+            AND Statut_Correspondance_Adherent = 'déjà traiter'
+        '''
+
+        conn.execute(requete,)
+        db.commit()
+        
+        conn.execute("TRUNCATE TABLE exportodoo.sic_urcoopa_non_correspondance_adherent")
+        db.commit()
+        
+        conn.execute("TRUNCATE TABLE exportodoo.sic_urcoopa_non_correspondance_article")
+        db.commit()
+        
+        conn.close()
+        db.close()
+        
+        print('[info] TRUNCATE REUSSI')
+        return JSONResponse(content={"message": "✅ Table vidée avec succès"})
+    
+    except:
+        return JSONResponse(content={"message": " Erreur lors de la suppression"})
 
 from crontab import CronTab
 def init_cron():
     # Récupération de la planification via variable d'environnement
     #cron_schedule = os.getenv('CRONTAB_APP', '30 14 * * *')
-    cron_schedule = os.getenv('CRONTAB_APP_FACTURES')
+    cron_schedule1 = os.getenv('CRONTAB_APP_FACTURES')
     cron_schedule2 = os.getenv('CRONTAB_APP_COMMANDES')
+    cron_schedule3 = os.getenv('CRONTAB_APP_AJOUT_FACTURE_DANS_ODOO')
+    cron_schedule4 = os.getenv('CRONTAB_APP_RECUPERE_LIVRAISON')
+    cron_schedule5 = os.getenv('CRONTAB_APP_SWITCH_FACTURES')
+    cron_schedule6 = os.getenv('CRONTAB_APP_VERIF_CORRESPONDANT')
+    cron_schedule7 = os.getenv('CRONTAB_APP_INJECTION_CORRESPONDANT')
 
     # Initialisation du cron pour l'utilisateur root
-    #cron = CronTab(user='root')
-    cron = CronTab(user='jimmy')
+    cron = CronTab(user='root')
+    #cron = CronTab(user='jimmy')
     cron.remove_all()
     cron.write()
 
     # Définition de la commande
-    job = cron.new(command=f'curl http://0.0.0.0:9898/recupere_Factures/?xCleAPI={API_KEY_URCOOPA}&nb_jours={API_KEY_JOUR_FACTURES}&dateReference={dateReferenceFacture}')
+    job1 = cron.new(command=f'curl http://0.0.0.0:9898/Recupere_Factures/?xCleAPI={API_KEY_URCOOPA}&nb_jours={API_KEY_JOUR_FACTURES}&dateReference={dateReferenceFacture}')
     job2 = cron.new(command=f'curl -X POST http://0.0.0.0:9898/envoyer-commande/')
-    job.setall(cron_schedule)
+    job3 = cron.new(command=f'curl -X POST http://0.0.0.0:9898/ajout-facture-odoo/')
+    job4 = cron.new(command=f'curl -X POST http://0.0.0.0:9898/recupere_livraison/?xCleAPI={API_KEY_URCOOPA}&nb_jours={API_KEY_JOUR_FACTURES}&dateReference={dateReferenceFacture}')
+    job5 = cron.new(command=f'curl -X POST http://0.0.0.0:9898/switch-facture-apres-reception?days={days}')
+    job6 = cron.new(command=f'curl -X POST http://0.0.0.0:9898/api/verification-correspondance-adherent')
+    job7 = cron.new(command=f'curl -X POST http://0.0.0.0:9898/api/injection-dans-odoo-donnees-adherent')
+    job1.setall(cron_schedule1)
     job2.setall(cron_schedule2)
+    job3.setall(cron_schedule3)
+    job4.setall(cron_schedule4)
+    job5.setall(cron_schedule5)
+    job6.setall(cron_schedule6)
+    job7.setall(cron_schedule7)
     cron.write()
 
     # Lancement du service cron
     #print(f"✅ CRON configuré avec la planification : {cron_schedule1} et {cron_schedule2}")
-    print(f"✅ CRON configuré avec la planification factures: {cron_schedule} ")
+    print(f"✅ CRON configuré avec la planification factures: {cron_schedule1} ")
     print(f"✅ CRON configuré avec la planification commandes: {cron_schedule2} ")
+    print(f"✅ CRON configuré avec la planification commandes: {cron_schedule3} ")
+    print(f"✅ CRON configuré avec la planification commandes: {cron_schedule4} ")
+    print(f"✅ CRON configuré avec la planification commandes: {cron_schedule5} ")
+    print(f"✅ CRON configuré avec la planification commandes: {cron_schedule6} ")
+    print(f"✅ CRON configuré avec la planification commandes: {cron_schedule7} ")
     print("✅ Démarrage du service CRON...")
     os.system('service cron start')
     print("✅ Service CRON lancé avec succès.")

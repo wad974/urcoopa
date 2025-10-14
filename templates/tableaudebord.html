@@ -12,13 +12,77 @@
     <div class="container py-5">
         <h2 class="mb-4 text-center text-primary">📊 Tableau de bord - Odoo ⇄ Urcoopa</h2>
 
+        <!-- SECTION ACTIONS -->
+        <h3 class="mt-5 mb-3 text-center text-secondary">⚙️ Actions disponibles</h3>
         <div class="row g-4">
-            <!-- Commandes envoyées -->
+
+            <!-- Récupération des factures -->
             <div class="col-md-4">
                 <div class="card shadow-sm border-0 h-100">
                     <div class="card-body text-center">
-                        <h5 class="card-title">🛒 Commandes envoyées à Odoo</h5>
-                        <p class="display-5 text-success fw-bold">{{ commandeQuiDoisEtreEnvoye }}</p>
+                        <h5 class="card-title">📄 Récupération des factures (Urcoopa)</h5>
+                        <button id="btnFetchFactures" class="btn btn-primary">🔄 Récupérer</button>
+                        <div id="statusFetchFactures" class="mt-3 text-muted fst-italic">En attente...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Injection des factures dans Odoo -->
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">📦 Injection des factures dans Odoo</h5>
+                        <button id="btnInjectFactures" class="btn btn-warning">⚡ Injecter</button>
+                        <div id="statusInjectFactures" class="mt-3 text-muted fst-italic">En attente...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Envoi des commandes vers Urcoopa -->
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">🛒 Envoi des commandes à Urcoopa</h5>
+                        <button id="btnSendCommandes" class="btn btn-success">📤 Envoyer</button>
+                        <div id="statusSendCommandes" class="mt-3 text-muted fst-italic">En attente...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Injection des factures adhérents -->
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">👨‍🌾 Injection des factures adhérents</h5>
+                        <button id="btnInjectAdherents" class="btn btn-info">⚡ Injecter</button>
+                        <div id="statusInjectAdherents" class="mt-3 text-muted fst-italic">En attente...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Switch achats dropshipping réceptionnés -->
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">📦 Traitement achats dropshipping reçus</h5>
+                        <button id="btnDropshipping" class="btn btn-secondary">🔄 Traiter</button>
+                        <div id="statusDropshipping" class="mt-3 text-muted fst-italic">En attente...</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- SECTION INDICATEURS -->
+        <div class="row g-4 mt-5">
+            <!-- Commandes envoyées -->
+            <h3 class="mt-5 mb-3 text-center text-secondary">🔎 Stats disponibles du mois</h3>
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">🛒 Commandes envoyées à l'urcoopa </h5>
+                        <p class="display-5 text-success fw-bold">{{ stats.nb_commandes_odoo.commande }}</p>
                     </div>
                 </div>
             </div>
@@ -28,7 +92,7 @@
                 <div class="card shadow-sm border-0 h-100">
                     <div class="card-body text-center">
                         <h5 class="card-title">📄 Factures récupérées d’Urcoopa</h5>
-                        <p class="display-5 text-primary fw-bold">{{ stats.nb_factures_urcoopa }}</p>
+                        <p class="display-5 text-primary fw-bold">{{ stats.nb_factures_urcoopa[0] }}</p>
                     </div>
                 </div>
             </div>
@@ -38,7 +102,7 @@
                 <div class="card shadow-sm border-0 h-100">
                     <div class="card-body text-center">
                         <h5 class="card-title">💸 Avoirs récupérés d’Urcoopa</h5>
-                        <p class="display-5 text-warning fw-bold">{{ stats.nb_avoirs_urcoopa }}</p>
+                        <p class="display-5 text-warning fw-bold">{{ stats.nb_avoirs_urcoopa.total_avoirs }}</p>
                     </div>
                 </div>
             </div>
@@ -63,14 +127,14 @@
                 </div>
             </div>
         </div>
-        <div class="row g-4 mt-4">
 
+        <div class="row g-4 mt-4">
             <!-- Adhérents à intégrer -->
             <div class="col-md-4">
                 <div class="card shadow-sm border-0 h-100">
                     <div class="card-body text-center">
                         <h5 class="card-title">👨‍🌾 Adhérents à intégrer (≠ 5000)</h5>
-                        <p class="display-5 text-info fw-bold">{{ stats.nb_adherents_odoo }}</p>
+                        <p class="display-5 text-info fw-bold">{{ stats.nb_adherents_odoo.code_client }}</p>
                     </div>
                 </div>
             </div>
@@ -80,7 +144,7 @@
                 <div class="card shadow-sm border-0 h-100">
                     <div class="card-body text-center">
                         <h5 class="card-title">🧺 Clients vrac (5000)</h5>
-                        <p class="display-5 text-secondary fw-bold">{{ stats.nb_clients_vrac }}</p>
+                        <p class="display-5 text-secondary fw-bold">{{ stats.nb_clients_vrac.code_client }}</p>
                     </div>
                 </div>
             </div>
@@ -90,15 +154,14 @@
                 <div class="card shadow-sm border-0 h-100">
                     <div class="card-body text-center">
                         <h5 class="card-title">🚚 Livraisons</h5>
-                        <p class="display-5 text-success fw-bold">{{ stats.nb_livraisons }}</p>
+                        <p class="display-5 text-success fw-bold">{{ stats.nb_livraisons.numero_bl }}</p>
                     </div>
                 </div>
             </div>
-
         </div>
 
         <!-- Données comptables -->
-        <div class="row g-4 mt-4">
+        <div class="row g-4 mt-5">
             <div class="col-md-12">
                 <div class="card shadow-sm border-0">
                     <div class="card-body text-center">
@@ -120,11 +183,21 @@
         </div>
     </div>
 
+    <!-- GOOGLE CHARTS -->
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <div id="chart_global" style="width:100%; height:450px;"></div>
+        </div>
+        <div class="col-md-6">
+            <div id="chart_clients" style="width:100%; height:400px;"></div>
+        </div>
+        <div class="col-md-6">
+            <div id="chart_livraisons" style="width:100%; height:400px;"></div>
+        </div>
+    </div>
 
-    <!-- TEST GOOGLE VIZUALISATION -->
+    <!-- SCRIPT GOOGLE CHART -->
     <div id="chart_div2" style="width: 900px; height: 500px;"></div>
-
-    <!-- SCRIPT -->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
         google.charts.load('current', { 'packages': ['corechart'] });
@@ -134,21 +207,129 @@
                 ['Generation', 'Descendants'],
                 [0, 1], [1, 33], [2, 269], [3, 2013]
             ]);
-
             var options = {
                 title: 'Descendants by Generation',
                 hAxis: { title: 'Generation', minValue: 0, maxValue: 3 },
                 vAxis: { title: 'Descendants', minValue: 0, maxValue: 2100 },
-                trendlines: {
-                    0: {
-                        type: 'exponential',
-                        visibleInLegend: true,
-                    }
-                }
+                trendlines: { 0: { type: 'exponential', visibleInLegend: true } }
             };
-
             var chart = new google.visualization.ScatterChart(document.getElementById('chart_div2'));
             chart.draw(data, options);
+        }
+    </script>
+
+    <!-- SCRIPT ACTIONS -->
+    <script>
+        async function callApi(endpoint, method, statusId, messages) {
+            const status = document.getElementById(statusId);
+            status.innerHTML = messages.loading;
+            status.className = "mt-3 text-warning fw-bold";
+
+            try {
+                let response = await fetch(endpoint, { method: method });
+                if (response.ok) {
+                    status.innerHTML = messages.success + " ✅";
+                    status.className = "mt-3 text-success fw-bold";
+                } else {
+                    status.innerHTML = messages.error + " ❌";
+                    status.className = "mt-3 text-danger fw-bold";
+                }
+            } catch (err) {
+                status.innerHTML = "⚠️ API non joignable";
+                status.className = "mt-3 text-danger fw-bold";
+            }
+        }
+
+        // Assignation des boutons
+        document.getElementById("btnUpdateFactures").addEventListener("click", () => {
+            callApi("/api/update-factures", "GET", "statusUpdateFactures", {
+                loading: "⏳ Mise à jour en cours...",
+                success: "Factures mises à jour",
+                error: "Erreur pendant la mise à jour"
+            });
+        });
+
+        document.getElementById("btnTruncateClients").addEventListener("click", () => {
+            callApi("/api/truncate-clients", "DELETE", "statusTruncateClients", {
+                loading: "⏳ Suppression en cours...",
+                success: "Table clients vidée",
+                error: "Erreur pendant la suppression"
+            });
+        });
+
+        document.getElementById("btnVerify").addEventListener("click", () => {
+            callApi("/api/verification-correspondance", "GET", "statusVerify", {
+                loading: "⏳ Vérification en cours...",
+                success: "Vérification terminée",
+                error: "Erreur pendant la vérification"
+            });
+        });
+
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawCharts);
+
+        function drawCharts() {
+
+            // Données Python/Jinja injectées ici :
+            const nbCommandes = {{ stats.nb_commandes_odoo.commande | default (0) }};
+            const nbFactures = {{ stats.nb_factures_urcoopa[0] | default (0) }};
+            const nbAvoirs = {{ stats.nb_avoirs_urcoopa.total_avoirs | default (0) }};
+            const nbClientsInconnus = {{ stats.nb_clients_inconnus | default (0) }};
+            const nbArticlesInconnus = {{ stats.nb_articles_inconnus | default (0) }};
+            const nbAdherents = {{ stats.nb_adherents_odoo.code_client | default (0) }};
+            const nbClientsVrac = {{ stats.nb_clients_vrac.code_client | default (0) }};
+            const nbLivraisons = {{ stats.nb_livraisons.numero_bl | default (0) }};
+
+            // 1️⃣ Graphique global (barres)
+            const dataGlobal = google.visualization.arrayToDataTable([
+                ['Type', 'Nombre'],
+                ['Commandes', nbCommandes],
+                ['Factures', nbFactures],
+                ['Avoirs', nbAvoirs]
+            ]);
+
+            const optionsGlobal = {
+                title: 'Commandes, Factures et Avoirs',
+                legend: { position: 'none' },
+                colors: ['#28a745', '#007bff', '#ffc107'],
+                chartArea: { width: '70%' },
+            };
+
+            new google.visualization.ColumnChart(document.getElementById('chart_global'))
+                .draw(dataGlobal, optionsGlobal);
+
+            // 2️⃣ Répartition des clients (secteurs)
+            const dataClients = google.visualization.arrayToDataTable([
+                ['Catégorie', 'Nombre'],
+                ['Adhérents (<5000)', nbAdherents],
+                ['Clients vrac (=5000)', nbClientsVrac],
+                ['Inconnus', nbClientsInconnus]
+            ]);
+
+            const optionsClients = {
+                title: 'Répartition des clients',
+                pieHole: 0.4,
+                colors: ['#17a2b8', '#6c757d', '#dc3545']
+            };
+
+            new google.visualization.PieChart(document.getElementById('chart_clients'))
+                .draw(dataClients, optionsClients);
+
+            // 3️⃣ Livraisons + Articles inconnus (comparatif)
+            const dataLivraisons = google.visualization.arrayToDataTable([
+                ['Type', 'Nombre'],
+                ['Livraisons', nbLivraisons],
+                ['Articles inconnus', nbArticlesInconnus]
+            ]);
+
+            const optionsLivraisons = {
+                title: 'Livraisons & articles inconnus',
+                colors: ['#28a745', '#dc3545'],
+                legend: { position: 'bottom' }
+            };
+
+            new google.visualization.BarChart(document.getElementById('chart_livraisons'))
+                .draw(dataLivraisons, optionsLivraisons);
         }
     </script>
 

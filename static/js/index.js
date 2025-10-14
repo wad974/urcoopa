@@ -273,3 +273,18 @@ bouton_donnees_inconnu.addEventListener('click', (event) => {
     hideLoader()
 
 });
+
+bouton_dashboard.addEventListener('click', (event) => {
+
+    //alert('BOUTON FACTURES CLICKER')
+    console.log('Bouton cliqué')
+    event.preventDefault();
+    event.stopPropagation();
+
+    showLoader();
+    ouverturePageDashboard();
+    hideLoader()
+
+});
+
+

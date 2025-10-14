@@ -149,15 +149,19 @@ def boucleCommandeUrcoopa(commande, models, db, uid, password, WSDL_URL, API_KEY
                 print('*'*50)
                 '''
                 
-                ligne_commande.append({
-                    "Numero_ligne": i + 1,
-                    "Code_Produit": product_code,
-                    "Libelle_Produit": ligne['name'],
-                    "Quantite_Commandee": ligne['product_qty'],
-                    "Unite_Commande": "UN"
-                    #Quantite_Commandee
-                    #Unite_Commande (valeurs attendues : "UN", "KG" ou "TO")
-                })
+                #conditions si product_qty = 0
+                if ligne['product_qty'] == 0:
+                    continue
+                else:
+                    ligne_commande.append({
+                        "Numero_ligne": i + 1,
+                        "Code_Produit": product_code,
+                        "Libelle_Produit": ligne['name'],
+                        "Quantite_Commandee": ligne['product_qty'],
+                        "Unite_Commande": "UN"
+                        #Quantite_Commandee
+                        #Unite_Commande (valeurs attendues : "UN", "KG" ou "TO")
+                    })
             
             #print('[INFO] 📦 lignes produits Commandes final : ', json.dumps(ligne_commande, indent=2))
             print('[INFO] 📦 lignes produits Commandes final OK!')
@@ -253,6 +257,6 @@ def boucleCommandeUrcoopa(commande, models, db, uid, password, WSDL_URL, API_KEY
             from testEnvoiAPI import send_soap
             #print(commande_json)
             send_soap(WSDL_URL, API_KEY_URCOOPA, commande_json)
-            print(f'[SUCCESS] ✅ Commande : {commande['name']} envoyer \n')
+            print(f'[SUCCESS] ✅ Commande : {commande['name']} traiter \n')
         else : 
             print(f'[FAULT] ❌ ZUT COMMANDE : {commande["name"]} TOUJOURS EN BROUILLON \n') 
