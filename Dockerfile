@@ -34,7 +34,7 @@ ADD . /app/
 COPY main.py requirements.txt server.crt server.key ./
 
 # Installer les dépendances Python
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir  -r requirements.txt
 
 # Localtime
 RUN rm /etc/localtime

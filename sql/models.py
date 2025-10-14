@@ -167,10 +167,6 @@ class CRUD:
 
             print('VRAC => ', resultat)
             
-            #Consommer tous les résultats restants
-            while cursor.nextset():
-                pass
-                
             return resultat
             
         except mysql.connector.Error as err:
