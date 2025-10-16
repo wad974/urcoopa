@@ -232,7 +232,12 @@ def get_switch_facture_apres_reception(days = os.getenv('DATE_JOUR')):
         json.dump(data_commande, f, ensure_ascii=False, indent=4)
                     
     '''
-
+    
+        ####################
+    #TRAITEMENT UPTIME
+    from uptime.gestion_uptime import traitement_uptime
+    traitement_uptime(datetime, os, HTTPException, os.getenv('UPTIME_KUMA_PUSH_URL_SWITCH_FACTURE_ODOO'))
+    
     return{
         'STATUS' : 'SUCCESS',
         'MESSAGE 1' : f'Nombre de commande facture switcher bon livraison {len(data_commande)}',
@@ -338,6 +343,12 @@ async def get_verification_donnees_adherent():
                             # Appel unique à createAdherent avec toutes les lignes de cette facture
                             await createAdherentOdoo(lignes_filtrées,models, db, uid, password, status )
                             continue
+            
+                    ####################
+            #TRAITEMENT UPTIME
+            from uptime.gestion_uptime import traitement_uptime
+            traitement_uptime(datetime, os, HTTPException, os.getenv('UPTIME_KUMA_PUSH_URL_VERIF_CORRESPONDANCE_ADHRENT'))
+            
             return {
                 "success": True,
                 "message" : 'Fin mise à jour éffectué'
@@ -393,6 +404,11 @@ async def get_injection_donnees_adherent():
         datas = cursor.fetchall()
         
         if len(datas) == 0:
+            
+                        #TRAITEMENT UPTIME
+            from uptime.gestion_uptime import traitement_uptime
+            traitement_uptime(datetime, os, HTTPException, os.getenv('UPTIME_KUMA_PUSH_URL_INJECTION_CORRESPONDANCE_ADHRENT'))
+            
             return {
                 "success": True,
                 "Message" : "Aucune facture à traiter"
@@ -431,7 +447,11 @@ async def get_injection_donnees_adherent():
                     
                     if i == 100:
                         break
-                    
+            
+            #TRAITEMENT UPTIME
+            from uptime.gestion_uptime import traitement_uptime
+            traitement_uptime(datetime, os, HTTPException, os.getenv('UPTIME_KUMA_PUSH_URL_INJECTION_CORRESPONDANCE_ADHRENT'))
+            
             #fin de traitement boule ci dessus
             return {
                 "success": True,
@@ -637,8 +657,10 @@ async def get_livraison(
             else : 
                 print(f'ℹ️ Ligne {ligne} existe déjà dans la facture {numero_facture}')
                 
-        
-        return factures
+        ####################
+        #TRAITEMENT UPTIME
+        from uptime.gestion_uptime import traitement_uptime
+        traitement_uptime(datetime, os, HTTPException, os.getenv('UPTIME_KUMA_PUSH_URL_LIVRAISON'))
     
     except Exception as e:
         print('ERREUR CONNEXION ', e)
@@ -827,132 +849,11 @@ async def get_factures(
         except Exception as e: 
             print('[ERREUR] PROCEDURE :', e)
         # QUAND TOUS DATAS EST DANS SQL ON TRAITE DE SUITE POUR ODOO
-        return {
-            'Status' : 'SUCCESS',
-            'Message' : 'La récuperation des factures urcoopa éffectué !'
-        }
         
-        # en creant un JSON
-        #return JSONResponse(content={'message' : 'SUCCESS'})
-        # Ajout ODOO debut
-        '''
-        try :
-            print('✅ [SUCCESS] Fin ajout facture bdd')
-            print('📤[INFO] Début ajout facture Odoo')
-            
-            # Construction JSONs
-            factures_json = []
-            
-            for numero_facture, lignes in factures_groupees.items():
-                # On filtre : ne traiter que les lignes NON ADHERENT
-                lignes_filtrées = [row for row in lignes if row.get("Type_Client") != "ADHERENT"]
-
-                if lignes_filtrées:
-                    # Appel unique à createOdoo avec toutes les lignes de cette facture
-                    #await createOdoo(lignes_filtrées,models, db, uid, password)
-                    from testcreateOdoo import testcreateOdoo
-                    await testcreateOdoo(lignes_filtrées,models, db, uid, password)
-                    
-                    
-                    ligne0 = lignes_filtrées[0]
-
-                    invoice_lines = []
-                    for ligne in lignes_filtrées:
-                        product_id = ligne.get('Code_Produit_ODOO')
-                        qty = ligne.get('Quantite_Facturee', 0)
-                        price = ligne.get('Prix_Unitaire', 0)
-
-                        # Ajout ligne produit
-                        invoice_lines.append([0, 0, {
-                            'product_id': product_id,
-                            'quantity': qty,
-                            'price_unit': price
-                        }])
-
-                    # Construction du dictionnaire de facture
-                    facture = {
-                        "move_type": "in_invoice",
-                        "partner_id": ligne0.get('Code_Client'),
-                        "invoice_partner_display_name": ligne0.get('Nom_Client'),
-                        "ref": ligne0.get('Numero_Facture'),
-                        "invoice_date": ligne0.get('Date_Facture'),
-                        "invoice_date_due": ligne0.get('Date_Echeance'),
-                        "invoice_line_ids": invoice_lines
-                    }
-
-                    #factures_json.append(facture)    
-                        
-                    #import json
-                    print(f"📦 Facture creer pour Odoo : {ligne0['Numero_Facture']}")
-                    print(json.dumps(facture, indent=2))
-                    
-                    # Envoi
-                    try:
-                        
-                        move_id = models.execute_kw(
-                            db, uid, password,
-                            'account.move', 'create',
-                            [facture]
-                        )
-                        
-                        
-                        models.execute_kw(
-                            db, uid, password,
-                            'account.move', 'write',
-                            [move_id, {}]  # Un write vide peut déclencher les compute fields
-                        )
-                        
-                        print(f"✅📤 [SUCCESS] Facture envoyer à Odoo ")
-                        #print(f"✅📤 [SUCCESS] Facture Odoo créée avec ID {move_id} \n\n")
-                    except xmlrpc.client.Fault as e:
-                        #Retourne tous les erreur odoo
-                        #Erreur odoo si facture existe sera retrouné
-                        print(f"❌ Erreur Envoi XML-RPC Odoo : {e.faultString} \n\n")               
-                
-        except Exception as e:
-            print(f'❌ Erreur insertion ligne : {e}')
+        #TRAITEMENT UPTIME
+        from uptime.gestion_uptime import traitement_uptime
+        traitement_uptime(datetime, os, HTTPException, os.getenv('UPTIME_KUMA_PUSH_URL_FACTURES'))
         
-        print('✅📤 [SUCCESS] IMPORT FACTURE URCOOPA EFFECTUE !')
-        return JSONResponse(content=facture_odoo, status_code=200 )
-        ''' '''
-        return facture_odoo
-        if numeros_facture_enregistrer:
-            
-            try:
-                #print('URCOOPA', numeros_facture_enregistrer)
-                print('✅ [SUCCESS] Fin ajout facture bdd')
-                print('📤[INFO] Début ajout facture Odoo')
-                
-                
-                factures_groupées = defaultdict(list)
-
-                #for row in numeros_facture_enregistrer:
-                #    factures_groupées[row["Numero_Facture"]].append(row)
-
-                for numero_facture, lignes in numeros_facture_enregistrer.items():
-                    # On filtre : ne traiter que les lignes NON ADHERENT
-                    lignes_filtrées = [row for row in lignes if row.get("Type_Client") != "ADHERENT"]
-                    #print('-'*50)
-                    #print('-'*50)
-                    #print(json.dumps(lignes_filtrées, indent=2))
-                    #for numero, articles in enumerate(lignes_filtrées):
-                        
-                        
-
-                    if lignes_filtrées:
-                        # Appel unique à createOdoo avec toutes les lignes de cette facture
-                        await createOdoo(lignes_filtrées,models, db, uid, password )
-                        
-                        #print('[INFO] TEST REUSSI')
-                        
-            except Exception as e:
-                print(f'❌ Erreur insertion ligne : {e}')
-
-        
-        print('✅📤 [SUCCESS] IMPORT FACTURE URCOOPA EFFECTUE !')
-        return JSONResponse(content=Urcoopa, status_code=200 )       
-        #return {"Messages": 'Récuperation factures urcoopa Ok !'}
-        '''
     except json.JSONDecodeError:
         raise HTTPException(status_code=500, detail="Erreur de décodage JSON.")
     except zeep.exceptions.Fault as fault:
@@ -1100,7 +1001,12 @@ async def ajout_facture_odoo():
             
             # on continue la boucle principal
             continue
-            
+    
+    ####################
+    #TRAITEMENT UPTIME
+    from uptime.gestion_uptime import traitement_uptime
+    traitement_uptime(datetime, os, HTTPException, os.getenv('UPTIME_KUMA_PUSH_URL_AJOUT_FACTURE_ODOO'))
+    
     return {
         'SUCCESS' : 'AJOUTE FACTURE DANS ODOO',
         'FACTURE AJOUTER' : f'NOMBRE FACTURE AJOUTER {len(nombre_facture_ajouter)} ',
@@ -1216,7 +1122,13 @@ async def post_commande():
             boucleCommandeUrcoopa(commande, models, db, uid, password, WSDL_URL, API_KEY_URCOOPA)
         else:
             print(f'[INFO] commande {commande["name"]} déjà envoyé ')
-            
+    
+    
+    ####################
+    #TRAITEMENT UPTIME
+    from uptime.gestion_uptime import traitement_uptime
+    traitement_uptime(datetime, os, HTTPException, os.getenv('UPTIME_KUMA_PUSH_URL_COMMANDES'))
+    
     # FIN DE LA BOUCLE PRINCIPAL
     return {
             'STATUS' : 'SUCCESS',
