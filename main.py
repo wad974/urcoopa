@@ -494,7 +494,7 @@ async def get_livraison(
     dateReference: date = dateReferenceFacture):
     
     try:
-        print("🌐 INIT : Démarrage du service get_factures...")
+        print("🌐 INIT : Démarrage du service get_livraison...")
         print('date : ', dateReference)
         
         response = client.service.Get_Livraisons(xCleAPI=xCleAPI, NbJours=nb_jours, DateReference=dateReference)
@@ -1783,19 +1783,19 @@ def init_cron():
     cron_schedule7 = os.getenv('CRONTAB_APP_INJECTION_CORRESPONDANT')
 
     # Initialisation du cron pour l'utilisateur root
-    cron = CronTab(user='root')
-    #cron = CronTab(user='jimmy')
+    #cron = CronTab(user='root')
+    cron = CronTab(user='jimmy')
     cron.remove_all()
     cron.write()
 
     # Définition de la commande
     job1 = cron.new(command=f'curl http://0.0.0.0:9898/Recupere_Factures/?xCleAPI={API_KEY_URCOOPA}&nb_jours={API_KEY_JOUR_FACTURES}&dateReference={dateReferenceFacture}')
     job2 = cron.new(command=f'curl -X POST http://0.0.0.0:9898/envoyer-commande/')
-    job3 = cron.new(command=f'curl -X POST http://0.0.0.0:9898/ajout-facture-odoo/')
-    job4 = cron.new(command=f'curl -X POST http://0.0.0.0:9898/recupere_livraison/?xCleAPI={API_KEY_URCOOPA}&nb_jours={API_KEY_JOUR_FACTURES}&dateReference={dateReferenceFacture}')
-    job5 = cron.new(command=f'curl -X POST http://0.0.0.0:9898/switch-facture-apres-reception?days={days}')
-    job6 = cron.new(command=f'curl -X POST http://0.0.0.0:9898/api/verification-correspondance-adherent')
-    job7 = cron.new(command=f'curl -X POST http://0.0.0.0:9898/api/injection-dans-odoo-donnees-adherent')
+    job3 = cron.new(command=f'curl http://0.0.0.0:9898/ajout-facture-odoo/')
+    job4 = cron.new(command=f'curl http://0.0.0.0:9898/recupere_livraison/?xCleAPI={API_KEY_URCOOPA}&nb_jours={API_KEY_JOUR_FACTURES}&dateReference={dateReferenceFacture}')
+    job5 = cron.new(command=f'curl http://0.0.0.0:9898/switch-facture-apres-reception?days={days}')
+    job6 = cron.new(command=f'curl http://0.0.0.0:9898/api/verification-correspondance-adherent')
+    job7 = cron.new(command=f'curl http://0.0.0.0:9898/api/injection-dans-odoo-donnees-adherent')
     job1.setall(cron_schedule1)
     job2.setall(cron_schedule2)
     job3.setall(cron_schedule3)
@@ -1809,17 +1809,17 @@ def init_cron():
     #print(f"✅ CRON configuré avec la planification : {cron_schedule1} et {cron_schedule2}")
     print(f"✅ CRON configuré avec la planification factures: {cron_schedule1} ")
     print(f"✅ CRON configuré avec la planification commandes: {cron_schedule2} ")
-    print(f"✅ CRON configuré avec la planification commandes: {cron_schedule3} ")
-    print(f"✅ CRON configuré avec la planification commandes: {cron_schedule4} ")
-    print(f"✅ CRON configuré avec la planification commandes: {cron_schedule5} ")
-    print(f"✅ CRON configuré avec la planification commandes: {cron_schedule6} ")
-    print(f"✅ CRON configuré avec la planification commandes: {cron_schedule7} ")
+    print(f"✅ CRON configuré avec la planification ajout facture: {cron_schedule3} ")
+    print(f"✅ CRON configuré avec la planification recuperation livraison: {cron_schedule4} ")
+    print(f"✅ CRON configuré avec la planification switch facture: {cron_schedule5} ")
+    print(f"✅ CRON configuré avec la planification verification correspondance: {cron_schedule6} ")
+    print(f"✅ CRON configuré avec la planification injection odoo: {cron_schedule7} ")
     print("✅ Démarrage du service CRON...")
     os.system('service cron start')
     print("✅ Service CRON lancé avec succès.")
 
 
-#init_cron()
+init_cron()
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(
