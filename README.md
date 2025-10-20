@@ -31,18 +31,6 @@ Cette API FastAPI automatise la synchronisation des données entre trois systèm
 
 ```mermaid
 graph LR
-    A[Urcoopa SOAP] --> B[FastAPI API]
-    C[Gesica DB] --> B
-    B --> D[MySQL ExportOdoo]
-    B --> E[Odoo XML-RPC]
-    B --> F[Interface Web (Jinja2)]
-
-    style B fill:#e1f5fe
-    style D fill:#fff3e0
-    style E fill:#c8e6c9
-```
-```mermaid
-graph LR
     A[Urcoopa SOAP] --> B[FastAPI]
     C[Gesica DB] --> B
     B --> D[MySQL]
