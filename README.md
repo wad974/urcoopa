@@ -1,3 +1,5 @@
+<div align="center">
+
 # 🚀 API Sicalait Urcoopa
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
@@ -6,6 +8,8 @@
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
 
 **Interface de synchronisation entre Urcoopa, Gesica et Odoo pour la gestion automatisée des factures et commandes.**
+
+</div>
 
 ## 🎯 Vue d'ensemble
 
