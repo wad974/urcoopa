@@ -41,6 +41,18 @@ graph LR
     style D fill:#fff3e0
     style E fill:#c8e6c9
 ```
+```mermaid
+graph LR
+    A[Urcoopa SOAP] --> B[FastAPI]
+    C[Gesica DB] --> B
+    B --> D[MySQL]
+    B --> E[Odoo XML-RPC]
+    B --> F[Interface Web]
+
+    style B fill:#e1f5fe
+    style E fill:#c8e6c9
+    style D fill:#fff3e0
+```
 
 ## ⚡ Quick Start
 
