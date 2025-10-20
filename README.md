@@ -321,7 +321,7 @@ erDiagram
 
 ## 🚀 Diagramme global du flux applicatif
 
-```
+```mermaid
 graph TD
     subgraph Urcoopa [URCOOPA]
         A1[Get_Factures]
