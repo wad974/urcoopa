@@ -1,5 +1,21 @@
 [
     {
+        "id": 5975,
+        "partner_id": [
+            5081,
+            "URCOOPA"
+        ],
+        "company_id": [
+            19,
+            "SICALAIT"
+        ],
+        "name": "P0005650",
+        "partner_ref": false,
+        "invoice_status": "no",
+        "origin": "S0000737",
+        "state": "purchase"
+    },
+    {
         "id": 5846,
         "partner_id": [
             5081,
@@ -91,7 +107,7 @@
         ],
         "name": "P0002855",
         "partner_ref": "GESICA711055",
-        "invoice_status": "no",
+        "invoice_status": "invoiced",
         "origin": false,
         "state": "purchase"
     },
@@ -187,7 +203,7 @@
         ],
         "name": "P0002844",
         "partner_ref": "GESICA710963",
-        "invoice_status": "no",
+        "invoice_status": "invoiced",
         "origin": false,
         "state": "purchase"
     },

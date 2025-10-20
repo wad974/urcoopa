@@ -3,7 +3,7 @@ def traitement_uptime(datetime, os, HTTPException, push_url):
     start_time = datetime.now()
     
     try:
-        print('[INFO] 🌐 init UPTIME RECUP FACTURE')
+        print('[INFO] 🌐 INITIALISATION UPTIME MONITORING')
         
         # En cas de succès
         processing_time = int((datetime.now() - start_time).total_seconds() * 1000)

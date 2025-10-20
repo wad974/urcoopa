@@ -257,6 +257,6 @@ def boucleCommandeUrcoopa(commande, models, db, uid, password, WSDL_URL, API_KEY
             from testEnvoiAPI import send_soap
             #print(commande_json)
             send_soap(WSDL_URL, API_KEY_URCOOPA, commande_json)
-            print(f'[SUCCESS] ✅ Commande : {commande['name']} traiter \n')
+            print(f'[SUCCESS] ✅ Commande : {commande["name"]} traiter \n')
         else : 
             print(f'[FAULT] ❌ ZUT COMMANDE : {commande["name"]} TOUJOURS EN BROUILLON \n') 

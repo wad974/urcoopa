@@ -127,9 +127,7 @@ class DateTimeEncoder(json.JSONEncoder):
 ########API POUR VOIR FACTURE EN ATTENTE DANS ACHAT ET TRANSFORMER EN FACTURE
 @app.get('/switch-facture-apres-reception')
 def get_switch_facture_apres_reception(days = os.getenv('DATE_JOUR')):
-    
-    #creer une fonction pour boucler sur la recuperation des facture en attente
-    #filtre par date
+    print('[INFO] 🌐 INIT SWITCH FACTURE APRES RECEPTION')
     
     date_end = datetime.now() # on recupere la date maintenant (int)
     #date_start = date_end - timedelta(days=5) # on soustrait 2jours (int)
@@ -206,32 +204,6 @@ def get_switch_facture_apres_reception(days = os.getenv('DATE_JOUR')):
                     )
                     print('✅[SUCCESS] : STATUT DE FACTURATION ENTIEREMENT FACTURE', commande['name'])
                                 
-                        
-    
-    '''    
-    # a controler facture dans compta si exist action bouton dans achat
-    for account in datas:
-        if account['id'] == '5081' and account['Numero_Facture'] == data_commande['']:
-        
-    #switch commande urcoopa 
-    if ligne['partner_id'][1] == 'URCOOPA' and ligne['state'] == 'purchase' and ligne['invoice_status'] == 'no' : 
-        
-        print('[INFO] Switch commande urcoopa ceer par le dropshipping')
-        models.execute_kw(
-            db, uid, password,
-            'purchase.order', 'write',
-            [[ligne['id']], {'invoice_status': 'invoiced'}]
-        )
-        print('✅[SUCCESS] : STATUT DE FACTURATION ENTIEREMENT FACTURE')
-                        
-            
-        
-                
-    #Méthodes import json
-    with open('log-res_partner.json', 'w', encoding='utf-8') as f:
-        json.dump(data_commande, f, ensure_ascii=False, indent=4)
-                    
-    '''
     
         ####################
     #TRAITEMENT UPTIME
@@ -281,6 +253,8 @@ def get_donnees_comptables_mois(annee: int, mois: int):
 @app.get('/api/verification-correspondance-adherent')
 async def get_verification_donnees_adherent():
     try:
+        print('[INFO] 🌐 INIT VERIFICATION CORRESPONDANCE ADHERENT')
+        
         
         # status initial 
         status = False
@@ -314,6 +288,9 @@ async def get_verification_donnees_adherent():
         
         # si datas est vide []
         if len(datas) == 0:
+            #TRAITEMENT UPTIME
+            from uptime.gestion_uptime import traitement_uptime
+            traitement_uptime(datetime, os, HTTPException, os.getenv('UPTIME_KUMA_PUSH_URL_VERIF_CORRESPONDANCE_ADHRENT'))
             return {
                     "success": True,
                     "message" : "Aucune facture à traiter"
@@ -369,6 +346,9 @@ async def get_verification_donnees_adherent():
 @app.get('/api/injection-dans-odoo-donnees-adherent')
 async def get_injection_donnees_adherent():
     try:
+        
+        print('[INFO] 🌐 INIT INJECTION CORRESPONDANCE ADHERENT')
+        
         
         # status initial 
         status = True
@@ -869,7 +849,7 @@ async def get_factures(
 async def ajout_facture_odoo():
     from odoo.controller.statutSwitchDropShipping import switchStatutEtapeParEtape
     
-    print('[INFO] 🌐 init ajout facture odoo')
+    print('[INFO] 🌐  INIT AJOUT FACTURE DANS ODOO')
     
     cnx = recupere_connexion_db()
     cursor  = cnx.cursor(dictionary=True)
@@ -898,11 +878,14 @@ async def ajout_facture_odoo():
         }
     )
     
+    # Créer un dictionnaire pour un accès rapide par nom de commande
+    purchase_dict = {purchase['name']: purchase for purchase in purchase_order_existant}
     
+    '''
     #Méthodes import json
     with open('res_partner_test.json', 'w', encoding='utf-8') as f:
         json.dump(purchase_order_existant, f, ensure_ascii=False, indent=4)
-    
+    '''
     
     for row in datas:
         factures_groupees[row.get('Numero_Commande_ODOO')].append(row)
@@ -912,95 +895,87 @@ async def ajout_facture_odoo():
     nombre_facture_entierement_facturer = []
     nombre_facture_ajouter = []
     
+    def actualiser_commande_specifique(numero_commande):
+        """Fonction pour actualiser uniquement une commande spécifique"""
+        try:
+            commande_actualisee = models.execute_kw(
+                db, uid, password,
+                'purchase.order', 'search_read',
+                [[['name', '=', numero_commande], ['partner_id', '=', 5081]]],
+                {
+                    'fields': ['id','partner_id','company_id', 'name', 'partner_ref', 'invoice_status', 'origin', 'state']
+                }
+            )
+            if commande_actualisee:
+                # Mettre à jour le dictionnaire local
+                purchase_dict[numero_commande] = commande_actualisee[0]
+                return commande_actualisee[0]
+            return None
+        except Exception as e:
+            print(f"[ERROR] Erreur lors de l'actualisation de la commande {numero_commande}: {e}")
+            return None
+    
     for i, (numero_facture, lignes) in enumerate(factures_groupees.items()):
-        # On filtre : ne traiter que les lignes NON ADHERENT
-        #lignes_filtrées = [row for row in lignes if row.get("Type_Client") != "ADHERENT"]
         if lignes:
-            
-            # ✅ Accède au premier élément de la liste
             numero_commande_odoo = lignes[0].get('Numero_Commande_ODOO')
             
-            # Cherche si cette commande existe dans purchase_order_existant
-            commande_trouvee = False
+            # Vérifier si la commande existe dans notre dictionnaire local
+            purchase = purchase_dict.get(numero_commande_odoo)
             
-            for purchase in purchase_order_existant:
+            if purchase:
                 # Récupération sécurisée des valeurs
                 partner_id = purchase.get('partner_id')
                 company_id = purchase.get('company_id')
                 invoice_status = purchase.get('invoice_status')
                 
                 # Vérifications avec gestion des None
-                if company_id:
+                if (company_id and partner_id and 
+                    partner_id[0] == 5081 and 
+                    company_id[0] == 19):
                     
-                    # Maintenant on peut accéder aux indices en toute sécurité
-                    if (partner_id[0] == 5081 and 
-                        company_id[0] == 19 and 
-                        invoice_status == 'no'):
+                    # Traitement pour statut 'no' (réception)
+                    if invoice_status == 'no':
+                        print('*'*100)
+                        print(f'[SUCCESS] : BINGO NUMERO COMMANDE ODOO TROUVÉ : {numero_commande_odoo}')
+                        print('*'*100)
                         
-                        if purchase['name'] == numero_commande_odoo:
-                            
-                            commande_trouvee = True
-                            
-                            print('*'*100)
-                            print(f'[SUCCESS] : BINGO NUMERO COMMANDE ODOO TROUVÉ : {numero_commande_odoo}')
-                            print('*'*100)
-                            
-                            #etape 1 : reception
-                            print('etape 1')
-                            await switchStatutEtapeParEtape(purchase, models, db, uid, password, 'purchase.order', 'action_view_picking', 'purchase' )
-                            #etape 2 : validation reception
-                            print('etape 2')
-                            await switchStatutEtapeParEtape(purchase, models, db, uid, password, 'stock.picking', 'button_validate', 'purchase' )
-                            
-                            nombre_facture_receptionner.append(numero_commande_odoo)
-                            break
+                        #etape 1 : reception
+                        print('etape 1 - Réception')
+                        await switchStatutEtapeParEtape(purchase, models, db, uid, password, 'purchase.order', 'action_view_picking', 'purchase')
                         
-                        else :
-                            print(f"Commande N° {purchase['name']} AUCUNE FACTURE RECEPTIONNER")
-            
-            #on actualise la commande // on rappel
-            print('[INFO] ACTUALISE PURCHASE ORDER')
-            purchase_order_existant = models.execute_kw(
-                db, uid, password,
-                'purchase.order', 'search_read',
-                [[[ 'partner_id', '=', 5081 ]]],
-                {
-                    'fields': ['id','partner_id', 'name', 'partner_ref', 'invoice_status', 'origin', 'state']
-                }
-            )
-            for purchase in purchase_order_existant:
+                        #etape 2 : validation reception
+                        print('etape 2 - Validation réception')
+                        await switchStatutEtapeParEtape(purchase, models, db, uid, password, 'stock.picking', 'button_validate', 'purchase')
+                        
+                        nombre_facture_receptionner.append(numero_commande_odoo)
+                        
+                        # Actualiser uniquement cette commande spécifique
+                        purchase_actualisee = actualiser_commande_specifique(numero_commande_odoo)
+                        if purchase_actualisee:
+                            purchase = purchase_actualisee
+                else:
+                    print(f"Commande {numero_commande_odoo} ne correspond pas aux critères (partner_id ou company_id)")
+                    
+                # Traitement pour statut 'to invoice' (facturation)
+                if purchase.get('invoice_status') == 'to invoice':
+                    print('etape 3 - Création facture')
+                    await switchStatutEtapeParEtape(purchase, models, db, uid, password, 'purchase.order', 'action_create_invoice', 'purchase')
+                    nombre_facture_entierement_facturer.append(numero_commande_odoo)
+                    
+                    # Création de la facture dans Odoo
+                    from odoo.controller.creationFactureDansOdoo import function_creation_facture_dans_odoo
+                    function_creation_facture_dans_odoo(True, purchase, lignes, models, db, uid, password)
+                    
+                    print('*'*100)
+                    print('ON CONTINUE LIGNE : ', i+1)
+                    print('*'*100)
+                    
+                    nombre_facture_ajouter.append(numero_commande_odoo)
+                elif purchase.get('invoice_status') != 'to invoice' and invoice_status != 'no':
+                    print(f"Commande N° {purchase['name']} - Statut: {purchase.get('invoice_status')} - AUCUNE ACTION NÉCESSAIRE")
                 
-                if purchase.get('partner_id')[0] == 5081 and purchase.get('invoice_status') == 'to invoice':
-                    
-                    if purchase['name'] == numero_commande_odoo:
-                        
-                        commande_trouvee = True        
-                        #etape 3 : creation facture
-                        print('etape 3')
-                        await switchStatutEtapeParEtape(purchase, models, db, uid, password, 'purchase.order', 'action_create_invoice', 'purchase' )
-                        nombre_facture_entierement_facturer.append(numero_commande_odoo)
-                        
-                        
-                        # Appel unique à createOdoo avec toutes les lignes de cette facture
-                        #await createOdoo(lignes_filtrées,models, db, uid, password)
-                        #from testcreateOdoo import testcreateOdoo
-                        #await testcreateOdoo(lignes_filtrées,models, db, uid, password)
-                        from odoo.controller.creationFactureDansOdoo import function_creation_facture_dans_odoo
-                        
-                        function_creation_facture_dans_odoo(commande_trouvee ,purchase, lignes, models, db, uid, password)
-                        
-                        print('*'*100)
-                        print('ON CONTINUE LIGNE : ', i+1)
-                        print('*'*100)
-                        
-                        nombre_facture_ajouter.append(numero_commande_odoo)
-                        
-                        break
-                    else :
-                            print(f"Commande N° {purchase['name']} AUCUNE FACTURE EN ATTENTE ")
-            
-            # on continue la boucle principal
-            continue
+            else:
+                print(f"Commande {numero_commande_odoo} non trouvée dans les purchase orders")
     
     ####################
     #TRAITEMENT UPTIME
@@ -1013,7 +988,6 @@ async def ajout_facture_odoo():
         'FACTURE RECEPTIONNER' : f'NOMBRE DE FACTURE RECEPTIONNER {len(nombre_facture_receptionner)}',
         'FACTURE ENTIEREMENT FACTURER'  : f'NOMBRE DE FACTURE ENTIEREMENT FACTURER {len(nombre_facture_entierement_facturer)}'
     }
-
 
 ###############################
 # POST FACTURE ODOO DANS URCOOPA
