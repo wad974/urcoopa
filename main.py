@@ -63,7 +63,7 @@ templates = Jinja2Templates(directory="templates")
 # Configuration CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Remplacez par l'URL de votre front-end
+    allow_origins=["*", "127.0.0.1", "0.0.0.0"],  # Remplacez par l'URL de votre front-end
     allow_credentials=True,
     allow_methods=["*"],  # Méthodes HTTP autorisées
     allow_headers=["*"],  # En-têtes autorisés

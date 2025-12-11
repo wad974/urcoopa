@@ -34,19 +34,42 @@ if uid:
     models = xmlrpc.client.ServerProxy(f'{url}/xmlrpc/2/object')
     
     # 1. Rechercher le partenaire URCOOPA
-    
-    
     #partner = partner[0].get('purchase_order_id')[1]
+    from sql.connexion import recupere_connexion_db
     
+    # Requete depuis exportOdoo Analytique
+    database = recupere_connexion_db()
+    cursor_analytique = database.cursor(dictionary = True)
     
-    # 1. Trouver le partenaire
-    partner_ids = models.execute_kw(
+    requete_analytique = '''
+        SELECT id 
+        FROM exportodoo.account_analytic_account aaa 
+        WHERE aaa.code  = '92165'
+    '''
+    cursor_analytique.execute(requete_analytique)
+    data_analytique = cursor_analytique.fetchall()
+    
+    analytic_id = data_analytique[0]['id']
+    print("📈 ID analytique :", analytic_id)
+    
+    #env pourcentage analytique
+    pourcentage_analytique = float(os.getenv('POURCENTAGE_ANALYTIQUE'))
+    analytic_distribution = {str(analytic_id): pourcentage_analytique}
+    
+    print(analytic_distribution)
+else:
+    print('SINON')
+''' 
+    analytic_accounts = models.execute_kw(
         db, uid, password,
-        'res.partner', 'search',
-        [[['name', '=', 'SICALAIT - ALIMENT']]],
-        {'limit': 1}
+        'account.analytic.account', 'search_read',
+        [],
+        {'fields': ['id', 'name']}
     )
 
+    print(analytic_accounts)
+    
+    
     if not partner_ids:
         print("❌ Partenaire introuvable.")
         exit()
@@ -87,7 +110,7 @@ if uid:
         else:
             print(f"⚠️ Commande {order['name']} ignorée (state={order['state']}).")
     
-    '''  
+    
     product_ids = models.execute_kw(
                 db, uid, password,
                 'product.product', 'search',
@@ -221,7 +244,4 @@ if uid:
     #print('models read. RESULTAT: ', partner)
     print("Enregistrement effectué ")
     '''
-    
-else:
-    print("Authentication failed.")
     

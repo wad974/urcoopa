@@ -169,7 +169,7 @@ def function_creation_facture_dans_odoo(continue_integration_facture, purchase, 
                     }
                     )[0]
                 #print(f"✅ Unités de mesure récupéré -> {row.get('Unite_Facturee')} - {udm_id} : {udm.get('name')}")
-                
+                                
                 # Recherche de la ligne de commande achat (purchase.order.line)
                 purchase_line_ids = models.execute_kw(
                     db, uid, password,
@@ -188,8 +188,29 @@ def function_creation_facture_dans_odoo(continue_integration_facture, purchase, 
                     purchase_line_id = purchase_line_ids[0]
                     print(f"✅ purchase_line_id récupéré : {purchase_line_id}")
                     
+                # ECRITURE COMPTABLE
+                # Requete depuis exportOdoo Analytique
+                database = recupere_connexion_db()
+                cursor_analytique = database.cursor(dictionary = True)
+                
+                requete_analytique = '''
+                    SELECT id 
+                    FROM exportodoo.account_analytic_account aaa 
+                    WHERE aaa.code  = '922'
+                '''
+                cursor_analytique.execute(requete_analytique)
+                data_analytique = cursor_analytique.fetchall()
+                
+                analytic_id = data_analytique[0]['id']
+                print("📈 ID analytique :", analytic_id)
+                
+                #env pourcentage analytique
+                pourcentage_analytique = float(os.getenv('POURCENTAGE_ANALYTIQUE'))
+                analytic_distribution = {str(analytic_id): pourcentage_analytique}
+                    
                 invoice_lines.append([0, 0, {
                     'product_id': product_id,
+                    'analytic_distribution' : analytic_distribution,
                     'quantity': row['Quantite_Facturee'],
                     #'product_uom_id': udm.get('name'),
                     'price_unit': row['Prix_Unitaire'],

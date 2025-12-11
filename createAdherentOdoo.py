@@ -218,8 +218,28 @@ async def createAdherentOdoo(rows: list, models, db, uid, password, status):
                 )[0]
             print(f"✅ Unités de mesure récupéré -> {row.get('Unite_Facturee')} - {udm_id} : {udm.get('name')}")
             
+            # Requete depuis exportOdoo Analytique
+            database = recupere_connexion_db()
+            cursor_analytique = database.cursor(dictionary = True)
+            
+            requete_analytique = '''
+                SELECT id 
+                FROM exportodoo.account_analytic_account aaa 
+                WHERE aaa.code  = '922'
+            '''
+            cursor_analytique.execute(requete_analytique)
+            data_analytique = cursor_analytique.fetchall()
+            
+            analytic_id = data_analytique[0]['id']
+            print("📈 ID analytique :", analytic_id)
+            
+            #env pourcentage analytique
+            pourcentage_analytique = float(os.getenv('POURCENTAGE_ANALYTIQUE'))
+            analytic_distribution = {str(analytic_id): pourcentage_analytique}
+            
             invoice_lines.append([0, 0, {
                 'product_id': product_id,
+                'analytic_distribution' : analytic_distribution,
                 'quantity': row['Quantite_Facturee'],
                 #'product_uom_id': udm.get('name'),
                 'price_unit': row['Prix_Unitaire']
@@ -284,6 +304,7 @@ async def createAdherentOdoo(rows: list, models, db, uid, password, status):
                     
                     invoice_lines_avec_coef.append([0, 0, {
                         'product_id': ligne.get('product_id'),
+                        'analytic_distribution' : analytic_distribution,
                         'quantity': ligne.get('quantity'),
                         'price_unit': ligne.get('price_unit') * POURCENTAGE_COEF  # Application du coef
                     }])
